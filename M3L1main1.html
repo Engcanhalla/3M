@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
+<title>M3L1main1</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Noto Sans KR',sans-serif;background:linear-gradient(135deg,#2e1065 0%,#4c1d95 60%,#1e1b4b 100%);min-height:100vh;min-height:-webkit-fill-available;padding:16px;padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(80px,env(safe-area-inset-bottom));display:flex;align-items:flex-start;justify-content:center;-webkit-font-smoothing:antialiased;overscroll-behavior-y:contain;touch-action:pan-y}
+.wrap{max-width:520px;width:100%;background:#f8fafc;border-radius:28px;box-shadow:0 24px 64px rgba(0,0,0,.35);overflow:hidden}
+.header{background:linear-gradient(150deg,#2e1065 0%,#4c1d95 60%,#1e1b4b 100%);padding:24px 20px 18px;color:#fff;text-align:center;position:-webkit-sticky;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(0,0,0,.35)}
+.header h1{font-size:1.15rem;font-weight:700;margin-bottom:3px;letter-spacing:-.02em}
+.header p{opacity:.7;font-size:.8rem}
+.content{padding:20px 18px 40px}
+.prog-bar{height:8px;background:#e2e8f0;border-radius:4px;margin-bottom:14px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#8b5cf6,#a78bfa);border-radius:4px;transition:width .4s}
+.q-counter{text-align:center;font-size:.82rem;color:#64748b;margin-bottom:6px;font-weight:500}
+.title-box{text-align:center;margin:10px 0 14px;padding:18px 16px;background:linear-gradient(135deg,#faf5ff,#f3e8ff);border-radius:18px;border:2px solid #c4b5fd}
+.title-box .ptitle{font-size:1.55rem;font-weight:800;color:#5b21b6;letter-spacing:-.02em;line-height:1.2}
+.title-box .tlabel{display:inline-block;margin-top:6px;font-size:.72rem;background:#ede9fe;color:#6d28d9;padding:3px 10px;border-radius:20px;font-weight:700}
+.statement{margin:14px 0;padding:16px 18px;background:#fff;border:1.5px solid #e8ecf1;border-radius:14px;font-size:1rem;color:#1e293b;line-height:1.65;font-weight:500;box-shadow:0 1px 4px rgba(15,23,42,.06)}
+.source-box{margin:10px 0 4px;padding:12px 14px;background:#f9fafb;border-left:3px solid #a78bfa;border-radius:0 10px 10px 0;font-size:.82rem;color:#4b5563;line-height:1.65;font-style:italic}
+.source-label{display:block;font-size:.68rem;color:#7c3aed;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-style:normal}
+.ox-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.ox-btn{padding:18px 10px;border:2px solid #e5e7eb;background:#fff;border-radius:16px;font-size:1rem;font-weight:800;color:#1e293b;cursor:pointer;font-family:inherit;transition:all .18s;touch-action:manipulation;-webkit-user-select:none;user-select:none;min-height:84px}
+.ox-btn:active{transform:scale(.96)}
+.ox-btn.o{color:#059669}
+.ox-btn.x{color:#dc2626}
+.ox-btn.dunno{grid-column:1 / span 2;padding:14px;font-size:.92rem;color:#64748b;font-weight:700;min-height:0}
+.ox-btn.sel.o{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#10b981}
+.ox-btn.sel.x{background:linear-gradient(135deg,#fff1f2,#fecdd3);border-color:#ef4444}
+.ox-btn.sel.dunno{background:#f1f5f9;border-color:#94a3b8}
+.ox-btn.correct{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#10b981;color:#065f46}
+.ox-btn.wrong{background:linear-gradient(135deg,#fff1f2,#fecdd3);border-color:#ef4444;color:#7f1d1d}
+.ox-btn[disabled]{cursor:default;opacity:.85}
+.ox-icon{display:block;font-size:1.6rem;margin-bottom:4px}
+.fb{text-align:center;padding:14px 16px;border-radius:14px;margin-top:14px;font-weight:700;font-size:.92rem;line-height:1.5}
+.fb.ok{background:linear-gradient(135deg,#ecfdf5,#d1fae5);color:#065f46;border:1.5px solid #6ee7b7}
+.fb.ng{background:linear-gradient(135deg,#fff1f2,#fecdd3);color:#881337;border:1.5px solid #fda4af}
+.fb.dunno{background:#f1f5f9;color:#475569;border:1.5px solid #cbd5e1}
+.explain-box{margin-top:10px;padding:14px;background:#fff;border-radius:12px;border:1.5px solid #e8ecf1}
+.ex-title{font-size:.82rem;font-weight:800;color:#6d28d9;margin-bottom:8px;padding-bottom:6px;border-bottom:1.5px solid #f1f5f9}
+.ex-body{font-size:.88rem;color:#374151;line-height:1.75}
+.ex-answer{display:inline-block;font-size:.95rem;font-weight:900;padding:2px 14px;border-radius:20px;margin-right:8px;vertical-align:middle}
+.ex-answer.O{background:#dcfce7;color:#166534}
+.ex-answer.X{background:#fee2e2;color:#991b1b}
+.nav-bar{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1.5px solid #e8ecf1;gap:8px}
+.nav-btn{padding:10px 16px;border:none;border-radius:12px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;touch-action:manipulation}
+.nav-btn.prev,.nav-btn.home{background:#f1f5f9;color:#374151;border:1.5px solid #e2e8f0}
+.nav-btn.next{background:linear-gradient(135deg,#8b5cf6,#a78bfa);color:#fff}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.set-list{display:grid;gap:10px;margin-top:8px}
+.set-card{background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s}
+.set-card:hover{border-color:#8b5cf6;background:#faf5ff;transform:translateY(-2px)}
+.set-card.done{border-color:#8b5cf6;background:linear-gradient(135deg,#faf5ff,#f3e8ff)}
+.score-circle{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:16px auto;font-size:1.8rem;font-weight:800;border:6px solid}
+.score-circle.pass{border-color:#10b981;color:#059669;background:linear-gradient(135deg,#ecfdf5,#d1fae5)}
+.score-circle.fail{border-color:#f43f5e;color:#e11d48;background:linear-gradient(135deg,#fff1f2,#fecdd3)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeIn .15s ease-out}
+@media(prefers-reduced-motion:reduce){.fade{animation:none}}</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header"><h1 id="hTitle"></h1><p id="hSub"></p></div>
+  <div class="content" id="app"></div>
+</div>
+<script>
+var CONFIG={"title":"M3L1main1","passThreshold":100,"level":"medium","levelLabel":"중3 수준 · CEFR A2","passages":[{"id":1,"title":"Merchant's Island Trade","body":"Long ago, an honest merchant lived in Genoa, Italy. His name was Antonio, and he went to different places to support his family by trading. One day, he filled his ship with goods and visited a faraway island. There he traded tools for spices and books for nuts. Thanks to Antonio, the islanders could get what they needed. One night, Antonio had dinner with the island's queen at her palace. When dinner was served, rats appeared, and some servants chased them away with sticks. Antonio was greatly surprised that there were rats in the palace."},{"id":2,"title":"Island Cat Story","body":"He asked, \"Are there no cats on this island?\" The queen looked puzzled. \"What is a cat?\" she asked. The merchant said to himself, \"What the islanders here need is not tools or books, but cats.\" He brought two cats from his ship and let them run free. \"What amazing animals!\" cried the queen when she saw all the rats run away. She gave Antonio a chest that was filled with jewels. Back in Italy, Antonio told his friends about his good fortune.\n"},{"id":3,"title":"Luigi's Greed","body":"Luigi, the richest merchant in Genoa, heard the story and was jealous. \"Cats are worthless,\" Luigi thought. \"I'll bring the queen what is really valuable. I'm sure that the queen will give me more jewels.\" Luigi packed his ship with wonderful paintings and other works of art. He took the gifts to the island. To get a chance to meet the queen, he told the islanders a lie that he was a good friend of Antonio's. When the queen heard about Luigi, she invited him to her palace for dinner. Before sitting down at the table, Luigi presented the queen with all his gifts, and the queen thanked him again and again. \"I'll repay you with a priceless gift,\" said the queen. Luigi watched the queen whisper in a servant's ear."},{"id":4,"title":"Luigi's Lesson","body":"He became excited and hopeful. He was sure that he would receive more jewels than Antonio. After a while, the servant returned with a box, and the queen presented it to Luigi. When Luigi opened the box, he was speechless. There was a kitten in the box. \"Antonio gave us the priceless cats, and we now have some kittens,\" said the queen. \"In return for the wonderful gifts you gave us, we want to give you what is most valuable to us.\" Luigi realized that, in the queen's mind, the kitten was worth far more than all the jewels in the world. He tried to look pleased with the gift. He knew that was the right thing to do. Luigi did not return home a richer man. But he was surely a wiser one."}],"questions":[{"questionNumber":1,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"Antonio는 가족을 부양하기 위해 무역을 하며 여러 곳을 다녔다.","answer":"O","passageId":1,"passageTitle":"Merchant's Island Trade","sourceSentence":null},{"questionNumber":2,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"Antonio는 섬에서 향신료를 얻기 위해 책을 교환했다.","answer":"X","passageId":1,"passageTitle":"Merchant's Island Trade","sourceSentence":null},{"questionNumber":3,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"Antonio가 섬을 방문한 덕분에 섬 주민들은 필요한 것들을 얻을 수 있었다.","answer":"O","passageId":1,"passageTitle":"Merchant's Island Trade","sourceSentence":null},{"questionNumber":4,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"Antonio는 여왕의 궁전에서 쥐를 발견하고 크게 놀랐다.","answer":"O","passageId":1,"passageTitle":"Merchant's Island Trade","sourceSentence":null},{"questionNumber":5,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"궁전에 나타난 쥐들은 여왕이 종들을 시켜 쫓아냈다.","answer":"X","passageId":1,"passageTitle":"Merchant's Island Trade","sourceSentence":null,"explanation":"지문에서 쥐들을 쫓은 것은 '일부 하인들(some servants)'이었으며, 이들이 막대기로 쥐를 쫓아냈다고 나와 있다. statement에서는 '여왕이 종들을 시켜 쫓아냈다'고 했지만, 지문에는 여왕이 명령을 내렸다는 언급이 전혀 없다. 따라서 여왕의 지시가 있었다는 내용은 지문에 근거가 없어 X이다."},{"questionNumber":6,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"Antonio was a dishonest merchant who traveled to various places for trading.","answer":"X","passageId":1,"passageTitle":"Merchant's Island Trade","sourceSentence":null},{"questionNumber":7,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"Antonio loaded his ship with goods before sailing to the distant island.","answer":"O","passageId":1,"passageTitle":"Merchant's Island Trade","sourceSentence":null},{"questionNumber":8,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"The servants at the palace drove the rats away using broom sticks.","answer":"X","passageId":1,"passageTitle":"Merchant's Island Trade","sourceSentence":null,"explanation":"지문에서 하인들은 쥐를 쫓기 위해 'sticks(막대기)'를 사용했다고 나와 있습니다. Statement에서는 'broom sticks(빗자루)'를 사용했다고 했는데, 빗자루는 지문에 언급되지 않은 정보로 단어가 왜곡되었습니다. 따라서 지문 내용과 일치하지 않습니다."},{"questionNumber":9,"type":"insertion","typeLabel":"문장 삽입 위치","statement":"Antonio filled his ship with goods. → He visited a faraway island.","anchorSentence":"Antonio filled his ship with goods.","targetSentence":"He visited a faraway island.","claimedPosition":"before","answer":"O","passageId":1,"passageTitle":"Merchant's Island Trade","sourceSentence":null},{"questionNumber":10,"type":"order","typeLabel":"문장 순서","statement":"Antonio had dinner with the queen at her palace. → Rats appeared during the meal and servants chased them away.","answer":"O","passageId":1,"passageTitle":"Merchant's Island Trade","sourceSentence":null},{"questionNumber":11,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"섬의 여왕은 '고양이'가 무엇인지 알고 있었다.","answer":"X","passageId":2,"passageTitle":"Island Cat Story","sourceSentence":null},{"questionNumber":12,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"상인은 섬 사람들에게 필요한 것이 고양이라고 속으로 생각했다.","answer":"O","passageId":2,"passageTitle":"Island Cat Story","sourceSentence":null},{"questionNumber":13,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"상인은 배에서 세 마리의 고양이를 데려와 섬에 풀어놓았다.","answer":"X","passageId":2,"passageTitle":"Island Cat Story","sourceSentence":null},{"questionNumber":14,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"여왕은 고양이가 쥐들에게 쫓기는 것을 보고 놀라움을 표현했다.","answer":"X","passageId":2,"passageTitle":"Island Cat Story","sourceSentence":null,"explanation":"지문에서 여왕은 쥐들이 고양이를 피해 도망치는 장면을 보고 놀라움을 표현했습니다. 즉 고양이가 쥐를 쫓은 것이지, 쥐가 고양이를 쫓은 것이 아닙니다. statement는 주체와 대상의 관계를 반대로 서술하고 있으므로 X입니다."},{"questionNumber":15,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"여왕은 상인 Antonio에게 금화가 가득 찬 상자를 선물로 주었다.","answer":"X","passageId":2,"passageTitle":"Island Cat Story","sourceSentence":null},{"questionNumber":16,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"Antonio decided that the islanders needed tools and books more than anything else.","answer":"X","passageId":2,"passageTitle":"Island Cat Story","sourceSentence":null},{"questionNumber":17,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"After returning to Italy, Antonio shared the story of his lucky experience with his friends.","answer":"O","passageId":2,"passageTitle":"Island Cat Story","sourceSentence":null},{"questionNumber":18,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"The queen gave Antonio a reward because she was impressed by the books he brought to the island.","answer":"X","passageId":2,"passageTitle":"Island Cat Story","sourceSentence":null},{"questionNumber":19,"type":"insertion","typeLabel":"문장 삽입 위치 판단","statement":"\"What amazing animals!\" cried the queen. → She gave Antonio a chest filled with jewels.","anchorSentence":"\"What amazing animals!\" cried the queen when she saw all the rats run away.","targetSentence":"She gave Antonio a chest that was filled with jewels.","claimedPosition":"after","answer":"O","passageId":2,"passageTitle":"Island Cat Story","sourceSentence":null},{"questionNumber":20,"type":"order","typeLabel":"문장 순서 판단","statement":"Antonio brought cats from his ship → The queen asked what a cat was.","answer":"X","passageId":2,"passageTitle":"Island Cat Story","sourceSentence":null},{"questionNumber":21,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"루이지는 제노바에서 가장 부유한 상인이었으며, 안토니오의 이야기를 듣고 부러움을 느꼈다.","answer":"O","passageId":3,"passageTitle":"Luigi's Greed","sourceSentence":null},{"questionNumber":22,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"루이지는 고양이가 가치 없다고 생각했기 때문에, 여왕에게 진귀한 보석들을 직접 가져다주기로 결심했다.","answer":"X","passageId":3,"passageTitle":"Luigi's Greed","sourceSentence":null},{"questionNumber":23,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"루이지는 배에 멋진 그림들과 다른 예술 작품들을 싣고 그 섬으로 향했다.","answer":"O","passageId":3,"passageTitle":"Luigi's Greed","sourceSentence":null},{"questionNumber":24,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"루이지는 여왕을 만나기 위해 섬 주민들에게 자신이 안토니오의 형제 사이라고 거짓말을 했다.","answer":"X","passageId":3,"passageTitle":"Luigi's Greed","sourceSentence":null,"explanation":"지문에서 루이지는 섬 주민들에게 자신이 안토니오의 '좋은 친구(good friend)'라고 거짓말을 했다. 그러나 statement에서는 '형제 사이'라고 했으므로 관계가 잘못 서술되어 있다. 따라서 지문 내용과 일치하지 않는다."},{"questionNumber":25,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"여왕은 루이지의 이야기를 듣고 그를 궁전으로 초대하여 저녁 식사를 함께했다.","answer":"O","passageId":3,"passageTitle":"Luigi's Greed","sourceSentence":null},{"questionNumber":26,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"루이지는 식탁에 앉은 후에 여왕에게 가져온 선물들을 모두 바쳤다.","answer":"X","passageId":3,"passageTitle":"Luigi's Greed","sourceSentence":null},{"questionNumber":27,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"Luigi decided to bring the queen valuable gifts because he believed they would earn him more jewels than cats would.","answer":"O","passageId":3,"passageTitle":"Luigi's Greed","sourceSentence":null},{"questionNumber":28,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"The queen rewarded Luigi generously with jewels before he had a chance to present his gifts.","answer":"X","passageId":3,"passageTitle":"Luigi's Greed","sourceSentence":null},{"questionNumber":29,"type":"insertion","typeLabel":"문장 삽입","statement":"\"I'll repay you with a priceless gift,\" said the queen. → Luigi watched the queen whisper in a servant's ear.","anchorSentence":"\"I'll repay you with a priceless gift,\" said the queen.","targetSentence":"Luigi watched the queen whisper in a servant's ear.","claimedPosition":"after","answer":"O","passageId":3,"passageTitle":"Luigi's Greed","sourceSentence":null},{"questionNumber":30,"type":"order","typeLabel":"문장 순서","statement":"Luigi told a lie to the islanders to meet the queen. → Luigi presented all his gifts to the queen before sitting down at the table.","answer":"O","passageId":3,"passageTitle":"Luigi's Greed","sourceSentence":null},{"questionNumber":31,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"루이지는 상자를 열었을 때 안에 고양이 새끼가 들어 있는 것을 보고 말을 잃었다.","answer":"O","passageId":4,"passageTitle":"Luigi's Lesson","sourceSentence":null},{"questionNumber":32,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"여왕은 루이지에게 상자를 건네기 전에 하인이 아닌 여왕 본인이 직접 상자를 가져왔다.","answer":"X","passageId":4,"passageTitle":"Luigi's Lesson","sourceSentence":null},{"questionNumber":33,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"여왕은 안토니오가 가져온 값을 매길 수 없는 고양이들 덕분에 새끼 고양이들을 갖게 되었다고 말했다.","answer":"O","passageId":4,"passageTitle":"Luigi's Lesson","sourceSentence":null},{"questionNumber":34,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"여왕은 루이지에게 가장 귀하게 여기는 다 큰 고양이를 선물로 주었다.","answer":"X","passageId":4,"passageTitle":"Luigi's Lesson","sourceSentence":null,"explanation":"여왕이 루이지에게 준 선물은 '다 큰 고양이(cat)'가 아니라 '새끼 고양이(kitten)'였습니다. 지문에서 상자 안에 kitten이 있었다고 명시되어 있으므로, '다 큰 고양이'라는 표현은 지문 내용과 일치하지 않습니다."},{"questionNumber":35,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"루이지는 선물에 기뻐하는 척했으며, 그것이 어쩔 수 없는 선택이라 생각했다.","answer":"X","passageId":4,"passageTitle":"Luigi's Lesson","sourceSentence":null,"explanation":"지문에서 루이지는 선물에 기뻐하는 척했다('He tried to look pleased with the gift')는 점은 일치한다. 그러나 그 이유에 대해 지문은 '그것이 올바른 행동이라 알았기 때문(He knew that was the right thing to do)'이라고 서술하고 있다. 즉, '어쩔 수 없는 선택'이 아니라 '옳은 일이라서 한 행동'으로 묘사되어 있으므로 statement의 표현은 지문과 일치하지 않는다."},{"questionNumber":36,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"루이지는 처음부터 안토니오보다 더 적은 보석을 받을 것이라고 예상했다.","answer":"X","passageId":4,"passageTitle":"Luigi's Lesson","sourceSentence":null},{"questionNumber":37,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"Luigi returned home as a wealthier man after receiving the queen's gift.","answer":"X","passageId":4,"passageTitle":"Luigi's Lesson","sourceSentence":null},{"questionNumber":38,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"The queen gave Luigi a kitten because she considered it the most precious thing she had.","answer":"O","passageId":4,"passageTitle":"Luigi's Lesson","sourceSentence":null},{"questionNumber":39,"type":"insertion","typeLabel":"문장 삽입 위치 판단","statement":"여왕이 루이지에게 상자를 건네주었다 → 루이지가 상자를 열었을 때 안에 고양이 새끼가 있었다","anchorSentence":"The queen presented the box to Luigi.","targetSentence":"There was a kitten inside the box.","claimedPosition":"after","answer":"O","passageId":4,"passageTitle":"Luigi's Lesson","sourceSentence":null},{"questionNumber":40,"type":"order","typeLabel":"두 문장 순서","statement":"루이지가 여왕의 마음속에서 새끼 고양이가 세상의 모든 보석보다 더 가치 있다는 것을 깨달았다 → 루이지가 더 현명한 사람이 되어 집으로 돌아갔다","answer":"O","passageId":4,"passageTitle":"Luigi's Lesson","sourceSentence":null}]};
+var QS=CONFIG.questions||[];
+var TOTAL=QS.length;
+var SET_SIZE=10;
+var SETS=(function(){var s=[];for(var i=0;i<TOTAL;i+=SET_SIZE)s.push(QS.slice(i,i+SET_SIZE));return s;})();
+var answers={};var currentSet=0;
+function esc(s){if(s==null)return"";var d=document.createElement("div");d.textContent=String(s);return d.innerHTML}
+function setH(t,sub){var h=document.getElementById("hTitle");var p=document.getElementById("hSub");if(h)h.textContent=t;if(p)p.textContent=sub}
+function gi(si,pi){return si*SET_SIZE+pi}
+function showIndex(){
+  setH(CONFIG.title,"OX 문제 테스트");
+  var chips=SETS.map(function(sq,si){
+    var base=si*SET_SIZE;var done=0,correct=0;
+    for(var i=0;i<sq.length;i++){var a=answers[base+i];if(a){done++;if(a.isCorrect)correct++;}}
+    var allDone=(done===sq.length);
+    var pct=done>0?Math.round(correct/sq.length*100):null;
+    var passed=pct!==null&&pct>=CONFIG.passThreshold;
+    var scoreHTML=pct===null
+      ?"<span style='font-size:.78rem;color:#9ca3af'>미응시</span>"
+      :(allDone?"<span style='font-weight:700;color:"+(passed?"#10b981":"#ef4444")+"'>"+(passed?"✅ ":"❌ ")+pct+"%</span>"
+             :"<span style='font-weight:700;color:#8b5cf6'>📝 "+done+"/"+sq.length+"</span>");
+    return "<div class='set-card"+(allDone?" done":"")+"' onclick='enterSet("+si+")'>"
+           +"<div><div style='font-weight:700'>세트 "+(si+1)+" <span style='font-size:.8rem;color:#6b7280;font-weight:400'>("+sq.length+"문제)</span></div></div>"
+           +"<div>"+scoreHTML+"</div></div>";
+  }).join("");
+  var app=document.getElementById("app");if(!app)return;
+  app.innerHTML="<div class='fade' style='text-align:center;padding:16px 0'>"
+    +"<div style='font-size:2.5rem;margin-bottom:8px'>📱</div>"
+    +"<h2 style='font-size:1.2rem;font-weight:700;color:#1f2937;margin-bottom:4px'>OX 문제 테스트</h2>"
+    +"<p style='color:#6b7280;font-size:.85rem;margin-bottom:16px'>전체 "+TOTAL+"문제 · "+CONFIG.passThreshold+"% 이상 통과 · 몰라요는 오답 처리</p>"
+    +"</div><div class='set-list'>"+chips+"</div>";
+}
+function enterSet(si){currentSet=si;showQ(0)}
+function showQ(pos){
+  try{window.scrollTo(0,0)}catch(e){}
+  var si=currentSet;var qs=SETS[si];
+  if(!qs||pos<0||pos>=qs.length){showIndex();return;}
+  var gidx=gi(si,pos);var q=qs[pos];var answered=answers[gidx];
+  setH("세트 "+(si+1),"문제 "+(pos+1)+"/"+qs.length);
+  var pct=Math.round((pos+1)/qs.length*100);
+  function btnClass(which){
+    if(!answered)return "ox-btn "+which;
+    if(answered.picked===which){
+      if(which==="dunno")return "ox-btn dunno sel dunno wrong";
+      return "ox-btn "+which+" "+(answered.isCorrect?"correct":"wrong");
+    }
+    return "ox-btn "+which;
+  }
+  var sourceHTML="";
+  // 학생용 HTML — 원본 지문 미표시
+  var fbHTML="";
+  if(answered){
+    var cls=answered.picked==="dunno"?"dunno":(answered.isCorrect?"ok":"ng");
+    var msg=answered.picked==="dunno"?"🤔 몰라요 — 해설을 학습하세요":(answered.isCorrect?"✅ 정답!":"❌ 오답");
+    fbHTML="<div class='fb "+cls+"'>"+msg+"</div>"
+      +"<div class='explain-box'><div class='ex-title'>📖 정답 & 해설</div>"
+      +"<div class='ex-body'><span class='ex-answer "+q.answer+"'>"+q.answer+"</span>"+esc(q.explanation)+"</div></div>";
+  }
+  var app=document.getElementById("app");if(!app)return;
+  app.innerHTML="<div class='fade'>"
+    +"<div class='q-counter'>"+(pos+1)+" / "+qs.length+"</div>"
+    +"<div class='prog-bar'><div class='prog-fill' style='width:"+pct+"%'></div></div>"
+    +"<div class='title-box'><div class='ptitle'>"+esc(q.passageTitle)+"</div>"
+    +"<span class='tlabel'>"+esc(q.typeLabel||"")+"</span></div>"
+    +"<div class='statement'>"+esc(q.statement)+"</div>"
+    +sourceHTML
+    +"<div class='ox-grid'>"
+    +"<button class='"+btnClass("o")+"' onclick='pick("+pos+",&quot;o&quot;)' "+(answered?"disabled":"")+"><span class='ox-icon'>⭕</span>O (맞음)</button>"
+    +"<button class='"+btnClass("x")+"' onclick='pick("+pos+",&quot;x&quot;)' "+(answered?"disabled":"")+"><span class='ox-icon'>❌</span>X (틀림)</button>"
+    +"<button class='"+btnClass("dunno")+"' onclick='pick("+pos+",&quot;dunno&quot;)' "+(answered?"disabled":"")+">🤔 몰라요 (정답·해설 보기)</button>"
+    +"</div>"
+    +fbHTML
+    +"<div class='nav-bar'>"
+    +"<button class='nav-btn prev' onclick='showQ("+(pos-1)+")' "+(pos<=0?"disabled":"")+">← 이전</button>"
+    +"<button class='nav-btn home' onclick='showIndex()'>목록</button>"
+    +"<button class='nav-btn next' onclick='"+(pos<qs.length-1?"showQ("+(pos+1)+")":"showSetResult()")+"'>"+(pos<qs.length-1?"다음 →":"결과")+"</button>"
+    +"</div></div>";
+}
+function pick(pos,which){
+  var gidx=gi(currentSet,pos);
+  if(answers[gidx])return;
+  var q=SETS[currentSet][pos];
+  var isCorrect=false;
+  if(which==="dunno"){isCorrect=false;}
+  else{isCorrect=(which==="o"&&q.answer==="O")||(which==="x"&&q.answer==="X");}
+  answers[gidx]={picked:which,isCorrect:isCorrect};
+  showQ(pos);
+}
+function showSetResult(){
+  var si=currentSet;var qs=SETS[si];var base=si*SET_SIZE;
+  var total=qs.length;var correct=0,dunno=0;
+  for(var i=0;i<total;i++){var a=answers[base+i];if(a&&a.isCorrect)correct++;if(a&&a.picked==="dunno")dunno++;}
+  var pct=Math.round(correct/total*100);var passed=pct>=CONFIG.passThreshold;
+  setH("세트 "+(si+1)+" 결과",passed?"통과":"미달");
+  var app=document.getElementById("app");if(!app)return;
+  app.innerHTML="<div class='fade' style='text-align:center;padding:16px 0'>"
+    +"<div class='score-circle "+(passed?"pass":"fail")+"'>"+pct+"%</div>"
+    +"<p style='font-size:1.1rem;font-weight:700;color:"+(passed?"#10b981":"#ef4444")+"'>"+(passed?"통과!":"미달")+"</p>"
+    +"<p style='color:#6b7280;font-size:.88rem;margin-top:8px'>"+correct+"/"+total+"문제 정답 · 몰라요 "+dunno+"개 · 기준 "+CONFIG.passThreshold+"%</p>"
+    +"</div>"
+    +"<div style='margin-top:16px'><button class='nav-btn next' style='width:100%;padding:14px' onclick='showIndex()'>목록으로</button></div>";
+}
+try{history.pushState(null,"",location.href);
+window.addEventListener("popstate",function(){history.pushState(null,"",location.href);showIndex();});}catch(e){}
+showIndex();
+</script>
+</body>
+</html>

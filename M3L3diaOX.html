@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
+<title>M3L3diaOX</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Noto Sans KR',sans-serif;background:linear-gradient(135deg,#2e1065 0%,#4c1d95 60%,#1e1b4b 100%);min-height:100vh;min-height:-webkit-fill-available;padding:16px;padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(80px,env(safe-area-inset-bottom));display:flex;align-items:flex-start;justify-content:center;-webkit-font-smoothing:antialiased;overscroll-behavior-y:contain;touch-action:pan-y}
+.wrap{max-width:520px;width:100%;background:#f8fafc;border-radius:28px;box-shadow:0 24px 64px rgba(0,0,0,.35);overflow:hidden}
+.header{background:linear-gradient(150deg,#2e1065 0%,#4c1d95 60%,#1e1b4b 100%);padding:24px 20px 18px;color:#fff;text-align:center;position:-webkit-sticky;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(0,0,0,.35)}
+.header h1{font-size:1.15rem;font-weight:700;margin-bottom:3px;letter-spacing:-.02em}
+.header p{opacity:.7;font-size:.8rem}
+.content{padding:20px 18px 40px}
+.prog-bar{height:8px;background:#e2e8f0;border-radius:4px;margin-bottom:14px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#8b5cf6,#a78bfa);border-radius:4px;transition:width .4s}
+.q-counter{text-align:center;font-size:.82rem;color:#64748b;margin-bottom:6px;font-weight:500}
+.title-box{text-align:center;margin:10px 0 14px;padding:18px 16px;background:linear-gradient(135deg,#faf5ff,#f3e8ff);border-radius:18px;border:2px solid #c4b5fd}
+.title-box .ptitle{font-size:1.55rem;font-weight:800;color:#5b21b6;letter-spacing:-.02em;line-height:1.2}
+.title-box .tlabel{display:inline-block;margin-top:6px;font-size:.72rem;background:#ede9fe;color:#6d28d9;padding:3px 10px;border-radius:20px;font-weight:700}
+.statement{margin:14px 0;padding:16px 18px;background:#fff;border:1.5px solid #e8ecf1;border-radius:14px;font-size:1rem;color:#1e293b;line-height:1.65;font-weight:500;box-shadow:0 1px 4px rgba(15,23,42,.06)}
+.source-box{margin:10px 0 4px;padding:12px 14px;background:#f9fafb;border-left:3px solid #a78bfa;border-radius:0 10px 10px 0;font-size:.82rem;color:#4b5563;line-height:1.65;font-style:italic}
+.source-label{display:block;font-size:.68rem;color:#7c3aed;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-style:normal}
+.ox-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.ox-btn{padding:18px 10px;border:2px solid #e5e7eb;background:#fff;border-radius:16px;font-size:1rem;font-weight:800;color:#1e293b;cursor:pointer;font-family:inherit;transition:all .18s;touch-action:manipulation;-webkit-user-select:none;user-select:none;min-height:84px}
+.ox-btn:active{transform:scale(.96)}
+.ox-btn.o{color:#059669}
+.ox-btn.x{color:#dc2626}
+.ox-btn.dunno{grid-column:1 / span 2;padding:14px;font-size:.92rem;color:#64748b;font-weight:700;min-height:0}
+.ox-btn.sel.o{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#10b981}
+.ox-btn.sel.x{background:linear-gradient(135deg,#fff1f2,#fecdd3);border-color:#ef4444}
+.ox-btn.sel.dunno{background:#f1f5f9;border-color:#94a3b8}
+.ox-btn.correct{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#10b981;color:#065f46}
+.ox-btn.wrong{background:linear-gradient(135deg,#fff1f2,#fecdd3);border-color:#ef4444;color:#7f1d1d}
+.ox-btn[disabled]{cursor:default;opacity:.85}
+.ox-icon{display:block;font-size:1.6rem;margin-bottom:4px}
+.fb{text-align:center;padding:14px 16px;border-radius:14px;margin-top:14px;font-weight:700;font-size:.92rem;line-height:1.5}
+.fb.ok{background:linear-gradient(135deg,#ecfdf5,#d1fae5);color:#065f46;border:1.5px solid #6ee7b7}
+.fb.ng{background:linear-gradient(135deg,#fff1f2,#fecdd3);color:#881337;border:1.5px solid #fda4af}
+.fb.dunno{background:#f1f5f9;color:#475569;border:1.5px solid #cbd5e1}
+.explain-box{margin-top:10px;padding:14px;background:#fff;border-radius:12px;border:1.5px solid #e8ecf1}
+.ex-title{font-size:.82rem;font-weight:800;color:#6d28d9;margin-bottom:8px;padding-bottom:6px;border-bottom:1.5px solid #f1f5f9}
+.ex-body{font-size:.88rem;color:#374151;line-height:1.75}
+.ex-answer{display:inline-block;font-size:.95rem;font-weight:900;padding:2px 14px;border-radius:20px;margin-right:8px;vertical-align:middle}
+.ex-answer.O{background:#dcfce7;color:#166534}
+.ex-answer.X{background:#fee2e2;color:#991b1b}
+.nav-bar{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1.5px solid #e8ecf1;gap:8px}
+.nav-btn{padding:10px 16px;border:none;border-radius:12px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;touch-action:manipulation}
+.nav-btn.prev,.nav-btn.home{background:#f1f5f9;color:#374151;border:1.5px solid #e2e8f0}
+.nav-btn.next{background:linear-gradient(135deg,#8b5cf6,#a78bfa);color:#fff}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.set-list{display:grid;gap:10px;margin-top:8px}
+.set-card{background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s}
+.set-card:hover{border-color:#8b5cf6;background:#faf5ff;transform:translateY(-2px)}
+.set-card.done{border-color:#8b5cf6;background:linear-gradient(135deg,#faf5ff,#f3e8ff)}
+.score-circle{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:16px auto;font-size:1.8rem;font-weight:800;border:6px solid}
+.score-circle.pass{border-color:#10b981;color:#059669;background:linear-gradient(135deg,#ecfdf5,#d1fae5)}
+.score-circle.fail{border-color:#f43f5e;color:#e11d48;background:linear-gradient(135deg,#fff1f2,#fecdd3)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeIn .15s ease-out}
+@media(prefers-reduced-motion:reduce){.fade{animation:none}}</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header"><h1 id="hTitle"></h1><p id="hSub"></p></div>
+  <div class="content" id="app"></div>
+</div>
+<script>
+var CONFIG={"title":"M3L3diaOX","passThreshold":100,"level":"medium","levelLabel":"중3 수준 · CEFR A2","passages":[{"id":1,"title":"Class T-shirt Design","body":"B1: Today, let's talk about the class T-shirt. We have to decide on the design.\nG: Let me show you some designs on the screen.\nB2: We have to choose a T-shirt with short sleeves.\nB1: What makes you say that?\nB2: Because we'll wear the T-shirt on Sports Day. It's in June.\nG: That makes sense. What about this green one?\nB2: I like it. The bee on the T-shirt is so cute.\nG: And it's not expensive.\nB1: Yes. I think it's the best one.\n"},{"id":2,"title":"Teen Stress Causes","body":"W: Today, I'd like to talk to you about teen stress. What makes you feel the most stressed? About 9,000 teens answered this question. As you can see, schoolwork was the most common cause of stress. Over half of the students said schoolwork stresses them the most. Problems with friends took second place with 15.3%. Next came family and worries about the future. 8.2% of the students said they get stressed because of their appearance."},{"id":3,"title":"Stress and Study","body":"W: What are you doing, Oliver?\nB: I'm studying for the math test, Mom. Grades stress me out.\nW: I understand. I used to feel that way, too.\nB: Really? I didn't know that.\nW: Yeah, but a little stress was helpful for me.\nB: What makes you say that?\nW: I got stressed when I had an exam, but at the same time it made me focus and try harder.\nB: I see. Did stress help you in other ways?\nW: Yes, it helped improve my memory.\n"}],"questions":[{"questionNumber":1,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"학생들은 체육대회에서 입을 티셔츠 디자인을 결정해야 한다.","answer":"O","passageId":1,"passageTitle":"Class T-shirt Design","sourceSentence":null},{"questionNumber":2,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"B2는 긴 소매 티셔츠를 선택해야 한다고 주장했다.","answer":"X","passageId":1,"passageTitle":"Class T-shirt Design","sourceSentence":null},{"questionNumber":3,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"체육대회는 6월 말에 열릴 예정이다.","answer":"X","passageId":1,"passageTitle":"Class T-shirt Design","sourceSentence":null,"explanation":"지문에서 B2는 체육대회(Sports Day)가 6월에 열린다고 말하지만, '6월 말'이라는 구체적인 시점은 언급되지 않는다. statement는 '6월 말'이라고 명시하고 있어 지문에 없는 정보를 추가한 것이므로 X로 판정한다."},{"questionNumber":4,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"G가 화면으로 보여준 초록색 티셔츠에는 벌 그림이 있다.","answer":"O","passageId":1,"passageTitle":"Class T-shirt Design","sourceSentence":null},{"questionNumber":5,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"B1은 초록색 티셔츠가 가장 좋은 선택이라고 생각했다.","answer":"O","passageId":1,"passageTitle":"Class T-shirt Design","sourceSentence":null},{"questionNumber":6,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"B2 suggested choosing a T-shirt with short sleeves because Sports Day falls in summer.","answer":"X","passageId":1,"passageTitle":"Class T-shirt Design","sourceSentence":null},{"questionNumber":7,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"The group agreed that the green T-shirt was a good choice partly because it was affordable.","answer":"O","passageId":1,"passageTitle":"Class T-shirt Design","sourceSentence":null},{"questionNumber":8,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"G introduced the T-shirt designs by handing out printed materials to the others.","answer":"X","passageId":1,"passageTitle":"Class T-shirt Design","sourceSentence":null},{"questionNumber":9,"type":"insertion","typeLabel":"문장 삽입","statement":"\"Because we'll wear the T-shirt on Sports Day. It's in June.\" → \"That makes sense.\"","anchorSentence":"Because we'll wear the T-shirt on Sports Day. It's in June.","targetSentence":"That makes sense.","claimedPosition":"after","answer":"O","passageId":1,"passageTitle":"Class T-shirt Design","sourceSentence":null},{"questionNumber":10,"type":"order","typeLabel":"문장 순서","statement":"\"I like it. The bee on the T-shirt is so cute.\" → \"Yes. I think it's the best one.\"","answer":"O","passageId":1,"passageTitle":"Class T-shirt Design","sourceSentence":null},{"questionNumber":11,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"설문에 응답한 십 대는 약 9,000명이었다.","answer":"O","passageId":2,"passageTitle":"Teen Stress Causes","sourceSentence":null},{"questionNumber":12,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"학교에서의 인간관계는 스트레스 원인 중 1위를 차지했다.","answer":"X","passageId":2,"passageTitle":"Teen Stress Causes","sourceSentence":null,"explanation":"지문에 따르면 스트레스 원인 1위는 'schoolwork(학교 공부)'이며, 절반 이상의 학생들이 이를 꼽았다. '친구들과의 문제(Problems with friends)'는 15.3%로 2위를 차지했다. 따라서 '학교에서의 인간관계'가 1위라는 statement는 지문 내용과 일치하지 않는다."},{"questionNumber":13,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"학업 스트레스를 받는다고 답한 학생이 전체의 절반이었다.","answer":"X","passageId":2,"passageTitle":"Teen Stress Causes","sourceSentence":null,"explanation":"지문에서는 학업 스트레스를 받는다고 답한 학생이 '절반 이상(Over half)'이라고 명시되어 있다. statement는 '절반(half)'이라고 했으나, 실제로는 절반을 초과하는 수치이므로 내용이 정확히 일치하지 않는다."},{"questionNumber":14,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"외모로 인해 스트레스를 받는다고 응답한 학생은 8.2%였다.","answer":"O","passageId":2,"passageTitle":"Teen Stress Causes","sourceSentence":null},{"questionNumber":15,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"친구 관계 문제로 스트레스를 받는다고 답한 학생은 13.5%였다.","answer":"X","passageId":2,"passageTitle":"Teen Stress Causes","sourceSentence":null},{"questionNumber":16,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"The speaker is presenting data about what causes teenagers to feel stressed.","answer":"O","passageId":2,"passageTitle":"Teen Stress Causes","sourceSentence":null},{"questionNumber":17,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"Worries about the future was ranked second among the causes of teen stress.","answer":"X","passageId":2,"passageTitle":"Teen Stress Causes","sourceSentence":null},{"questionNumber":18,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"Family problems were mentioned as a cause of stress, coming after problems with friends.","answer":"O","passageId":2,"passageTitle":"Teen Stress Causes","sourceSentence":null},{"questionNumber":19,"type":"insertion","typeLabel":"문장 삽입","statement":"\"Problems with friends took second place with 15.3%.\" → \"Next came family and worries about the future.\"","anchorSentence":"Problems with friends took second place with 15.3%.","targetSentence":"Next came family and worries about the future.","claimedPosition":"after","answer":"O","passageId":2,"passageTitle":"Teen Stress Causes","sourceSentence":null},{"questionNumber":20,"type":"order","typeLabel":"문장 순서","statement":"\"Over half of the students said schoolwork stresses them the most.\" → \"Problems with friends took second place.\"","answer":"O","passageId":2,"passageTitle":"Teen Stress Causes","sourceSentence":null},{"questionNumber":21,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"Oliver는 수학 시험 공부를 하다가 성적 때문에 스트레스를 받는다고 말했다.","answer":"O","passageId":3,"passageTitle":"Stress and Study","sourceSentence":null},{"questionNumber":22,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"엄마는 Oliver에게 자신은 학창 시절에 스트레스를 전혀 느끼지 않았다고 말했다.","answer":"X","passageId":3,"passageTitle":"Stress and Study","sourceSentence":null},{"questionNumber":23,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"엄마는 시험 때 받은 스트레스가 자신을 더 집중하게 만들었다고 말했다.","answer":"O","passageId":3,"passageTitle":"Stress and Study","sourceSentence":null},{"questionNumber":24,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"엄마는 스트레스가 자신의 집중력뿐만 아니라 기억력도 향상시켜 주었다고 했다.","answer":"O","passageId":3,"passageTitle":"Stress and Study","sourceSentence":null},{"questionNumber":25,"type":"ko_detail","typeLabel":"부분 내용 (한글)","statement":"엄마는 시험 스트레스가 더 열심히 노력하게 하는 데는 도움이 되지 않았다고 말했다.","answer":"X","passageId":3,"passageTitle":"Stress and Study","sourceSentence":null},{"questionNumber":26,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"The boy was worried about his science test when his mother started the conversation.","answer":"X","passageId":3,"passageTitle":"Stress and Study","sourceSentence":null},{"questionNumber":27,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"The mother admitted that she used to experience stress when she was younger.","answer":"O","passageId":3,"passageTitle":"Stress and Study","sourceSentence":null},{"questionNumber":28,"type":"en_main","typeLabel":"전반 내용 (영어)","statement":"According to the mother, stress had both negative and positive effects on her during exams.","answer":"O","passageId":3,"passageTitle":"Stress and Study","sourceSentence":null,"explanation":"어머니는 시험을 볼 때 스트레스를 받았다고 말하면서도(부정적 측면), 동시에 그 스트레스가 집중력을 높이고 더 열심히 하게 만들었으며 기억력 향상에도 도움이 되었다고 언급했습니다(긍정적 측면). 따라서 스트레스가 부정적·긍정적 영향을 모두 미쳤다는 statement의 내용은 지문과 일치합니다."},{"questionNumber":29,"type":"insertion","typeLabel":"문장 삽입 위치","statement":"\"I got stressed when I had an exam, but at the same time it made me focus and try harder.\" → \"Did stress help you in other ways?\"","anchorSentence":"I got stressed when I had an exam, but at the same time it made me focus and try harder.","targetSentence":"Did stress help you in other ways?","claimedPosition":"after","answer":"O","passageId":3,"passageTitle":"Stress and Study","sourceSentence":null},{"questionNumber":30,"type":"order","typeLabel":"문장 순서","statement":"\"Really? I didn't know that.\" → \"Yeah, but a little stress was helpful for me.\"","answer":"O","passageId":3,"passageTitle":"Stress and Study","sourceSentence":null}]};
+var QS=CONFIG.questions||[];
+var TOTAL=QS.length;
+var SET_SIZE=10;
+var SETS=(function(){var s=[];for(var i=0;i<TOTAL;i+=SET_SIZE)s.push(QS.slice(i,i+SET_SIZE));return s;})();
+var answers={};var currentSet=0;
+function esc(s){if(s==null)return"";var d=document.createElement("div");d.textContent=String(s);return d.innerHTML}
+function setH(t,sub){var h=document.getElementById("hTitle");var p=document.getElementById("hSub");if(h)h.textContent=t;if(p)p.textContent=sub}
+function gi(si,pi){return si*SET_SIZE+pi}
+function showIndex(){
+  setH(CONFIG.title,"OX 문제 테스트");
+  var chips=SETS.map(function(sq,si){
+    var base=si*SET_SIZE;var done=0,correct=0;
+    for(var i=0;i<sq.length;i++){var a=answers[base+i];if(a){done++;if(a.isCorrect)correct++;}}
+    var allDone=(done===sq.length);
+    var pct=done>0?Math.round(correct/sq.length*100):null;
+    var passed=pct!==null&&pct>=CONFIG.passThreshold;
+    var scoreHTML=pct===null
+      ?"<span style='font-size:.78rem;color:#9ca3af'>미응시</span>"
+      :(allDone?"<span style='font-weight:700;color:"+(passed?"#10b981":"#ef4444")+"'>"+(passed?"✅ ":"❌ ")+pct+"%</span>"
+             :"<span style='font-weight:700;color:#8b5cf6'>📝 "+done+"/"+sq.length+"</span>");
+    return "<div class='set-card"+(allDone?" done":"")+"' onclick='enterSet("+si+")'>"
+           +"<div><div style='font-weight:700'>세트 "+(si+1)+" <span style='font-size:.8rem;color:#6b7280;font-weight:400'>("+sq.length+"문제)</span></div></div>"
+           +"<div>"+scoreHTML+"</div></div>";
+  }).join("");
+  var app=document.getElementById("app");if(!app)return;
+  app.innerHTML="<div class='fade' style='text-align:center;padding:16px 0'>"
+    +"<div style='font-size:2.5rem;margin-bottom:8px'>📱</div>"
+    +"<h2 style='font-size:1.2rem;font-weight:700;color:#1f2937;margin-bottom:4px'>OX 문제 테스트</h2>"
+    +"<p style='color:#6b7280;font-size:.85rem;margin-bottom:16px'>전체 "+TOTAL+"문제 · "+CONFIG.passThreshold+"% 이상 통과 · 몰라요는 오답 처리</p>"
+    +"</div><div class='set-list'>"+chips+"</div>";
+}
+function enterSet(si){currentSet=si;showQ(0)}
+function showQ(pos){
+  try{window.scrollTo(0,0)}catch(e){}
+  var si=currentSet;var qs=SETS[si];
+  if(!qs||pos<0||pos>=qs.length){showIndex();return;}
+  var gidx=gi(si,pos);var q=qs[pos];var answered=answers[gidx];
+  setH("세트 "+(si+1),"문제 "+(pos+1)+"/"+qs.length);
+  var pct=Math.round((pos+1)/qs.length*100);
+  function btnClass(which){
+    if(!answered)return "ox-btn "+which;
+    if(answered.picked===which){
+      if(which==="dunno")return "ox-btn dunno sel dunno wrong";
+      return "ox-btn "+which+" "+(answered.isCorrect?"correct":"wrong");
+    }
+    return "ox-btn "+which;
+  }
+  var sourceHTML="";
+  // 학생용 HTML — 원본 지문 미표시
+  var fbHTML="";
+  if(answered){
+    var cls=answered.picked==="dunno"?"dunno":(answered.isCorrect?"ok":"ng");
+    var msg=answered.picked==="dunno"?"🤔 몰라요 — 해설을 학습하세요":(answered.isCorrect?"✅ 정답!":"❌ 오답");
+    fbHTML="<div class='fb "+cls+"'>"+msg+"</div>"
+      +"<div class='explain-box'><div class='ex-title'>📖 정답 & 해설</div>"
+      +"<div class='ex-body'><span class='ex-answer "+q.answer+"'>"+q.answer+"</span>"+esc(q.explanation)+"</div></div>";
+  }
+  var app=document.getElementById("app");if(!app)return;
+  app.innerHTML="<div class='fade'>"
+    +"<div class='q-counter'>"+(pos+1)+" / "+qs.length+"</div>"
+    +"<div class='prog-bar'><div class='prog-fill' style='width:"+pct+"%'></div></div>"
+    +"<div class='title-box'><div class='ptitle'>"+esc(q.passageTitle)+"</div>"
+    +"<span class='tlabel'>"+esc(q.typeLabel||"")+"</span></div>"
+    +"<div class='statement'>"+esc(q.statement)+"</div>"
+    +sourceHTML
+    +"<div class='ox-grid'>"
+    +"<button class='"+btnClass("o")+"' onclick='pick("+pos+",&quot;o&quot;)' "+(answered?"disabled":"")+"><span class='ox-icon'>⭕</span>O (맞음)</button>"
+    +"<button class='"+btnClass("x")+"' onclick='pick("+pos+",&quot;x&quot;)' "+(answered?"disabled":"")+"><span class='ox-icon'>❌</span>X (틀림)</button>"
+    +"<button class='"+btnClass("dunno")+"' onclick='pick("+pos+",&quot;dunno&quot;)' "+(answered?"disabled":"")+">🤔 몰라요 (정답·해설 보기)</button>"
+    +"</div>"
+    +fbHTML
+    +"<div class='nav-bar'>"
+    +"<button class='nav-btn prev' onclick='showQ("+(pos-1)+")' "+(pos<=0?"disabled":"")+">← 이전</button>"
+    +"<button class='nav-btn home' onclick='showIndex()'>목록</button>"
+    +"<button class='nav-btn next' onclick='"+(pos<qs.length-1?"showQ("+(pos+1)+")":"showSetResult()")+"'>"+(pos<qs.length-1?"다음 →":"결과")+"</button>"
+    +"</div></div>";
+}
+function pick(pos,which){
+  var gidx=gi(currentSet,pos);
+  if(answers[gidx])return;
+  var q=SETS[currentSet][pos];
+  var isCorrect=false;
+  if(which==="dunno"){isCorrect=false;}
+  else{isCorrect=(which==="o"&&q.answer==="O")||(which==="x"&&q.answer==="X");}
+  answers[gidx]={picked:which,isCorrect:isCorrect};
+  showQ(pos);
+}
+function showSetResult(){
+  var si=currentSet;var qs=SETS[si];var base=si*SET_SIZE;
+  var total=qs.length;var correct=0,dunno=0;
+  for(var i=0;i<total;i++){var a=answers[base+i];if(a&&a.isCorrect)correct++;if(a&&a.picked==="dunno")dunno++;}
+  var pct=Math.round(correct/total*100);var passed=pct>=CONFIG.passThreshold;
+  setH("세트 "+(si+1)+" 결과",passed?"통과":"미달");
+  var app=document.getElementById("app");if(!app)return;
+  app.innerHTML="<div class='fade' style='text-align:center;padding:16px 0'>"
+    +"<div class='score-circle "+(passed?"pass":"fail")+"'>"+pct+"%</div>"
+    +"<p style='font-size:1.1rem;font-weight:700;color:"+(passed?"#10b981":"#ef4444")+"'>"+(passed?"통과!":"미달")+"</p>"
+    +"<p style='color:#6b7280;font-size:.88rem;margin-top:8px'>"+correct+"/"+total+"문제 정답 · 몰라요 "+dunno+"개 · 기준 "+CONFIG.passThreshold+"%</p>"
+    +"</div>"
+    +"<div style='margin-top:16px'><button class='nav-btn next' style='width:100%;padding:14px' onclick='showIndex()'>목록으로</button></div>";
+}
+try{history.pushState(null,"",location.href);
+window.addEventListener("popstate",function(){history.pushState(null,"",location.href);showIndex();});}catch(e){}
+showIndex();
+</script>
+</body>
+</html>
