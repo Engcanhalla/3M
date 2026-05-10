@@ -1,0 +1,221 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>M3L3dia_stu</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:"Segoe UI","Malgun Gothic",sans-serif;background:#f5f6fa;color:#222;font-size:16px;line-height:1.8;}
+.header{background:linear-gradient(135deg,#1a237e,#3949ab);color:#fff;padding:14px 18px;text-align:center;position:sticky;top:0;z-index:100;}.header h1{font-size:17px;font-weight:700;}.header .level-info{font-size:13px;opacity:.85;margin-top:3px;}
+.progress-bar{height:5px;background:rgba(255,255,255,.2);border-radius:3px;margin-top:7px;overflow:hidden;}.progress-fill{height:100%;background:#81c784;border-radius:3px;transition:width .3s;}
+.content{max-width:680px;margin:0 auto;padding:18px 14px;}.passage{background:#fff;border-radius:10px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.06);line-height:2.4;font-size:15px;margin-bottom:14px;}
+.blank-select{display:inline-block;}.blank-select select{background:#e3f2fd;border:2px solid #90caf9;border-radius:5px;padding:3px 8px;font-size:14px;font-weight:600;color:#1565c0;cursor:pointer;min-width:90px;font-family:inherit;}
+.blank-select.correct select{background:#c8e6c9;border-color:#66bb6a;color:#2e7d32;}.blank-select.wrong select{background:#ffcdd2;border-color:#ef5350;color:#c62828;}
+.blank-input{display:inline-block;}.blank-input input{background:#e3f2fd;border:2px solid #90caf9;border-radius:5px;padding:3px 8px;font-size:14px;font-weight:600;color:#1565c0;font-family:inherit;min-width:70px;}
+.blank-input.correct input{background:#c8e6c9;border-color:#66bb6a;color:#2e7d32;}.blank-input.wrong input{background:#ffcdd2;border-color:#ef5350;color:#c62828;}
+.action-bar{text-align:center;padding:14px;position:sticky;bottom:0;background:#f5f6fa;}
+.btn{padding:11px 24px;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;}.btn-retry{background:#f57c00;color:#fff;}.btn-next{background:#2e7d32;color:#fff;}
+.result-card{background:#fff;border-radius:10px;padding:22px;text-align:center;box-shadow:0 4px 18px rgba(0,0,0,.1);margin:18px 0;}.result-card h2{font-size:20px;margin-bottom:7px;}.score{font-size:46px;font-weight:800;margin:10px 0;}.pass{color:#2e7d32;}.fail{color:#c62828;}
+.congrats{background:linear-gradient(135deg,#1a237e,#3949ab);color:#fff;border-radius:10px;padding:28px;text-align:center;margin:18px 0;}
+.level-selector{text-align:center;margin:18px 0;}.level-btn{padding:12px 22px;margin:5px;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;min-width:110px;}
+.easy-btn{background:#e8f5e9;color:#2e7d32;border:2px solid #a5d6a7;}.med-btn{background:#fff3e0;color:#e65100;border:2px solid #ffcc80;}.hard-btn{background:#fce4ec;color:#c62828;border:2px solid #ef9a9a;}
+.locked{opacity:.4;cursor:not-allowed;}.done::after{content:"✓";margin-left:5px;}.retry-badge{display:inline-block;background:#fff3e0;color:#e65100;font-size:11px;padding:2px 7px;border-radius:9px;margin-left:5px;}
+.hint-prefix{font-weight:700;color:#1565c0;font-size:15px;font-family:Georgia,serif;margin-right:1px;display:inline;}
+.input-wrap{display:inline-flex;align-items:center;gap:2px;flex-wrap:nowrap;}
+.blank-input input{max-width:calc(100vw - 140px);}
+@media(max-width:480px){.passage{font-size:15px;padding:14px 12px;line-height:2.2;}.blank-select select{font-size:13px;min-width:80px;padding:4px 6px;}.blank-input input{font-size:13px;padding:4px 6px;}.btn{padding:13px 22px;font-size:15px;min-height:48px;touch-action:manipulation;}}
+</style></head><body>
+<div class="header"><h1 id="headerTitle">M3L3dia_stu</h1><div class="level-info" id="levelInfo"></div><div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div></div>
+<div class="content" id="content"></div><div class="action-bar" id="actionBar"></div>
+<script>
+var DATA={"words":[{"i":0,"t":"B1:","c":"B1","ld":"","tr":":"},{"i":1,"t":"Today,","c":"Today","ld":"","tr":","},{"i":2,"t":"let's","c":"let's","ld":"","tr":""},{"i":3,"t":"talk","c":"talk","ld":"","tr":""},{"i":4,"t":"about","c":"about","ld":"","tr":""},{"i":5,"t":"the","c":"the","ld":"","tr":""},{"i":6,"t":"class","c":"class","ld":"","tr":""},{"i":7,"t":"T-shirt.","c":"T-shirt","ld":"","tr":"."},{"i":8,"t":"We","c":"We","ld":"","tr":""},{"i":9,"t":"have","c":"have","ld":"","tr":"","b":{"medium":{"choices":["had","have","having","has"],"correct":1,"answer":"have"},"hard":{"answer":"have"}}},{"i":10,"t":"to","c":"to","ld":"","tr":"","b":{"easy":{"choices":["to","from","do"],"correct":0},"medium":{"choices":["having","decided","deciding","to"],"correct":3,"answer":"to"},"hard":{"answer":"to"}}},{"i":11,"t":"decide","c":"decide","ld":"","tr":""},{"i":12,"t":"on","c":"on","ld":"","tr":"","b":{"easy":{"choices":["off","in","on"],"correct":2},"medium":{"choices":["in","on","at","for"],"correct":1,"answer":"on"},"hard":{"answer":"on"}}},{"i":13,"t":"the","c":"the","ld":"","tr":""},{"i":14,"t":"design.","c":"design","ld":"","tr":"."},{"i":15,"t":"G:","c":"G","ld":"","tr":":"},{"i":16,"t":"Let","c":"Let","ld":"","tr":"","b":{"easy":{"choices":["Let","Prevent","Lot"],"correct":0},"medium":{"choices":["Lets","Letting","Let","Letted"],"correct":2,"answer":"Let"},"hard":{"answer":"Let"}}},{"i":17,"t":"me","c":"me","ld":"","tr":""},{"i":18,"t":"show","c":"show","ld":"","tr":""},{"i":19,"t":"you","c":"you","ld":"","tr":""},{"i":20,"t":"some","c":"some","ld":"","tr":""},{"i":21,"t":"designs","c":"designs","ld":"","tr":""},{"i":22,"t":"on","c":"on","ld":"","tr":""},{"i":23,"t":"the","c":"the","ld":"","tr":""},{"i":24,"t":"screen.","c":"screen","ld":"","tr":"."},{"i":25,"t":"B2:","c":"B2","ld":"","tr":":"},{"i":26,"t":"We","c":"We","ld":"","tr":""},{"i":27,"t":"have","c":"have","ld":"","tr":"","b":{"medium":{"choices":["had","having","have","has"],"correct":2,"answer":"have"},"hard":{"answer":"have"}}},{"i":28,"t":"to","c":"to","ld":"","tr":"","b":{"medium":{"choices":["for","into","onto","to"],"correct":3,"answer":"to"},"hard":{"answer":"to"}}},{"i":29,"t":"choose","c":"choose","ld":"","tr":""},{"i":30,"t":"a","c":"a","ld":"","tr":""},{"i":31,"t":"T-shirt","c":"T-shirt","ld":"","tr":""},{"i":32,"t":"with","c":"with","ld":"","tr":""},{"i":33,"t":"short","c":"short","ld":"","tr":""},{"i":34,"t":"sleeves.","c":"sleeves","ld":"","tr":"."},{"i":35,"t":"B1:","c":"B1","ld":"","tr":":"},{"i":36,"t":"What","c":"What","ld":"","tr":"","b":{"easy":{"choices":["Nothing","That","What"],"correct":2},"medium":{"choices":["Which","That","How","What"],"correct":3,"answer":"What"},"hard":{"answer":"What"}}},{"i":37,"t":"makes","c":"makes","ld":"","tr":"","b":{"medium":{"choices":["made","makes","making","make"],"correct":1,"answer":"makes"},"hard":{"answer":"makes"}}},{"i":38,"t":"you","c":"you","ld":"","tr":""},{"i":39,"t":"say","c":"say","ld":"","tr":"","b":{"medium":{"choices":["said","saying","to say","say"],"correct":3,"answer":"say"},"hard":{"answer":"say"}}},{"i":40,"t":"that?","c":"that","ld":"","tr":"?"},{"i":41,"t":"B2:","c":"B2","ld":"","tr":":"},{"i":42,"t":"Because","c":"Because","ld":"","tr":""},{"i":43,"t":"we'll","c":"we'll","ld":"","tr":""},{"i":44,"t":"wear","c":"wear","ld":"","tr":""},{"i":45,"t":"the","c":"the","ld":"","tr":""},{"i":46,"t":"T-shirt","c":"T-shirt","ld":"","tr":""},{"i":47,"t":"on","c":"on","ld":"","tr":""},{"i":48,"t":"Sports","c":"Sports","ld":"","tr":""},{"i":49,"t":"Day.","c":"Day","ld":"","tr":"."},{"i":50,"t":"It's","c":"It's","ld":"","tr":""},{"i":51,"t":"in","c":"in","ld":"","tr":""},{"i":52,"t":"June.","c":"June","ld":"","tr":"."},{"i":53,"t":"G:","c":"G","ld":"","tr":":"},{"i":54,"t":"That","c":"That","ld":"","tr":"","b":{"easy":{"choices":["This","Chat","That"],"correct":2},"medium":{"choices":["That","This","It","Those"],"correct":0,"answer":"That"},"hard":{"answer":"That"}}},{"i":55,"t":"makes","c":"makes","ld":"","tr":"","b":{"medium":{"choices":["makes","made","making","make"],"correct":0,"answer":"makes"},"hard":{"answer":"makes"}}},{"i":56,"t":"sense.","c":"sense","ld":"","tr":"."},{"i":57,"t":"What","c":"What","ld":"","tr":"","b":{"easy":{"choices":["Nothing","That","What"],"correct":2},"medium":{"choices":["Whatever","Whichever","What","Whenever"],"correct":2,"answer":"What"},"hard":{"answer":"What"}}},{"i":58,"t":"about","c":"about","ld":"","tr":"","b":{"medium":{"choices":["around","about","of","for"],"correct":1,"answer":"about"},"hard":{"answer":"about"}}},{"i":59,"t":"this","c":"this","ld":"","tr":""},{"i":60,"t":"green","c":"green","ld":"","tr":""},{"i":61,"t":"one?","c":"one","ld":"","tr":"?"},{"i":62,"t":"B2:","c":"B2","ld":"","tr":":"},{"i":63,"t":"I","c":"I","ld":"","tr":""},{"i":64,"t":"like","c":"like","ld":"","tr":""},{"i":65,"t":"it.","c":"it","ld":"","tr":"."},{"i":66,"t":"The","c":"The","ld":"","tr":""},{"i":67,"t":"bee","c":"bee","ld":"","tr":""},{"i":68,"t":"on","c":"on","ld":"","tr":""},{"i":69,"t":"the","c":"the","ld":"","tr":""},{"i":70,"t":"T-shirt","c":"T-shirt","ld":"","tr":""},{"i":71,"t":"is","c":"is","ld":"","tr":""},{"i":72,"t":"so","c":"so","ld":"","tr":""},{"i":73,"t":"cute.","c":"cute","ld":"","tr":"."},{"i":74,"t":"G:","c":"G","ld":"","tr":":"},{"i":75,"t":"And","c":"And","ld":"","tr":""},{"i":76,"t":"it's","c":"it's","ld":"","tr":""},{"i":77,"t":"not","c":"not","ld":"","tr":""},{"i":78,"t":"expensive.","c":"expensive","ld":"","tr":"."},{"i":79,"t":"B1:","c":"B1","ld":"","tr":":"},{"i":80,"t":"Yes.","c":"Yes","ld":"","tr":"."},{"i":81,"t":"I","c":"I","ld":"","tr":""},{"i":82,"t":"think","c":"think","ld":"","tr":""},{"i":83,"t":"it's","c":"it's","ld":"","tr":""},{"i":84,"t":"the","c":"the","ld":"","tr":""},{"i":85,"t":"best","c":"best","ld":"","tr":""},{"i":86,"t":"one.","c":"one","ld":"","tr":"."},{"i":87,"t":"W:","c":"W","ld":"","tr":":"},{"i":88,"t":"Today,","c":"Today","ld":"","tr":","},{"i":89,"t":"I'd","c":"I'd","ld":"","tr":""},{"i":90,"t":"like","c":"like","ld":"","tr":""},{"i":91,"t":"to","c":"to","ld":"","tr":""},{"i":92,"t":"talk","c":"talk","ld":"","tr":"","b":{"medium":{"choices":["talking","talked","talk","to talking"],"correct":2,"answer":"talk"},"hard":{"answer":"talk"}}},{"i":93,"t":"to","c":"to","ld":"","tr":"","b":{"easy":{"choices":["from","do","to"],"correct":2},"medium":{"choices":["too","toward","to","into"],"correct":2,"answer":"to"},"hard":{"answer":"to"}}},{"i":94,"t":"you","c":"you","ld":"","tr":""},{"i":95,"t":"about","c":"about","ld":"","tr":""},{"i":96,"t":"teen","c":"teen","ld":"","tr":""},{"i":97,"t":"stress.","c":"stress","ld":"","tr":"."},{"i":98,"t":"What","c":"What","ld":"","tr":"","b":{"easy":{"choices":["Nothing","That","What"],"correct":2},"medium":{"choices":["What","Which","That","How"],"correct":0,"answer":"What"},"hard":{"answer":"What"}}},{"i":99,"t":"makes","c":"makes","ld":"","tr":"","b":{"medium":{"choices":["made","making","make","makes"],"correct":3,"answer":"makes"},"hard":{"answer":"makes"}}},{"i":100,"t":"you","c":"you","ld":"","tr":""},{"i":101,"t":"feel","c":"feel","ld":"","tr":""},{"i":102,"t":"the","c":"the","ld":"","tr":""},{"i":103,"t":"most","c":"most","ld":"","tr":""},{"i":104,"t":"stressed?","c":"stressed","ld":"","tr":"?","b":{"easy":{"choices":["relaxed","stressed"],"correct":1},"medium":{"choices":["stressing","stress","stresses","stressed"],"correct":3,"answer":"stressed"},"hard":{"answer":"stressed"}}},{"i":105,"t":"About","c":"About","ld":"","tr":"","b":{"easy":{"choices":["Exactly","Abort","About"],"correct":2},"medium":{"choices":["About","Around","Over","Among"],"correct":0,"answer":"About"},"hard":{"answer":"About"}}},{"i":106,"t":"9,000","c":"9,000","ld":"","tr":""},{"i":107,"t":"teens","c":"teens","ld":"","tr":""},{"i":108,"t":"answered","c":"answered","ld":"","tr":""},{"i":109,"t":"this","c":"this","ld":"","tr":""},{"i":110,"t":"question.","c":"question","ld":"","tr":"."},{"i":111,"t":"As","c":"As","ld":"","tr":""},{"i":112,"t":"you","c":"you","ld":"","tr":""},{"i":113,"t":"can","c":"can","ld":"","tr":""},{"i":114,"t":"see,","c":"see","ld":"","tr":","},{"i":115,"t":"schoolwork","c":"schoolwork","ld":"","tr":""},{"i":116,"t":"was","c":"was","ld":"","tr":""},{"i":117,"t":"the","c":"the","ld":"","tr":"","b":{"easy":{"choices":["a","the","thee"],"correct":1},"medium":{"choices":["a","the","an","this"],"correct":1,"answer":"the"},"hard":{"answer":"the"}}},{"i":118,"t":"most","c":"most","ld":"","tr":"","b":{"easy":{"choices":["least","moist","most"],"correct":2},"medium":{"choices":["more","mostly","most","mosts"],"correct":2,"answer":"most"},"hard":{"answer":"most"}}},{"i":119,"t":"common","c":"common","ld":"","tr":""},{"i":120,"t":"cause","c":"cause","ld":"","tr":""},{"i":121,"t":"of","c":"of","ld":"","tr":""},{"i":122,"t":"stress.","c":"stress","ld":"","tr":"."},{"i":123,"t":"Over","c":"Over","ld":"","tr":""},{"i":124,"t":"half","c":"half","ld":"","tr":"","b":{"medium":{"choices":["half","halve","halved","halving"],"correct":0,"answer":"half"},"hard":{"answer":"half"}}},{"i":125,"t":"of","c":"of","ld":"","tr":""},{"i":126,"t":"the","c":"the","ld":"","tr":""},{"i":127,"t":"students","c":"students","ld":"","tr":""},{"i":128,"t":"said","c":"said","ld":"","tr":""},{"i":129,"t":"schoolwork","c":"schoolwork","ld":"","tr":""},{"i":130,"t":"stresses","c":"stresses","ld":"","tr":"","b":{"easy":{"choices":["stresses","relaxes","stressed"],"correct":0},"medium":{"choices":["stresses","stressed","stressing","stress"],"correct":0,"answer":"stresses"},"hard":{"answer":"stresses"}}},{"i":131,"t":"them","c":"them","ld":"","tr":""},{"i":132,"t":"the","c":"the","ld":"","tr":"","b":{"easy":{"choices":["the","a","thee"],"correct":0},"medium":{"choices":["they","their","them","the"],"correct":3,"answer":"the"},"hard":{"answer":"the"}}},{"i":133,"t":"most.","c":"most","ld":"","tr":".","b":{"easy":{"choices":["least","moist","most"],"correct":2},"medium":{"choices":["more","mostly","most","mostest"],"correct":2,"answer":"most"},"hard":{"answer":"most"}}},{"i":134,"t":"Problems","c":"Problems","ld":"","tr":""},{"i":135,"t":"with","c":"with","ld":"","tr":""},{"i":136,"t":"friends","c":"friends","ld":"","tr":""},{"i":137,"t":"took","c":"took","ld":"","tr":"","b":{"easy":{"choices":["gave","look","took"],"correct":2},"medium":{"choices":["take","taken","taking","took"],"correct":3,"answer":"took"},"hard":{"answer":"took"}}},{"i":138,"t":"second","c":"second","ld":"","tr":""},{"i":139,"t":"place","c":"place","ld":"","tr":"","b":{"easy":{"choices":["place","remove","plane"],"correct":0},"medium":{"choices":["place","placing","placed","places"],"correct":0,"answer":"place"},"hard":{"answer":"place"}}},{"i":140,"t":"with","c":"with","ld":"","tr":""},{"i":141,"t":"15.3%.","c":"15.3%.","ld":"","tr":""},{"i":142,"t":"Next","c":"Next","ld":"","tr":""},{"i":143,"t":"came","c":"came","ld":"","tr":""},{"i":144,"t":"family","c":"family","ld":"","tr":""},{"i":145,"t":"and","c":"and","ld":"","tr":""},{"i":146,"t":"worries","c":"worries","ld":"","tr":"","b":{"medium":{"choices":["worry","worried","worries","worrying"],"correct":2,"answer":"worries"},"hard":{"answer":"worries"}}},{"i":147,"t":"about","c":"about","ld":"","tr":""},{"i":148,"t":"the","c":"the","ld":"","tr":""},{"i":149,"t":"future.","c":"future","ld":"","tr":"."},{"i":150,"t":"8.2%","c":"8.2%","ld":"","tr":""},{"i":151,"t":"of","c":"of","ld":"","tr":""},{"i":152,"t":"the","c":"the","ld":"","tr":""},{"i":153,"t":"students","c":"students","ld":"","tr":""},{"i":154,"t":"said","c":"said","ld":"","tr":""},{"i":155,"t":"they","c":"they","ld":"","tr":""},{"i":156,"t":"get","c":"get","ld":"","tr":"","b":{"easy":{"choices":["avoid","got","get"],"correct":2},"medium":{"choices":["get","got","gotten","gets"],"correct":0,"answer":"get"},"hard":{"answer":"get"}}},{"i":157,"t":"stressed","c":"stressed","ld":"","tr":"","b":{"medium":{"choices":["stressed","stress","stressing","stresses"],"correct":0,"answer":"stressed"},"hard":{"answer":"stressed"}}},{"i":158,"t":"because","c":"because","ld":"","tr":""},{"i":159,"t":"of","c":"of","ld":"","tr":"","b":{"easy":{"choices":["without","of","off"],"correct":1},"medium":{"choices":["of","off","from","by"],"correct":0,"answer":"of"},"hard":{"answer":"of"}}},{"i":160,"t":"their","c":"their","ld":"","tr":""},{"i":161,"t":"appearance.","c":"appearance","ld":"","tr":"."},{"i":162,"t":"W:","c":"W","ld":"","tr":":"},{"i":163,"t":"What","c":"What","ld":"","tr":""},{"i":164,"t":"are","c":"are","ld":"","tr":""},{"i":165,"t":"you","c":"you","ld":"","tr":""},{"i":166,"t":"doing,","c":"doing","ld":"","tr":","},{"i":167,"t":"Oliver?","c":"Oliver","ld":"","tr":"?"},{"i":168,"t":"B:","c":"B","ld":"","tr":":"},{"i":169,"t":"I'm","c":"I'm","ld":"","tr":""},{"i":170,"t":"studying","c":"studying","ld":"","tr":""},{"i":171,"t":"for","c":"for","ld":"","tr":""},{"i":172,"t":"the","c":"the","ld":"","tr":""},{"i":173,"t":"math","c":"math","ld":"","tr":""},{"i":174,"t":"test,","c":"test","ld":"","tr":","},{"i":175,"t":"Mom.","c":"Mom","ld":"","tr":"."},{"i":176,"t":"Grades","c":"Grades","ld":"","tr":""},{"i":177,"t":"stress","c":"stress","ld":"","tr":"","b":{"easy":{"choices":["relax","stress","dress"],"correct":1},"medium":{"choices":["stressed","stressing","stresses","stress"],"correct":3,"answer":"stress"},"hard":{"answer":"stress"}}},{"i":178,"t":"me","c":"me","ld":"","tr":""},{"i":179,"t":"out.","c":"out","ld":"","tr":".","b":{"easy":{"choices":["in","but","out"],"correct":2},"medium":{"choices":["outside","outward","out of","out"],"correct":3,"answer":"out"},"hard":{"answer":"out"}}},{"i":180,"t":"W:","c":"W","ld":"","tr":":"},{"i":181,"t":"I","c":"I","ld":"","tr":""},{"i":182,"t":"understand.","c":"understand","ld":"","tr":"."},{"i":183,"t":"I","c":"I","ld":"","tr":""},{"i":184,"t":"used","c":"used","ld":"","tr":"","b":{"easy":{"choices":["used","avoided","fused"],"correct":0},"medium":{"choices":["use","using","used","uses"],"correct":2,"answer":"used"},"hard":{"answer":"used"}}},{"i":185,"t":"to","c":"to","ld":"","tr":"","b":{"medium":{"choices":["use to","used to","to","using to"],"correct":2,"answer":"to"},"hard":{"answer":"to"}}},{"i":186,"t":"feel","c":"feel","ld":"","tr":""},{"i":187,"t":"that","c":"that","ld":"","tr":""},{"i":188,"t":"way,","c":"way","ld":"","tr":","},{"i":189,"t":"too.","c":"too","ld":"","tr":"."},{"i":190,"t":"B:","c":"B","ld":"","tr":":"},{"i":191,"t":"Really?","c":"Really","ld":"","tr":"?"},{"i":192,"t":"I","c":"I","ld":"","tr":""},{"i":193,"t":"didn't","c":"didn't","ld":"","tr":""},{"i":194,"t":"know","c":"know","ld":"","tr":""},{"i":195,"t":"that.","c":"that","ld":"","tr":"."},{"i":196,"t":"W:","c":"W","ld":"","tr":":"},{"i":197,"t":"Yeah,","c":"Yeah","ld":"","tr":","},{"i":198,"t":"but","c":"but","ld":"","tr":""},{"i":199,"t":"a","c":"a","ld":"","tr":""},{"i":200,"t":"little","c":"little","ld":"","tr":""},{"i":201,"t":"stress","c":"stress","ld":"","tr":""},{"i":202,"t":"was","c":"was","ld":"","tr":""},{"i":203,"t":"helpful","c":"helpful","ld":"","tr":"","b":{"medium":{"choices":["helpful","help","helping","helped"],"correct":0,"answer":"helpful"},"hard":{"answer":"helpful"}}},{"i":204,"t":"for","c":"for","ld":"","tr":""},{"i":205,"t":"me.","c":"me","ld":"","tr":"."},{"i":206,"t":"B:","c":"B","ld":"","tr":":"},{"i":207,"t":"What","c":"What","ld":"","tr":"","b":{"easy":{"choices":["nothing","That","What"],"correct":2},"medium":{"choices":["Which","Who","How","What"],"correct":3,"answer":"What"},"hard":{"answer":"What"}}},{"i":208,"t":"makes","c":"makes","ld":"","tr":"","b":{"easy":{"choices":["makes","breaks","lakes"],"correct":0},"medium":{"choices":["made","making","makes","make"],"correct":2,"answer":"makes"},"hard":{"answer":"makes"}}},{"i":209,"t":"you","c":"you","ld":"","tr":""},{"i":210,"t":"say","c":"say","ld":"","tr":""},{"i":211,"t":"that?","c":"that","ld":"","tr":"?"},{"i":212,"t":"W:","c":"W","ld":"","tr":":"},{"i":213,"t":"I","c":"I","ld":"","tr":""},{"i":214,"t":"got","c":"got","ld":"","tr":""},{"i":215,"t":"stressed","c":"stressed","ld":"","tr":""},{"i":216,"t":"when","c":"when","ld":"","tr":""},{"i":217,"t":"I","c":"I","ld":"","tr":""},{"i":218,"t":"had","c":"had","ld":"","tr":""},{"i":219,"t":"an","c":"an","ld":"","tr":""},{"i":220,"t":"exam,","c":"exam","ld":"","tr":","},{"i":221,"t":"but","c":"but","ld":"","tr":""},{"i":222,"t":"at","c":"at","ld":"","tr":""},{"i":223,"t":"the","c":"the","ld":"","tr":""},{"i":224,"t":"same","c":"same","ld":"","tr":""},{"i":225,"t":"time","c":"time","ld":"","tr":""},{"i":226,"t":"it","c":"it","ld":"","tr":""},{"i":227,"t":"made","c":"made","ld":"","tr":"","b":{"easy":{"choices":["unmade","made","fade"],"correct":1},"medium":{"choices":["make","made","makes","making"],"correct":1,"answer":"made"},"hard":{"answer":"made"}}},{"i":228,"t":"me","c":"me","ld":"","tr":""},{"i":229,"t":"focus","c":"focus","ld":"","tr":""},{"i":230,"t":"and","c":"and","ld":"","tr":""},{"i":231,"t":"try","c":"try","ld":"","tr":""},{"i":232,"t":"harder.","c":"harder","ld":"","tr":"."},{"i":233,"t":"B:","c":"B","ld":"","tr":":"},{"i":234,"t":"I","c":"I","ld":"","tr":""},{"i":235,"t":"see.","c":"see","ld":"","tr":"."},{"i":236,"t":"Did","c":"Did","ld":"","tr":""},{"i":237,"t":"stress","c":"stress","ld":"","tr":""},{"i":238,"t":"help","c":"help","ld":"","tr":""},{"i":239,"t":"you","c":"you","ld":"","tr":""},{"i":240,"t":"in","c":"in","ld":"","tr":""},{"i":241,"t":"other","c":"other","ld":"","tr":""},{"i":242,"t":"ways?","c":"ways","ld":"","tr":"?"},{"i":243,"t":"W:","c":"W","ld":"","tr":":"},{"i":244,"t":"Yes,","c":"Yes","ld":"","tr":","},{"i":245,"t":"it","c":"it","ld":"","tr":""},{"i":246,"t":"helped","c":"helped","ld":"","tr":""},{"i":247,"t":"improve","c":"improve","ld":"","tr":"","b":{"easy":{"choices":["worsen","approve","improve"],"correct":2},"medium":{"choices":["improve","improved","improving","improvement"],"correct":0,"answer":"improve"},"hard":{"answer":"improve"}}},{"i":248,"t":"my","c":"my","ld":"","tr":""},{"i":249,"t":"memory.","c":"memory","ld":"","tr":"."}],"thresholds":{"easy":90,"medium":90,"hard":90},"sentenceBreak":true};
+
+var levels=['easy','medium','hard'];
+var levelNames={easy:'쉬움',medium:'중간',hard:'심화'};
+var currentLevel=null,blankStates={};
+var unlockedLevels={easy:true,medium:true,hard:true};
+var completedLevels={easy:false,medium:false,hard:false};
+var levelScores={};
+
+function init(){showLevelSelector();}
+
+function showLevelSelector(){
+  currentLevel=null;
+  document.getElementById('levelInfo').textContent='단계를 선택하세요';
+  document.getElementById('progressFill').style.width='0%';
+  var c=document.getElementById('content');
+  var h='<div class="level-selector"><h2 style="margin-bottom:18px;font-size:17px;">학습 단계 선택</h2>';
+  for(var x=0;x<levels.length;x++){
+    var lv=levels[x];var done=completedLevels[lv];
+    var cls=lv==='medium'?'med':lv;
+    h+='<button class="level-btn '+cls+'-btn'+(done?' done':'')+'" onclick="startLevel(\''+lv+'\')">';
+    h+=levelNames[lv]+'</button><br>';
+  }
+  h+='</div>';c.innerHTML=h;
+  document.getElementById('actionBar').innerHTML='';
+}
+
+function startLevel(level){
+  currentLevel=level;blankStates={};
+  document.getElementById('levelInfo').textContent=levelNames[level]+' 단계';
+  renderPassage();
+}
+
+function getBlanksForLevel(level){
+  return DATA.words.filter(function(w){return w.b&&w.b[level];});
+}
+
+function renderPassage(){
+  var c=document.getElementById('content');
+  var blanks=getBlanksForLevel(currentLevel);
+  var total=blanks.length;
+  var answered=0;
+  for(var k in blankStates){if(blankStates[k].answered)answered++;}
+  document.getElementById('progressFill').style.width=(answered/total*100)+'%';
+  var sentEndRe=/[.!?][”“"'’‘)\]]*$/;
+  var h='<div class="passage">';
+  DATA.words.forEach(function(w,wi){
+    var bd=w.b&&w.b[currentLevel];
+    if(bd){
+      var st=blankStates[w.i]||{answered:false,correct:false,attempts:0};
+      h+=(w.ld||'');
+      if(currentLevel==='hard') h+=renderTypingBlank(w,bd,st);
+      else h+=renderSelectBlank(w,bd,st);
+      h+=(w.tr||'');
+    }else{
+      h+=(w.ld||'')+w.c+(w.tr||'');
+    }
+    h+=' ';
+    if(DATA.sentenceBreak && (w.tr||'') && sentEndRe.test(w.tr) && wi<DATA.words.length-1) h+='<br>';
+  });
+  h+='</div>';c.innerHTML=h;
+  if(answered===total) showResults();
+  else document.getElementById('actionBar').innerHTML='<button class="btn" style="background:#eee;color:#333;font-size:13px;" onclick="confirmBackToSelector()">📋 단계 선택</button>';
+}
+
+function renderSelectBlank(w,bd,st){
+  if(st.answered&&st.correct)
+    return '<span class="blank-select correct"><select disabled><option>'+bd.choices[bd.correct]+'</option></select></span>';
+  if(st.answered&&!st.correct&&st.attempts>=2)
+    return '<span class="blank-select wrong"><select disabled><option>'+bd.choices[bd.correct]+' \u2717</option></select></span>';
+  var opts='<option value="">___</option>';
+  bd.choices.forEach(function(ch,ci){
+    if(ch) opts+='<option value="'+ci+'">'+ch+'</option>';
+  });
+  var rb=st.attempts===1?'<span class="retry-badge">재도전</span>':'';
+  return '<span class="blank-select" id="bs'+w.i+'"><select onchange="checkSelect('+w.i+',this.value)">'+opts+'</select>'+rb+'</span>';
+}
+
+function renderTypingBlank(w,bd,st){
+  if(st.answered&&st.correct)
+    return '<span class="blank-input correct"><input disabled value="'+bd.answer+'"></span>';
+  if(st.answered&&!st.correct&&st.attempts>=2)
+    return '<span class="blank-input wrong"><input disabled value="'+bd.answer+' \u2717"></span>';
+  var rb=st.attempts===1?'<span class="retry-badge">재도전</span>':'';
+  var parts=bd.answer.split(' ');
+  var prefix,rest,ph;
+  if(parts.length>1){
+    prefix=parts[0]+' ';
+    rest=parts.slice(1).join(' ');
+    ph='나머지 단어 입력...';
+  }else{
+    prefix=bd.answer.charAt(0);
+    rest=bd.answer.slice(1);
+    ph='나머지 스펠링...';
+  }
+  var sz=Math.max(rest.length+3,6);
+  return '<span class="blank-input" id="bs'+w.i+'" data-prefix="'+encodeURIComponent(prefix)+'">'
+    +'<span class="hint-prefix">'+prefix+'</span>'
+    +'<input size="'+sz+'" placeholder="'+ph+'" onkeydown="if(event.key===\'Enter\')checkType('+w.i+',this.value)">'
+    +'<button onclick="checkType('+w.i+',this.parentNode.querySelector(\'input\').value)" style="font-size:11px;padding:4px 8px;margin-left:2px;border:1px solid #90caf9;border-radius:4px;background:#e3f2fd;cursor:pointer;">확인</button>'
+    +rb+'</span>';
+}
+
+function checkSelect(wordIdx,val){
+  if(val==='')return;
+  var w=DATA.words.find(function(ww){return ww.i===wordIdx;});
+  var bd=w.b[currentLevel];
+  var st=blankStates[wordIdx]||{answered:false,correct:false,attempts:0};
+  st.attempts++;
+  if(parseInt(val)===bd.correct){
+    st.answered=true;st.correct=st.attempts===1;
+    blankStates[wordIdx]=st;renderPassage();
+  }else{
+    if(st.attempts>=2){
+      st.answered=true;st.correct=false;
+      blankStates[wordIdx]=st;renderPassage();
+    }else{
+      blankStates[wordIdx]=st;
+      var el=document.getElementById('bs'+wordIdx);
+      if(el){el.classList.add('wrong');setTimeout(function(){el.classList.remove('wrong');renderPassage();},600);}
+    }
+  }
+}
+
+function normApo(s){return s.replace(/[\u2018\u2019\u2032\u0060\u00B4\uFF07]/g,"\'").trim().toLowerCase();}
+function checkType(wordIdx,val){
+  if(!val.trim())return;
+  var w=DATA.words.find(function(ww){return ww.i===wordIdx;});
+  var bd=w.b[currentLevel];
+  var st=blankStates[wordIdx]||{answered:false,correct:false,attempts:0};
+  st.attempts++;
+  var el=document.getElementById('bs'+wordIdx);
+  var prefix=el?decodeURIComponent(el.getAttribute('data-prefix')||''):'';
+  var fullAnswer=(prefix+val).trim();
+  if(normApo(fullAnswer)===normApo(bd.answer)){
+    st.answered=true;st.correct=true;
+    blankStates[wordIdx]=st;renderPassage();
+  }else{
+    if(st.attempts>=2){
+      st.answered=true;st.correct=false;
+      blankStates[wordIdx]=st;renderPassage();
+    }else{
+      blankStates[wordIdx]=st;
+      if(el){el.classList.add('wrong');setTimeout(function(){el.classList.remove('wrong');renderPassage();},600);}
+    }
+  }
+}
+
+function showResults(){
+  var blanks=getBlanksForLevel(currentLevel);
+  var total=blanks.length;var correct=0;
+  blanks.forEach(function(w){var st=blankStates[w.i];if(st&&st.correct)correct++;});
+  var pct=Math.round(correct/total*100);
+  var threshold=DATA.thresholds[currentLevel];
+  var pass=pct>=threshold;
+  levelScores[currentLevel]={correct:correct,total:total,pct:pct};
+  var h='<div class="result-card"><h2>'+levelNames[currentLevel]+' 단계 결과</h2>';
+  h+='<div class="score '+(pass?'pass':'fail')+'">'+pct+'%</div>';
+  h+='<p>'+total+'개 빈칸 중 '+correct+'개 정답 (기준: '+threshold+'%)</p>';
+  if(pass){completedLevels[currentLevel]=true;}
+  h+='</div>';
+  document.getElementById('content').innerHTML+=h;
+  var ah='';
+  if(!pass){
+    ah='<button class="btn btn-retry" onclick="startLevel(\''+currentLevel+'\')">재도전</button>';
+  }else{
+    var ni=levels.indexOf(currentLevel)+1;
+    if(ni<levels.length){
+      ah='<button class="btn btn-next" onclick="startLevel(\''+levels[ni]+'\')">다음 단계 →</button>';
+    }else{showCongrats();return;}
+    ah+=' <button class="btn" style="background:#eee;color:#333;" onclick="showLevelSelector()">단계 선택</button>';
+  }
+  document.getElementById('actionBar').innerHTML=ah;
+}
+
+function showCongrats(){
+  var tc=0,tb=0;
+  for(var x=0;x<levels.length;x++){
+    var s=levelScores[levels[x]];
+    if(s){tc+=s.correct;tb+=s.total;}
+  }
+  var tp=Math.round(tc/tb*100);
+  var h='<div class="congrats"><div style="font-size:40px;margin-bottom:10px;">🎉</div>';
+  h+='<h2>축하합니다!</h2><p>모든 단계를 통과했습니다!</p>';
+  h+='<p style="font-size:19px;font-weight:700;margin-top:10px;">전체 성취도: '+tp+'%</p></div>';
+  document.getElementById('content').innerHTML=h;
+  document.getElementById('actionBar').innerHTML='<button class="btn" style="background:#eee;color:#333;" onclick="showLevelSelector()">다시 도전</button>';
+}
+
+function confirmBackToSelector(){
+  if(confirm('테스트를 중단하고 단계 선택으로 돌아갈까요?\n(현재 진행 상황은 초기화됩니다)')){
+    showLevelSelector();
+  }
+}
+
+init();
+</script></body></html>
