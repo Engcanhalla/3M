@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -314,7 +314,7 @@ const highC=Q.filter(q=>q.diff==="high").length;
 const paraC=Q.filter(q=>q.paraphrased).length;
 
 function activeQs(){if(state.retry==="wrong") return Q.filter(q=>state.wrong.includes(q.id));return Q;}
-function isCorrect(u,c){if(!u||u.length!==c.length) return false;const su=[...u].sort();const sc=[...c].sort();return su.every((v,i)=>v===sc[i]);}
+function isCorrect(u,c){if(!u||u.length!==c.length) return false;const su=[...u].sort((a,b)=>a-b);const sc=[...c].sort((a,b)=>a-b);return su.every((v,i)=>v===sc[i]);}
 function render(){switch(state.screen){case"start":rStart();break;case"quiz":rQuiz();break;case"result":rRes();break;case"review":rRev();break;}}
 function esc(s){if(s==null) return "";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/&lt;u&gt;/g,"<u>").replace(/&lt;\/u&gt;/g,"</u>").replace(/&lt;b&gt;/g,"<b>").replace(/&lt;\/b&gt;/g,"</b>");}
 
@@ -389,13 +389,14 @@ function submit(){
   let score=0;const wrong=[];
   qs.forEach(q=>{if(isCorrect(state.ans[q.id],q.answers)) score+=q.pts;else wrong.push(q.id);});
   state.elapsed=Date.now()-state.startTime;
+  state.attemptTotal=qs.length;state.attemptCorrect=qs.length-wrong.length;state.attemptMaxPts=qs.reduce((s,q)=>s+q.pts,0);
   state.score=score;state.wrong=wrong;state.screen="result";render();
   if(state.score>=95) confetti();
 }
 
 function rRes(){
-  const qs=activeQs();const max=qs.reduce((s,q)=>s+q.pts,0);
-  const pct=Math.round((state.score/max)*100);const wc=state.wrong.length;const cc=qs.length-wc;
+  const qs=activeQs();const max=state.attemptMaxPts||qs.reduce((s,q)=>s+q.pts,0);
+  const total=state.attemptTotal||qs.length;const cc=state.attemptCorrect!==undefined?state.attemptCorrect:(qs.length-state.wrong.length);const wc=total-cc;const pct=Math.round((state.score/max)*100);
   let cls,msg,btns;
   if(state.score>=95){cls="perfect";msg=`<b>🎉 EXCELLENT!</b> ${state.score}점!<br>대단합니다!`;
     btns=`${wc>0?`<button class="btn btn-success" onclick="retryW()">틀린 문제 재도전</button>`:""}<button class="btn btn-outline" onclick="showRev()">오답 복습</button><button class="btn btn-primary" onclick="resetAll()">처음부터</button>`;}
@@ -425,8 +426,8 @@ function rRev(){
   app.innerHTML=`<div class="card">
     <h2 style="color:var(--primary);margin-bottom:14px">📖 오답 복습</h2>
     ${activeQs().filter(q=>state.wrong.includes(q.id)).map(q=>{
-      const my=state.ans[q.id]&&state.ans[q.id].length>0?state.ans[q.id].sort((a,b)=>a-b).map(n=>"①②③④⑤"[n-1]).join(", "):"(미응답)";
-      const corr=q.answers.sort((a,b)=>a-b).map(n=>`${"①②③④⑤"[n-1]} ${esc(q.choices[n-1])}`).join("<br>");
+      const my=state.ans[q.id]&&state.ans[q.id].length>0?[...state.ans[q.id]].sort((a,b)=>a-b).map(n=>"①②③④⑤"[n-1]).join(", "):"(미응답)";
+      const corr=[...q.answers].sort((a,b)=>a-b).map(n=>`${"①②③④⑤"[n-1]} ${esc(q.choices[n-1])}`).join("<br>");
       return `<div class="card review-card${q.paraphrased?" paraphrased":""}">
         <div class="q-header"><div class="q-num">${q.num}</div><span class="q-type ${q.cat}">${esc(q.type)}</span><span class="q-pts">${q.pts}점</span><span class="q-diff ${q.diff}">난이도 ${q.diff==="low"?"하":q.diff==="mid"?"중":"상"}</span>${q.paraphrased?`<span class="para-badge">✏️ Paraphrased</span>`:""}</div>
         <div class="stem">${esc(q.stem)}</div>
@@ -451,3 +452,4 @@ render();
 </script>
 </body>
 </html>
+

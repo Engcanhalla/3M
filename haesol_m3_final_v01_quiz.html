@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -445,13 +445,14 @@ function submitQuiz(){
   let score=0;const wrong=[];
   qs.forEach(q=>{if(isCorrect(state.userAnswers[q.id],q.answers)) score+=q.pts;else wrong.push(q.id);});
   state.elapsed=Date.now()-state.startTime;
+  state.attemptTotal=qs.length;state.attemptCorrect=qs.length-wrong.length;state.attemptMaxPts=qs.reduce((s,q)=>s+q.pts,0);
   state.score=score;state.wrongIds=wrong;state.screen="result";render();
   if(state.score>=95) launchConfetti();
 }
 
 function renderResult(){
-  const qs=getActiveQs();const maxPts=qs.reduce((s,q)=>s+q.pts,0);
-  const pct=Math.round((state.score/maxPts)*100);const wrongCount=state.wrongIds.length;const correctCount=qs.length-wrongCount;
+  const qs=getActiveQs();const maxPts=state.attemptMaxPts||qs.reduce((s,q)=>s+q.pts,0);
+  const total=state.attemptTotal||qs.length;const correctCount=state.attemptCorrect!==undefined?state.attemptCorrect:(qs.length-state.wrongIds.length);const wrongCount=total-correctCount;const pct=Math.round((state.score/maxPts)*100);
   let cls,msg,btns;
   // M3 채점 규칙: 95+축포 / 90~94 틀린문제 / 90미만 전체
   if(state.score>=95){
@@ -488,8 +489,8 @@ function renderReview(){
   app.innerHTML=`<div class="card">
     <h2 style="color:var(--primary);margin-bottom:14px">📖 오답 복습</h2>
     ${qs.filter(q=>state.wrongIds.includes(q.id)).map(q=>{
-      const myAns=state.userAnswers[q.id]&&state.userAnswers[q.id].length>0?state.userAnswers[q.id].sort((a,b)=>a-b).map(n=>"①②③④⑤"[n-1]).join(", "):"(미응답)";
-      const correctAns=q.answers.sort((a,b)=>a-b).map(n=>`${"①②③④⑤"[n-1]} ${escapeHTML(q.choices[n-1])}`).join("<br>");
+      const myAns=state.userAnswers[q.id]&&state.userAnswers[q.id].length>0?[...state.userAnswers[q.id]].sort((a,b)=>a-b).map(n=>"①②③④⑤"[n-1]).join(", "):"(미응답)";
+      const correctAns=[...q.answers].sort((a,b)=>a-b).map(n=>`${"①②③④⑤"[n-1]} ${escapeHTML(q.choices[n-1])}`).join("<br>");
       return `<div class="card review-card${q.paraphrased?" paraphrased":""}">
         <div class="q-header">
           <div class="q-num">${q.num}</div>
@@ -522,3 +523,4 @@ render();
 </script>
 </body>
 </html>
+
