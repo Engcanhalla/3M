@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 해솔중 3학년 영어 기말고사 모의시험 Set 1</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#4f46e5;--primary-light:#e0e7ff;--primary-dark:#3730a3;
+  --accent:#7c3aed;
+  --success:#16a34a;--success-light:#dcfce7;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --warning:#f59e0b;--warning-light:#fef3c7;
+  --d-color:#f59e0b;--p-color:#2563eb;--k-color:#db2777;--g-color:#16a34a;--t-color:#7c3aed;
+  --para-color:#ea580c;--para-light:#ffedd5;
+  --bg:#f8fafc;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+  --radius:12px;
+}
+body{font-family:'Segoe UI','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.55}
+.container{max-width:760px;margin:0 auto;padding:16px}
+.start-screen{text-align:center;padding:48px 20px}
+.start-screen h1{font-size:1.7rem;margin-bottom:6px;color:var(--primary)}
+.start-screen .sub-title{color:var(--muted);margin-bottom:24px;font-size:0.95rem}
+.start-screen .info-box{background:var(--primary-light);border-radius:var(--radius);padding:22px;margin:18px 0;text-align:left;font-size:.9rem;line-height:1.85}
+.start-screen .info-box strong{color:var(--primary)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 30px;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(79,70,229,.3)}
+.btn-success{background:var(--success);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-warning{background:var(--warning);color:#fff}
+.btn-outline{background:transparent;border:2px solid var(--primary);color:var(--primary)}
+.btn-outline:hover{background:var(--primary-light)}
+.btn-sm{padding:8px 18px;font-size:.85rem}
+.progress-bar{background:var(--border);border-radius:99px;height:8px;margin:10px 0;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:99px;transition:width .4s ease}
+.progress-text{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:4px}
+.q-map{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:10px 0 14px}
+.q-dot{aspect-ratio:1;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:600;cursor:pointer;transition:all .15s;background:#fff}
+.q-dot:hover{transform:scale(1.08)}
+.q-dot.answered{background:var(--primary-light);border-color:var(--primary);color:var(--primary)}
+.q-dot.current{background:var(--primary);color:#fff;border-color:var(--primary)}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:0 1px 3px rgba(0,0,0,.08),0 4px 14px rgba(0,0,0,.04);padding:22px;margin:14px 0;animation:slideIn .3s ease;position:relative}
+.card.paraphrased{border-top:3px solid var(--para-color)}
+@keyframes slideIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+.q-header{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.q-num{background:var(--primary);color:#fff;border-radius:99px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.88rem;flex-shrink:0}
+.q-type{font-size:.72rem;padding:3px 9px;border-radius:99px;font-weight:600}
+.q-type.d{background:#fef3c7;color:#92400e}
+.q-type.p{background:#dbeafe;color:#1e40af}
+.q-type.k{background:#fce7f3;color:#9d174d}
+.q-type.g{background:#dcfce7;color:#065f46}
+.q-type.t{background:#ede9fe;color:#5b21b6}
+.q-pts{font-size:.72rem;color:var(--muted);font-weight:600}
+.q-diff{font-size:.68rem;padding:2px 8px;border-radius:99px;font-weight:700}
+.q-diff.low{background:#e0f2fe;color:#0369a1}
+.q-diff.mid{background:#fef9c3;color:#a16207}
+.q-diff.high{background:#fee2e2;color:#b91c1c}
+.q-para-badge{background:var(--para-light);color:var(--para-color);padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:700}
+.stem{font-size:.95rem;line-height:1.65;margin-bottom:14px;font-weight:500;white-space:pre-line}
+.passage{background:#f1f5f9;border-left:3px solid var(--primary);padding:12px 14px;margin-bottom:14px;font-size:.86rem;line-height:1.8;border-radius:0 8px 8px 0;white-space:pre-line;max-height:340px;overflow-y:auto;font-family:'Times New Roman',serif}
+.passage u{text-decoration:underline;text-decoration-color:var(--danger);text-underline-offset:3px;font-weight:600}
+.passage b{font-weight:700;color:var(--primary-dark)}
+.choices{list-style:none;display:flex;flex-direction:column;gap:7px}
+.choice{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border:2px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;font-size:.88rem;line-height:1.55}
+.choice:hover{border-color:var(--primary);background:var(--primary-light)}
+.choice.selected{border-color:var(--primary);background:var(--primary-light)}
+.choice.correct{border-color:var(--success);background:var(--success-light)}
+.choice.wrong{border-color:var(--danger);background:var(--danger-light)}
+.choice input{margin-top:3px;flex-shrink:0;accent-color:var(--primary)}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:8px}
+.nav-row .btn{min-width:96px}
+.result-screen{text-align:center;padding:36px 20px}
+.score-circle{width:170px;height:170px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:18px auto;font-size:2.6rem;font-weight:800;border:6px solid}
+.score-circle.perfect{border-color:var(--warning);background:#fffbeb;color:var(--warning);animation:pulse 1s infinite}
+.score-circle.great{border-color:var(--success);background:var(--success-light);color:var(--success)}
+.score-circle.retry{border-color:var(--danger);background:var(--danger-light);color:var(--danger)}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.score-circle small{font-size:.78rem;font-weight:400;margin-top:4px}
+.result-msg{font-size:1.05rem;margin:14px 0;line-height:1.6}
+.result-detail{background:#f1f5f9;border-radius:var(--radius);padding:16px;margin:14px 0;text-align:left;font-size:.86rem;line-height:1.85}
+.result-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.review-card{border-left:4px solid var(--danger);margin-bottom:14px}
+.review-card.correct{border-left-color:var(--success)}
+.my-answer{background:#fef3c7;border-radius:6px;padding:10px;margin:8px 0;font-size:.85rem;line-height:1.6}
+.model-answer{background:var(--success-light);border-radius:6px;padding:10px;margin:8px 0;font-size:.85rem;line-height:1.6}
+.explanation{background:var(--warning-light);border-radius:6px;padding:10px 12px;margin-top:10px;font-size:.84rem;line-height:1.6;color:#713f12}
+.para-note{background:var(--para-light);border-left:3px solid var(--para-color);padding:8px 12px;margin-top:8px;font-size:.8rem;color:#9a3412;border-radius:0 4px 4px 0}
+#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+@media(max-width:520px){.container{padding:10px}.card{padding:14px}.q-map{grid-template-columns:repeat(8,1fr)}.passage{font-size:.8rem;max-height:260px}}
+</style>
+</head>
+<body>
+<div class="container" id="app"></div>
+<canvas id="confetti-canvas"></canvas>
+<script>
+const QUESTIONS=[
+{id:"q001",num:1,type:"D-1",cat:"d",pts:2,diff:"low",paraphrased:false,
+ stem:"대화가 자연스럽게 이어지도록 〈보기〉의 (A)~(D)를 순서에 맞게 배열한 것은?",
+ passage:`(주어진 글) M: Welcome to the Tourist Information Office! How may I help you?
+
+(A) M: Sure. Is there a special place you're looking for?
+(B) W: Hi, I wonder if there's a tourist map of the town.
+(C) M: Then go to Jeongseon Market. It opens every five days.
+(D) W: Yes. I'd like to try some local food.`,
+ choices:["(A)-(B)-(C)-(D)","(A)-(C)-(B)-(D)","(B)-(A)-(D)-(C)","(B)-(D)-(A)-(C)","(D)-(B)-(A)-(C)"],
+ answers:[3],explanation:"지도 요청(B) → 특별한 곳 묻기(A) → 음식(D) → 정선시장 추천(C)"},
+{id:"q002",num:2,type:"D-5",cat:"d",pts:2,diff:"low",paraphrased:false,
+ stem:"위 대화(Tourist Info)의 요지로 가장 적절한 것은?",
+ passage:`M: Welcome to the Tourist Information Office! How may I help you?
+W: Hi, I wonder if there's a tourist map of the town.
+M: Sure. Is there a special place you're looking for?
+W: Yes. I'd like to try some local food.
+M: Then go to Jeongseon Market. It opens every five days, and it's open today.
+W: How can I get there?
+M: You can walk there. It takes about 10 minutes.
+M: Sure. Try gondrebap when you get there.`,
+ choices:["외국인에게 한국 전통 음식을 자세히 소개한다.","정선시장의 영업 시간 변경 사항을 안내한다.","지도를 시민에게 무료로 배포하는 방법을 설명한다.","관광 안내소의 위치를 옮기는 계획을 알린다.","관광객에게 정선시장과 곤드레밥을 안내한다."],
+ answers:[5],explanation:"관광객이 지역 음식 곤드레밥을 위해 정선시장 추천"},
+{id:"q003",num:3,type:"D-4",cat:"d",pts:2,diff:"low",paraphrased:false,
+ stem:"위 대화(Restaurant)의 내용과 일치하는 것은?",
+ passage:`W: Can I have the bill, please?
+M: Did you enjoy the meal?
+W: It was great. I liked the gondrebap very much.
+M: Thanks. It's also good for your health.
+M: Gondre is rich in vitamins A and C. It also digests well.
+W: I wonder if I could buy some gondre here.
+M: Sure. Do you want me to give you the recipe for gondrebap?
+W: Yes, that'd be great.`,
+ choices:["여자는 곤드레밥이 입맛에 맞지 않았다.","곤드레는 소화가 잘 되지 않는다.","여자는 곤드레 구매 의사가 없다.","곤드레는 비타민 A와 C가 풍부하다.","남자는 조리법을 제공할 수 없다고 답했다."],
+ answers:[4],explanation:"본문: 'Gondre is rich in vitamins A and C'"},
+{id:"q004",num:4,type:"K-1",cat:"k",pts:3,diff:"mid",paraphrased:true,
+ paraphrasingNote:"원문 'rich in' → 'full of', 'digests well' → 'digests easily' 단어 교체 (약)",
+ stem:"다음 본문 변형 대화의 내용과 일치하는 한글 해석을 모두 고르시오. [정답 2개]",
+ passage:`[변형 본문] M: Gondre is full of vitamins A and C. It also digests easily.`,
+ choices:["곤드레는 비타민 A와 C가 풍부하다.","곤드레는 단백질이 풍부하다.","곤드레는 소화가 잘 된다.","곤드레는 비타민 B가 풍부하다.","곤드레는 소화가 느리다."],
+ answers:[1,3],explanation:"'full of'='rich in'(풍부) / 'digests easily'='digests well'(소화 잘됨)"},
+{id:"q005",num:5,type:"D-6",cat:"d",pts:2,diff:"low",paraphrased:false,
+ stem:"대화 빈칸에 들어갈 말로 가장 적절한 것은?",
+ passage:`M: Sure. Do you want me to give you the recipe for gondrebap?
+W: __________`,
+ choices:["No, I don't like cooking at all.","Yes, that would be really great.","How much does it actually cost?","I'll think about it later carefully.","Where can I find a Korean restaurant?"],
+ answers:[2],explanation:"긍정적 응답 (조리법 받고 싶음)"},
+{id:"q006",num:6,type:"D-2",cat:"d",pts:2,diff:"low",paraphrased:false,
+ stem:`〈보기〉의 문장이 들어가기에 가장 적절한 곳은?
+
+〈보기〉 That's too soon.`,
+ passage:`W: Can you help me with this milk?
+B: Sure. ( ① )
+W: Read me the date, please. ( ② )
+B: Oh, do you want me to tell you the best-before date? ( ③ )
+W: Yes, I forgot my glasses. ( ④ )
+B: Let me see. You should drink it by June 7.
+W: ( ⑤ ) I wonder if there's one that lasts longer.`,
+ choices:["①","②","③","④","⑤"],
+ answers:[5],explanation:"6월 7일까지 → '너무 곧이네' → 더 오래 가는 것 찾기"},
+{id:"q007",num:7,type:"G-4 ★ if/whether",cat:"g",pts:2,diff:"low",paraphrased:true,
+ paraphrasingNote:"원문 'I wonder if there's one that lasts longer.' → 'I'm not sure whether there's one that lasts longer or not.' 구문 변형 (whether 강제, 중)",
+ stem:"다음 빈칸에 들어갈 말로 어법상 적절한 것은?",
+ passage:`I'm not sure __________ there's one that lasts longer or not.`,
+ choices:["if","that","whether","how","what"],
+ answers:[3],explanation:"'or not'이 절 끝 + 'I'm not sure' 다음 명사절 보어 — whether만 가능"},
+{id:"q008",num:8,type:"P-21 목적",cat:"p",pts:2,diff:"low",paraphrased:false,
+ stem:"다음 글(Grand Bazaar)의 목적으로 가장 적절한 것은?",
+ passage:`Turkey is a country where East meets West, so it has a long tradition of trade. It is a natural place for large markets like the Grand Bazaar. The market was built in 1455 in Istanbul. Today the Grand Bazaar is much bigger, and it is the largest covered market in the world. It has 64 streets and more than 4,000 shops under one roof. The market attracts over 250,000 visitors every day.`,
+ choices:["터키 전통 시장 그랜드 바자르를 소개한다.","그랜드 바자르의 역사적 가치를 비판한다.","그랜드 바자르에서 쇼핑하지 말 것을 권한다.","터키 여행에서 안전 주의사항을 알린다.","이스탄불의 문화 유적을 비교한다."],
+ answers:[1],explanation:"그랜드 바자르의 역사·규모·특징 소개"},
+{id:"q009",num:9,type:"P-4 내용 일치",cat:"p",pts:3,diff:"mid",paraphrased:false,
+ stem:"위 글(Grand Bazaar)의 내용과 일치하는 것을 모두 고르시오. [정답 2개]",
+ passage:`The market was built in 1455 in Istanbul. Today the Grand Bazaar has 64 streets and more than 4,000 shops under one roof. The market attracts over 250,000 visitors every day. Ask shop owners if they carry nazar boncuğu, a traditional Turkish symbol for good luck. Also, make sure to try lokum, a traditional Turkish candy.`,
+ choices:["그랜드 바자르는 1455년 이스탄불에 건설되었다.","그랜드 바자르는 현재 30개의 거리와 1,000개의 상점이 있다.","매일 약 100,000명의 방문객이 방문한다.","그랜드 바자르는 세계에서 가장 큰 야외 시장이다.","lokum은 터키의 전통 사탕이다."],
+ answers:[1,5],explanation:"② 64거리·4,000상점 / ③ 250,000명 / ④ covered(실내) market"},
+{id:"q010",num:10,type:"G-3 ★ 관계부사",cat:"g",pts:3,diff:"mid",paraphrased:false,
+ stem:"다음 중 관계부사의 쓰임이 어법상 올바른 것을 모두 고르시오. [정답 2개]",
+ passage:"",
+ choices:["Turkey is a country where East meets West.","This is the building where the market is housed.","I don't know the reason because she left.","My mom told me the way how I can cook this.","He lives in the village which there is a small river."],
+ answers:[1,2],explanation:"③ because→why / ④ the way how 함께 불가 / ⑤ which→where"},
+{id:"q011",num:11,type:"T-1 원문 단어 조합",cat:"t",pts:4,diff:"high",paraphrased:true,
+ paraphrasingNote:"오답 선지에 동의어 다수 사용(bigger→greater/larger, roof→cover/tent) — 매력 오답 (약)",
+ stem:"다음 본문 빈칸에 들어갈 단어 조합을 모두 고르시오.",
+ passage:`Today the Grand Bazaar is much (A)____, and it is the (B)____ covered market in the world. It has 64 streets and more than 4,000 shops under one (C)____.`,
+ choices:["bigger — largest — roof","greater — largest — roof","bigger — biggest — cover","larger — largest — tent","greater — greatest — shelter"],
+ answers:[1],explanation:"본문 그대로 'much bigger, the largest covered market, under one roof'"},
+{id:"q012",num:12,type:"P-12 제목",cat:"p",pts:2,diff:"low",paraphrased:false,
+ stem:"다음 글(Damnoen Saduak)의 제목으로 가장 적절한 것은?",
+ passage:`In the past, Thai people traded goods on rivers. This was the beginning of floating markets in Thailand. With better road transportation, many floating markets disappeared. Since the late 1960s, however, some of them have come back and kept the tradition alive. Today, one of the most popular floating markets is Damnoen Saduak Floating Market. It is always crowded with tourists from all over the world.`,
+ choices:["The Decline of Traditional Markets in Thailand","How Road Transportation Changed Asia","The Best Foods to Eat in Thailand","Damnoen Saduak: Thailand's Living Floating Market Tradition","A History of Pad Thai Noodles"],
+ answers:[4],explanation:"태국 수상시장의 전통과 부활을 다룬 글"},
+{id:"q013",num:13,type:"G-2 ★ since 의미",cat:"g",pts:2,diff:"low",paraphrased:false,
+ stem:`다음 문장의 밑줄 친 since와 같은 용법으로 사용된 것은?
+
+<u>Since</u> the late 1960s, some floating markets have come back.`,
+ passage:"",
+ choices:["<u>Since</u> you are tired, take a rest.","<u>Since</u> I was sick, I went to the hospital.","<u>Since</u> the war ended, peace has lasted.","<u>Since</u> she didn't study, she failed the test.","<u>Since</u> he is busy, he can't come."],
+ answers:[3],explanation:"본문 since는 시간(이래로) · ①②④⑤는 이유(=because) · ③만 시간"},
+{id:"q014",num:14,type:"P-4 내용 일치",cat:"p",pts:3,diff:"mid",paraphrased:false,
+ stem:"위 글(Damnoen Saduak)의 내용과 일치하는 것을 모두 고르시오. [정답 2개]",
+ passage:`In the past, Thai people traded goods on rivers. With better road transportation, many floating markets disappeared. Since the late 1960s, however, some of them have come back. Today, one of the most popular floating markets is Damnoen Saduak Floating Market. You can buy local foods and traditional gift items directly from boats.`,
+ choices:["태국 사람들은 과거에 강에서 상품을 거래했다.","도로 교통의 발달로 모든 수상 시장이 사라졌다.","1960년대 후반 이후 일부 수상 시장이 다시 등장했다.","Damnoen Saduak은 세계에서 가장 오래된 수상 시장이다.","Damnoen Saduak에서는 보트에서 상품을 직접 살 수 없다."],
+ answers:[1,3],explanation:"② 'many'(모든 X) / ④ 'most popular'(가장 오래된 X) / ⑤ 'directly from boats'"},
+{id:"q015",num:15,type:"P-21 목적",cat:"p",pts:2,diff:"low",paraphrased:true,
+ paraphrasingNote:"원문 'The Netherlands means low lands. As the name suggests, about a third of the country sits below sea level.' → 'The Netherlands, which means low lands, has about one third of its area lying below sea level.' (관계대명사절+분사, 중)",
+ stem:"다음 글의 목적으로 가장 적절한 것은?",
+ passage:`[변형 본문] The Netherlands, which means "low lands," has about one third of its area lying below sea level. Thus, the Dutch built up the land and started to grow flowers. Today, the Aalsmeer Flower Market is the largest flower market in the world.`,
+ choices:["네덜란드 국토 개간의 역사를 비판한다.","전 세계 꽃 생산량의 추세를 분석한다.","전기 트럭의 환경 영향을 평가한다.","세계 최대 화훼 시장 Aalsmeer를 소개한다.","네덜란드 관광지의 가격을 비교한다."],
+ answers:[4],explanation:"세계 최대 꽃 시장 Aalsmeer 소개"},
+{id:"q016",num:16,type:"P-5 불일치",cat:"p",pts:3,diff:"mid",paraphrased:false,
+ stem:"위 글(Aalsmeer)의 내용과 일치하지 않는 것을 모두 고르시오. [정답 2개]",
+ passage:`About a third of the Netherlands sits below sea level. The Aalsmeer Flower Market is the largest flower market in the world. The building where the market is housed is bigger than 120 soccer fields. The market is busy with thousands of flower-filled carts. They are moved mostly by electric-powered trucks. Every day, around 20 million flowers are traded. Sadly, you cannot buy just a few flowers at the market.`,
+ choices:["네덜란드는 약 1/3의 국토가 해수면 아래에 있다.","Aalsmeer 시장 건물은 축구장 50개 크기이다.","시장 카트는 주로 전기 트럭으로 운반된다.","매일 약 2천만 송이의 꽃이 거래된다.","일반 방문객은 시장에서 소량의 꽃을 살 수 있다."],
+ answers:[2,5],explanation:"② 120 soccer fields / ⑤ Sadly, you cannot buy just a few"},
+{id:"q017",num:17,type:"K-3 함축 의미",cat:"k",pts:3,diff:"mid",paraphrased:false,
+ stem:"위 글의 밑줄 친 표현이 의미하는 바를 모두 고르시오. [정답 2개]",
+ passage:`It is, therefore, <u>no surprise</u> that the country has the largest flower market in the world.`,
+ choices:["결과가 매우 예상되는 일이다","결과가 매우 놀라운 일이다","자연스러운 결과로 받아들여진다","우연히 발생한 일이다","매우 의외의 일이다"],
+ answers:[1,3],explanation:"no surprise = 당연한·예상된 결과"},
+{id:"q018",num:18,type:"P-21 목적",cat:"p",pts:2,diff:"low",paraphrased:true,
+ paraphrasingNote:"원문 'go for a hike along the green paths' → 'go hiking along the scenic trails' (단어 2개 동의어 교체, 약)",
+ stem:"다음 안내문의 목적으로 가장 적절한 것은?",
+ passage:`[변형 본문] This coming Saturday, Seoul City Hikers will go hiking along the scenic trails of the city. The program will start at 10:00 in the morning from City Hall Station, continue around Gyeonghuigung, and end up in Gwanghwamun.`,
+ choices:["서울 시청 광장의 봄 축제를 안내한다.","광화문 박물관의 휴관일과 일정을 공지한다.","경희궁 복원 사업의 후원자를 모집한다.","Seoul City Hikers의 도보 행사를 안내한다.","도시 등산화 신제품 출시를 광고한다."],
+ answers:[4],explanation:"Seoul City Hikers 토요일 하이킹 행사 안내"},
+{id:"q019",num:19,type:"P-4 안내문 일치",cat:"p",pts:3,diff:"mid",paraphrased:false,
+ stem:"위 안내문(Seoul City Hiking Tour) 내용과 일치하는 것을 모두 고르시오. [정답 2개]",
+ passage:`This coming Saturday, the program will start at 10:00 in the morning from City Hall Station. Your entrance fee includes a light snack and a bottle of mineral water. If you are new to the group, please provide your emergency contact information. We do not cancel hikes due to bad weather, but will visit the Seoul Museum of History. Participants may choose not to attend the changed schedule, but no refunds will be given.`,
+ choices:["행사 시작은 토요일 오전 10시 시청역이다.","점심식사가 입장료에 포함된다.","신규 참가자는 비상연락처를 제공해야 한다.","악천후 시 행사가 취소된다.","일정 변경 시 환불이 제공된다."],
+ answers:[1,3],explanation:"② light snack만 / ④ do not cancel / ⑤ no refunds"},
+{id:"q020",num:20,type:"P-22 요약문",cat:"p",pts:2,diff:"low",paraphrased:false,
+ stem:`다음 요약문의 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?
+
+[요약] At Oakville Farmers' Market, the writer enjoys (A)__________ products from local farmers, which are usually (B)__________ than at regular stores.`,
+ passage:`Every Saturday, I go to Oakville Farmers' Market. There I find all kinds of fresh vegetables. They are usually picked only a few hours before I buy them. Because I can buy the items directly from the producers, they are usually much cheaper than at other stores.`,
+ choices:["fresh — cheaper","frozen — more expensive","imported — cheaper","packaged — equal","organic — slower"],
+ answers:[1],explanation:"신선한 농산물 + 일반 가게보다 저렴"},
+{id:"q021",num:21,type:"K-5 어휘",cat:"k",pts:2,diff:"low",paraphrased:false,
+ stem:"밑줄 친 'directly'의 의미로 가장 적절한 것은?",
+ passage:`I can buy the items <u>directly</u> from the producers.`,
+ choices:["즉시","직접","우연히","정확히","무료로"],
+ answers:[2],explanation:"directly = 중간 단계 없이 직접"},
+{id:"q022",num:22,type:"D-4 대화 일치",cat:"d",pts:2,diff:"low",paraphrased:true,
+ paraphrasingNote:"원문 'I like the one showing a skinny polar bear' → 'The picture which shows a thin polar bear is the one I prefer.' (분사 후치수식→관계대명사절, 중)",
+ stem:"위 대화의 내용과 일치하는 것은?",
+ passage:`[변형 대화] B: I'm trying to choose a picture for my story in the school newspaper. It's about endangered animals in the Arctic areas. Which picture do you think is better?
+G: The picture which shows a thin polar bear is the one I prefer.`,
+ choices:["소년은 잡지에 글을 기고하려고 한다.","소녀는 모든 사진을 마음에 들어 했다.","소년의 글은 북극 멸종 위기 동물에 관한 것이다.","소녀는 곰의 사진보다 새의 사진을 좋아한다.","두 사람은 자연 사진사를 직접 인터뷰했다."],
+ answers:[3],explanation:"본문: 'endangered animals in the Arctic areas'"},
+{id:"q023",num:23,type:"K-3 함축 의미",cat:"k",pts:2,diff:"low",paraphrased:false,
+ stem:"밑줄 친 'skinny'의 의미로 가장 적절한 것은?",
+ passage:`G: I like the one showing a <u>skinny</u> polar bear.`,
+ choices:["둥근","거대한","비쩍 마른","사납고 위협적인","갓 태어난"],
+ answers:[3],explanation:"skinny = 비쩍 마른"},
+{id:"q024",num:24,type:"D-5 대화 요지",cat:"d",pts:2,diff:"low",paraphrased:true,
+ paraphrasingNote:"원문 'insects' → 'bugs', 'woods' → 'forest' (단어 동의어 교체, 약)",
+ stem:"위 대화의 요지로 가장 적절한 것은?",
+ passage:`[변형 대화] G: I'll go hiking because we can see wild birds and bugs in the forest.
+B: I'll join you. I like birds and insects.`,
+ choices:["캠프 일정이 갑자기 모두 변경되었다.","두 사람은 오후 프로그램으로 하이킹을 가기로 했다.","수영장 시설이 부족하다는 불평이 있다.","곤충 관찰 동아리에 새로 가입하기로 했다.","캠프 가이드의 자격에 큰 문제가 있다."],
+ answers:[2],explanation:"오후 프로그램으로 함께 하이킹 결정"},
+{id:"q025",num:25,type:"K-1 한글 해석",cat:"k",pts:2,diff:"low",paraphrased:false,
+ stem:"위 대화에서 밑줄 친 문장의 한글 해석으로 가장 적절한 것은?",
+ passage:`G: <u>I'll go hiking because we can see wild birds and insects in the woods.</u>`,
+ choices:["숲에서 야생 조류와 곤충을 볼 수 있으므로 나는 하이킹을 갈 것이다.","숲에서 야생 조류와 곤충을 보았기 때문에 나는 하이킹을 가지 않았다.","숲에서 야생 조류와 곤충을 볼 수 없어서 나는 하이킹을 가지 않을 것이다.","숲에서 야생 조류와 곤충을 사진 찍기 위해 나는 하이킹을 갔다.","숲에서 야생 조류와 곤충에 관한 책을 읽기 위해 나는 하이킹을 갈 것이다."],
+ answers:[1],explanation:"because 이유 + I'll go hiking 미래"},
+{id:"q026",num:26,type:"K-5 어휘 beehive",cat:"k",pts:2,diff:"low",paraphrased:false,
+ stem:"밑줄 친 'beehive'의 의미로 가장 적절한 것은?",
+ passage:`G: Ms. Oh, is that a <u>beehive</u> up in the tree?`,
+ choices:["새 둥지","곰의 굴","벌집","다람쥐 굴","박쥐 동굴"],
+ answers:[3],explanation:"beehive = 벌집"},
+{id:"q027",num:27,type:"D-1 대화 순서",cat:"d",pts:2,diff:"low",paraphrased:true,
+ paraphrasingNote:"선지 (B) 'It's about 150 years old.' 표현 일부 변경 (구문 변형, 중)",
+ stem:"대화가 자연스럽게 이어지도록 (A)~(D)를 순서에 맞게 배열한 것은?",
+ passage:`(주어진 글) W: Everyone, look at this chestnut tree. This is the oldest tree in these woods.
+
+(A) B: Wow! It's ten times my age.
+(B) W: It's about 150 years old.
+(C) B: Can you tell me how old it is?
+(D) G: Ms. Oh, is that a beehive up in the tree?`,
+ choices:["(A)-(B)-(C)-(D)","(B)-(A)-(C)-(D)","(B)-(C)-(A)-(D)","(C)-(A)-(B)-(D)","(C)-(B)-(A)-(D)"],
+ answers:[5],explanation:"나이 질문(C) → 150살(B) → 10배(A) → 벌집 발견(D)"},
+{id:"q028",num:28,type:"P-12 제목",cat:"p",pts:2,diff:"low",paraphrased:false,
+ stem:"다음 글(Amazing Ants)의 제목으로 가장 적절한 것은?",
+ passage:`The Science Project: The Amazing Ants
+We often see ants come out of nowhere. Ants live in colonies which have lots of residents living together. Within a colony, there are usually three different types of ants: the queen, the male, and the worker. Though ants do not speak like humans, they actually have a 'language.' Ants produce a chemical called a pheromone to communicate with one another.`,
+ choices:["The Discovery of New Insect Species","Ant Communication and Daily Life Patterns","Why Ants Are Dangerous to Humans","Aesop's Famous Tales About the Ants","How to Get Rid of Garden Ants"],
+ answers:[2],explanation:"개미의 의사소통과 일상 생활 소개"},
+{id:"q029",num:29,type:"P-4 내용 일치",cat:"p",pts:3,diff:"mid",paraphrased:true,
+ paraphrasingNote:"원문 분사 'called a pheromone' → 'that is called a pheromone' 관계대명사절 변환 (중)",
+ stem:"위 글(Amazing Ants)의 내용과 일치하는 것을 모두 고르시오. [정답 2개]",
+ passage:`[변형 본문 일부] Ants live in colonies which have lots of residents living together. Within a colony, there are three types of ants: queen, male, worker. Worker ants are all female. Ants produce a chemical that is called a pheromone to communicate. Ants do not have lungs but breathe through small holes.`,
+ choices:["지구상에 인간 1명당 약 100마리의 개미가 산다.","개미 군집에는 보통 세 종류의 개미가 있다.","일개미는 모두 수컷이다.","개미는 페로몬이라는 화학 물질로 의사소통한다.","개미는 폐로 호흡한다."],
+ answers:[2,4],explanation:"① 100만 마리 / ③ 모두 암컷 / ⑤ 폐 없이 작은 구멍"},
+{id:"q030",num:30,type:"G-1 ★ 분사 후치수식",cat:"g",pts:3,diff:"mid",paraphrased:false,
+ stem:"다음 중 분사 후치수식의 쓰임이 어법상 올바른 것을 모두 고르시오. [정답 2개]",
+ passage:"",
+ choices:["The boy invited to the party is my friend.","The students studying in the library are quiet.","The window breaking by the ball was repaired.","The book wrote by the author is famous.","The girl danced on the stage is talented."],
+ answers:[1,2],explanation:"③ breaking→broken / ④ wrote→written / ⑤ danced→dancing"},
+{id:"q031",num:31,type:"T-3 원문 정확 재현",cat:"t",pts:2,diff:"low",paraphrased:true,
+ paraphrasingNote:"오답 선지에 동의어 다수 사용(live→reside/dwell/exist/stay 등 매력 오답, 약)",
+ stem:"다음 중 본문(Amazing Ants)에 그대로 사용된 표현은?",
+ passage:"",
+ choices:["Ants reside in colonies which have many residents staying together.","Ants live in colonies which have lots of residents living together.","Ants dwell in groups which have a lot of members residing together.","Ants exist in colonies that have many people living together.","Ants stay in colonies which contain lots of inhabitants living together."],
+ answers:[2],explanation:"본문 원문 그대로 'Ants live in colonies which have lots of residents living together.'"},
+{id:"q032",num:32,type:"K-4 세부 내용",cat:"k",pts:2,diff:"low",paraphrased:false,
+ stem:"위 글(Amazing Ants - FUN FACTS)의 내용과 일치하는 것은?",
+ passage:`Some queen ants live up to 30 years. Some ants can carry things that are 50 times their own body weight. Ants do not have lungs but breathe through small holes in their bodies. An ant has two stomachs. Most ants can swim and live 24 hours underwater.`,
+ choices:["모든 개미는 평균 30년을 산다.","일부 여왕 개미는 30년까지 살 수 있다.","일개미는 한 달밖에 살지 못한다.","개미 군집에는 한 마리의 일개미만 있다.","수개미는 평생 알을 낳는다."],
+ answers:[2],explanation:"본문 'Some queen ants live up to 30 years.'"},
+{id:"q033",num:33,type:"G-1 ★ 분사 식별",cat:"g",pts:4,diff:"high",paraphrased:false,
+ stem:"다음 중 분사가 후치수식하는 표현이 어법상 올바른 문장을 모두 고르시오.",
+ passage:"",
+ choices:["The leaves falling from the tree are red.","The cake baking in the oven smells delicious.","The man arrested by the police was guilty.","The children playing in the park are happy.","The letter written by my grandmother was touching."],
+ answers:[1,3,4,5],explanation:"② baking→being baked/baked (수동 — 케이크는 구워지는 대상) / ①③④⑤ 능동·수동 정확"},
+{id:"q034",num:34,type:"P-9 빈칸 추론",cat:"p",pts:3,diff:"mid",paraphrased:true,
+ paraphrasingNote:"원문 'When they go looking for food, they form three neat lanes automatically' → 'When ants are searching for food, they automatically arrange themselves into three orderly lanes' (구문 변형, 중)",
+ stem:"위 글의 빈칸 (A) 또는 (B) 자리에 들어갈 수 있는 표현을 모두 고르시오. [정답 2개]",
+ passage:`[변형 본문] When ants are searching for food, they automatically arrange themselves into three orderly lanes. The middle one is for ants (A)__________. The two lanes on the sides are for ants (B)__________.`,
+ choices:["carrying food home","resting in the colony","searching for danger","going out to collect food","exchanging chemicals"],
+ answers:[1,4],explanation:"중간 차선=집으로 음식 운반 / 양옆 차선=음식 수집"},
+{id:"q035",num:35,type:"P-8 무관 문장",cat:"p",pts:2,diff:"low",paraphrased:false,
+ stem:"다음 글의 ⓐ~ⓔ 중 전체 흐름과 관계 없는 문장은?",
+ passage:`Ants never have traffic jams. ⓐ In fact, they seem to be able to control traffic better than humans. ⓑ When they go looking for food, they form three neat lanes automatically. ⓒ Honeybees use a special dance to share the location of flowers. ⓓ The middle one is for ants carrying food home. ⓔ The two lanes on the sides are for ants going out to collect food.`,
+ choices:["ⓐ","ⓑ","ⓒ","ⓓ","ⓔ"],
+ answers:[3],explanation:"꿀벌 댄스는 개미 교통과 무관"},
+{id:"q036",num:36,type:"T-4 빈칸 문맥",cat:"t",pts:2,diff:"low",paraphrased:false,
+ stem:"다음 본문 빈칸에 들어갈 말로 가장 적절한 것은?",
+ passage:`No one breaks these rules. And no one tries to __________ in line.`,
+ choices:["stand","cut","wait","run","jump"],
+ answers:[2],explanation:"cut in line = 새치기하다"},
+{id:"q037",num:37,type:"P-7 한 문장 요약",cat:"p",pts:4,diff:"high",paraphrased:false,
+ stem:`위 글(Ants traffic)을 한 문장으로 요약한 것이다. 빈칸 (A), (B)에 들어갈 단어 조합을 모두 고르시오.
+
+[요약] Ants form (A)__________ lanes when collecting food, and studying them might help solve human (B)__________.`,
+ passage:`Ants never have traffic jams. When they go looking for food, they form three neat lanes automatically. Scientists say that if we study about ants more, we might be able to get a hint for solving traffic problems in the human world.`,
+ choices:["organized — traffic problems","chaotic — communication issues","random — food shortages","neat — traffic problems","confused — health issues"],
+ answers:[1,4],explanation:"organized = neat (질서정연한) / solving traffic problems"},
+{id:"q038",num:38,type:"P-4 내용 일치",cat:"p",pts:2,diff:"low",paraphrased:true,
+ paraphrasingNote:"원문 'Each of these naps lasts only about a minute. This means that the worker ants sleep for about four hours each day.' → 'Each nap lasts only about a minute, which means they sleep for about four hours each day.' (관계대명사 which, 중)",
+ stem:"위 글(Ants rest)의 내용과 일치하는 것은?",
+ passage:`[변형 본문] Although ants seem to be busy all the time, this is not true. Worker ants take very short naps about 250 times a day. Each nap lasts only about a minute, which means they sleep for about four hours each day. On the other hand, queen ants fall asleep 90 times a day, sleeping for about six minutes at a time. This means they sleep for about nine hours each day.`,
+ choices:["일개미는 하루에 약 4시간을 잔다.","일개미는 한 번에 1시간씩 낮잠을 잔다.","여왕개미는 하루에 한 번 잔다.","여왕개미는 하루에 약 4시간을 잔다.","일개미는 잠을 자지 않는다."],
+ answers:[1],explanation:"② 1분 / ③ 90회 / ④ 9시간 / ⑤ 잠 잠"},
+{id:"q039",num:39,type:"T-6 True/False 조합",cat:"t",pts:4,diff:"high",paraphrased:false,
+ stem:"다음 중 본문(Ants rest) 내용에 부합하는 것을 모두 고르시오.",
+ passage:`Worker ants rest by taking very short naps about 250 times a day. Each of these naps lasts only about a minute. This means that the worker ants sleep for about four hours each day. On the other hand, queen ants fall asleep 90 times a day, and they sleep for about six minutes at a time. This means that they sleep for about nine hours each day.`,
+ choices:["Worker ants take naps about 250 times a day.","Each worker ant nap lasts only one hour.","Worker ants sleep about 4 hours daily.","Queen ants sleep 90 minutes total per day.","Queen ants sleep about 9 hours daily."],
+ answers:[1,3,5],explanation:"② 1분 / ④ 90회·9시간 (90분 아님)"},
+{id:"q040",num:40,type:"T-3 원문 정확 재현",cat:"t",pts:4,diff:"high",paraphrased:false,
+ stem:"다음 중 본문(Ants rest)에 그대로 사용된 표현을 모두 고르시오.",
+ passage:"",
+ choices:["In summary, ants sleep and rest just like us, though they do so in a different way.","In short, ants sleep and rest exactly like us, though they do so in a different manner.","In short, ants sleep and rest just like us, though they do so in a different way.","In conclusion, ants sleep and rest just like us, although they do so in a different way.","Briefly, ants sleep and rest just like humans, though they do so in a different style."],
+ answers:[3],explanation:"본문 원문 'In short, ants sleep and rest just like us, though they do so in a different way.'"}
+];
+
+let state={screen:"start",currentQ:0,userAnswers:{},score:0,wrongIds:[],retryMode:null,attempt:1};
+const app=document.getElementById("app");
+const totalPts=QUESTIONS.reduce((s,q)=>s+q.pts,0);
+const objCount=QUESTIONS.length;
+const lowCount=QUESTIONS.filter(q=>q.diff==="low").length;
+const midCount=QUESTIONS.filter(q=>q.diff==="mid").length;
+const highCount=QUESTIONS.filter(q=>q.diff==="high").length;
+const paraCount=QUESTIONS.filter(q=>q.paraphrased).length;
+
+function getActiveQs(){if(state.retryMode==="wrong") return QUESTIONS.filter(q=>state.wrongIds.includes(q.id));return QUESTIONS;}
+function isCorrect(userArr,correctArr){
+  if(!userArr||userArr.length!==correctArr.length) return false;
+  const su=[...userArr].sort();const sc=[...correctArr].sort();
+  return su.every((v,i)=>v===sc[i]);
+}
+function render(){switch(state.screen){case"start":renderStart();break;case"quiz":renderQuiz();break;case"result":renderResult();break;case"review":renderReview();break;}}
+
+function renderStart(){
+  app.innerHTML=`<div class="start-screen">
+    <h1>2026 해솔중 3학년 영어 기말고사 모의시험</h1>
+    <p class="sub-title">finaltermM3 Set 1 · 40문제 · 100점</p>
+    <div class="info-box">
+      <strong>총 ${objCount}문제</strong> | 만점 <strong>${totalPts}점</strong><br><br>
+      <strong>난이도 [하]</strong> ${lowCount}문제 — 단일 정답 (라디오)<br>
+      <strong>난이도 [중]</strong> ${midCount}문제 — 복수 정답, 개수 공개 (체크박스)<br>
+      <strong>난이도 [상]</strong> ${highCount}문제 — 복수 정답, 개수 비공개 (체크박스)<br><br>
+      <strong>✏️ Paraphrasing 적용:</strong> ${paraCount}문제 (전체 ${Math.round(paraCount/objCount*100)}%)<br>
+      <strong>★ 중3 4대 문법:</strong> 분사 후치수식 · since/though · 관계부사 · if/whether<br><br>
+      <strong>채점 규칙 (M3):</strong><br>
+      • 95점 이상 — 🎉 EXCELLENT! 축포!<br>
+      • 90~94점 — 틀린 문제만 재도전 (축포 없음)<br>
+      • 90점 미만 — 전체 처음부터 재도전
+    </div>
+    <button class="btn btn-primary" onclick="startQuiz()" style="font-size:1.05rem;padding:14px 44px">시작하기</button>
+  </div>`;
+}
+
+function startQuiz(){state.screen="quiz";state.currentQ=0;state.userAnswers={};state.score=0;state.wrongIds=[];render();}
+
+function renderQuiz(){
+  const qs=getActiveQs();const q=qs[state.currentQ];const total=qs.length;
+  const answered=Object.keys(state.userAnswers).filter(k=>state.userAnswers[k]&&state.userAnswers[k].length>0).length;
+  const pct=Math.round(((state.currentQ+1)/total)*100);
+  const isMulti=q.diff==="mid"||q.diff==="high";
+  const sel=state.userAnswers[q.id]||[];
+  const diffLabel=q.diff==="low"?"하":q.diff==="mid"?"중":"상";
+  const diffHint=q.diff==="mid"?` [정답 ${q.answers.length}개]`:"";
+
+  app.innerHTML=`
+  <div class="progress-text"><span>${state.currentQ+1} / ${total}</span><span>${answered}/${total} 완료</span></div>
+  <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+  <div class="q-map">${qs.map((qq,i)=>{let cls="q-dot";if(i===state.currentQ) cls+=" current";else if(state.userAnswers[qq.id]&&state.userAnswers[qq.id].length>0) cls+=" answered";return`<div class="${cls}" onclick="goTo(${i})" title="${qq.num}번">${qq.num}</div>`}).join("")}</div>
+  <div class="card${q.paraphrased?" paraphrased":""}">
+    <div class="q-header">
+      <div class="q-num">${q.num}</div>
+      <span class="q-type ${q.cat}">${escapeHTML(q.type)}</span>
+      <span class="q-pts">${q.pts}점</span>
+      <span class="q-diff ${q.diff}">난이도 ${diffLabel}</span>
+      ${q.paraphrased?`<span class="q-para-badge">✏️ Paraphrased</span>`:""}
+    </div>
+    <div class="stem">${escapeHTML(q.stem)}${diffHint}</div>
+    ${q.passage?`<div class="passage">${q.passage}</div>`:""}
+    <ul class="choices">${q.choices.map((c,i)=>{
+      const num=i+1;const checked=sel.includes(num);
+      return`<li class="choice${checked?" selected":""}" onclick="selectChoice(${num},${isMulti})">
+        <input type="${isMulti?"checkbox":"radio"}" name="q${q.id}" ${checked?"checked":""}>
+        <span>${"①②③④⑤"[i]} ${escapeHTML(c)}</span>
+      </li>`}).join("")}</ul>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-outline btn-sm" ${state.currentQ===0?"disabled":""} onclick="goTo(${state.currentQ-1})">◀ 이전</button>
+    ${state.currentQ===total-1?`<button class="btn btn-success btn-sm" onclick="submitQuiz()">제출하기 ✓</button>`:`<button class="btn btn-primary btn-sm" onclick="goTo(${state.currentQ+1})">다음 ▶</button>`}
+  </div>`;
+}
+
+function selectChoice(num,isMulti){
+  const qs=getActiveQs();const q=qs[state.currentQ];
+  let sel=state.userAnswers[q.id]||[];
+  if(isMulti){if(sel.includes(num)) sel=sel.filter(n=>n!==num);else sel=[...sel,num];}
+  else{sel=[num];}
+  state.userAnswers[q.id]=sel;render();
+}
+
+function goTo(i){const qs=getActiveQs();if(i>=0&&i<qs.length){state.currentQ=i;render()}}
+
+function submitQuiz(){
+  const qs=getActiveQs();
+  const unanswered=qs.filter(q=>!state.userAnswers[q.id]||state.userAnswers[q.id].length===0);
+  if(unanswered.length>0){if(!confirm(`아직 ${unanswered.length}문제를 풀지 않았습니다. 그래도 제출하시겠습니까?`)) return;}
+  let score=0;const wrong=[];
+  qs.forEach(q=>{if(isCorrect(state.userAnswers[q.id],q.answers)) score+=q.pts;else wrong.push(q.id);});
+  state.score=score;state.wrongIds=wrong;state.screen="result";render();
+  if(state.score>=95) launchConfetti();
+}
+
+function renderResult(){
+  const qs=getActiveQs();const maxPts=qs.reduce((s,q)=>s+q.pts,0);
+  const pct=Math.round((state.score/maxPts)*100);const wrongCount=state.wrongIds.length;const correctCount=qs.length-wrongCount;
+  let cls,msg,btns;
+  // M3 채점 규칙: 95+축포 / 90~94 틀린문제 / 90미만 전체
+  if(state.score>=95){
+    cls="perfect";msg=`<b>🎉 EXCELLENT!</b> ${state.score}점!<br>대단합니다, 정말 잘했어요!`;
+    btns=`${wrongCount>0?`<button class="btn btn-success" onclick="retryWrong()">틀린 문제 재도전</button>`:""}<button class="btn btn-outline" onclick="showReview()">오답 복습</button><button class="btn btn-primary" onclick="resetAll()">처음부터 다시</button>`;
+  }else if(state.score>=90){
+    cls="great";msg=`훌륭합니다! ${pct}점 (${state.score}/${maxPts}점)<br>틀린 ${wrongCount}문제만 다시 풀어보세요.`;
+    btns=`<button class="btn btn-success" onclick="retryWrong()">틀린 문제만 재도전</button><button class="btn btn-outline" onclick="showReview()">오답 복습</button><button class="btn btn-outline" onclick="resetAll()">처음부터 다시</button>`;
+  }else{
+    cls="retry";msg=`${pct}점 (${state.score}/${maxPts}점)<br>전체 문제를 처음부터 다시 도전해 보세요!`;
+    btns=`<button class="btn btn-outline" onclick="showReview()">오답 복습</button><button class="btn btn-danger" onclick="resetAll()">전체 처음부터 재도전</button>`;
+  }
+  app.innerHTML=`<div class="result-screen">
+    <h2 style="margin-bottom:6px">${state.attempt>1?`${state.attempt}차 `:""}채점 결과</h2>
+    <div class="score-circle ${cls}"><span>${state.score}</span><small>/ ${maxPts}점</small></div>
+    <div class="result-msg">${msg}</div>
+    <div class="result-detail">
+      <b>정답:</b> ${correctCount}문제 / <b>오답:</b> ${wrongCount}문제<br>
+      <b>정답률:</b> ${pct}%<br>
+      ${wrongCount>0?`<b>틀린 문제 번호:</b> ${state.wrongIds.map(id=>QUESTIONS.find(x=>x.id===id)?.num).filter(Boolean).sort((a,b)=>a-b).join(", ")}번`:""}
+    </div>
+    <div class="result-btns">${btns}</div>
+  </div>`;
+}
+
+function retryWrong(){state.retryMode="wrong";state.attempt++;state.screen="quiz";state.currentQ=0;state.userAnswers={};state.score=0;render();}
+function resetAll(){state.retryMode=null;state.attempt=1;state.screen="start";state.userAnswers={};state.score=0;state.wrongIds=[];render();}
+function showReview(){state.screen="review";render();}
+
+function renderReview(){
+  const qs=getActiveQs();
+  app.innerHTML=`<div class="card">
+    <h2 style="color:var(--primary);margin-bottom:14px">📖 오답 복습</h2>
+    ${qs.filter(q=>state.wrongIds.includes(q.id)).map(q=>{
+      const myAns=state.userAnswers[q.id]&&state.userAnswers[q.id].length>0?state.userAnswers[q.id].sort((a,b)=>a-b).map(n=>"①②③④⑤"[n-1]).join(", "):"(미응답)";
+      const correctAns=q.answers.sort((a,b)=>a-b).map(n=>`${"①②③④⑤"[n-1]} ${escapeHTML(q.choices[n-1])}`).join("<br>");
+      return `<div class="card review-card${q.paraphrased?" paraphrased":""}">
+        <div class="q-header">
+          <div class="q-num">${q.num}</div>
+          <span class="q-type ${q.cat}">${escapeHTML(q.type)}</span>
+          <span class="q-pts">${q.pts}점</span>
+          ${q.paraphrased?`<span class="q-para-badge">✏️ Paraphrased</span>`:""}
+        </div>
+        <div class="stem">${escapeHTML(q.stem)}</div>
+        ${q.passage?`<div class="passage">${q.passage}</div>`:""}
+        <div class="my-answer"><b>[내 답안]</b> ${myAns}</div>
+        <div class="model-answer"><b>[정답]</b><br>${correctAns}</div>
+        <div class="explanation"><b>해설:</b> ${escapeHTML(q.explanation)}</div>
+        ${q.paraphrased&&q.paraphrasingNote?`<div class="para-note"><b>✏️ Paraphrasing:</b> ${escapeHTML(q.paraphrasingNote)}</div>`:""}
+      </div>`;
+    }).join("")}
+    <div style="text-align:center;margin-top:18px"><button class="btn btn-outline" onclick="state.screen='result';render()">결과로 돌아가기</button></div>
+  </div>`;
+}
+
+function escapeHTML(s){if(s===null||s===undefined) return "";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/&lt;u&gt;/g,"<u>").replace(/&lt;\/u&gt;/g,"</u>").replace(/&lt;b&gt;/g,"<b>").replace(/&lt;\/b&gt;/g,"</b>");}
+
+function launchConfetti(){
+  const canvas=document.getElementById("confetti-canvas");const ctx=canvas.getContext("2d");
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const colors=["#4f46e5","#7c3aed","#f59e0b","#16a34a","#db2777","#fbbf24"];
+  const parts=[];for(let i=0;i<140;i++){parts.push({x:Math.random()*canvas.width,y:-20,vx:(Math.random()-0.5)*5,vy:Math.random()*4+3,size:Math.random()*8+4,color:colors[Math.floor(Math.random()*colors.length)],angle:Math.random()*Math.PI*2,spin:(Math.random()-0.5)*0.2});}
+  let frame=0;function tick(){ctx.clearRect(0,0,canvas.width,canvas.height);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.angle+=p.spin;p.vy+=0.05;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.angle);ctx.fillStyle=p.color;ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);ctx.restore();});frame++;if(frame<260) requestAnimationFrame(tick);else ctx.clearRect(0,0,canvas.width,canvas.height);}tick();
+}
+render();
+</script>
+</body>
+</html>
