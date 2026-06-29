@@ -304,7 +304,8 @@ const Q=[
  answers:[2],explanation:"개미 수면 정보 전달 — 호기심 자극"}
 ];
 
-let state={screen:"start",cur:0,ans:{},score:0,wrong:[],retry:null,att:1};
+let state={screen:"start",cur:0,ans:{},score:0,wrong:[],retry:null,att:1,startTime:0,elapsed:0};
+function fmt(ms){if(!ms||ms<0) return "0초";const s=Math.floor(ms/1000);const m=Math.floor(s/60);const r=s%60;return m>0?`${m}분 ${r}초`:`${r}초`;}
 const app=document.getElementById("app");
 const TOT=Q.reduce((s,q)=>s+q.pts,0);
 const lowC=Q.filter(q=>q.diff==="low").length;
@@ -337,7 +338,7 @@ function rStart(){
   </div>`;
 }
 
-function start(){state.screen="quiz";state.cur=0;state.ans={};state.score=0;state.wrong=[];render();}
+function start(){state.screen="quiz";state.cur=0;state.ans={};state.score=0;state.wrong=[];state.startTime=Date.now();state.elapsed=0;render();}
 
 function rQuiz(){
   const qs=activeQs();const q=qs[state.cur];const total=qs.length;
@@ -387,6 +388,7 @@ function submit(){
   if(unanswered.length>0){if(!confirm(`아직 ${unanswered.length}문제를 풀지 않았습니다. 그래도 제출하시겠습니까?`)) return;}
   let score=0;const wrong=[];
   qs.forEach(q=>{if(isCorrect(state.ans[q.id],q.answers)) score+=q.pts;else wrong.push(q.id);});
+  state.elapsed=Date.now()-state.startTime;
   state.score=score;state.wrong=wrong;state.screen="result";render();
   if(state.score>=95) confetti();
 }
@@ -407,13 +409,14 @@ function rRes(){
     <div class="result-msg">${msg}</div>
     <div class="result-detail">
       <b>정답:</b> ${cc}문제 / <b>오답:</b> ${wc}문제 / <b>정답률:</b> ${pct}%<br>
+      <b>⏱ 풀이 시간:</b> ${fmt(state.elapsed)}<br>
       ${wc>0?`<b>틀린 문제:</b> ${state.wrong.map(id=>Q.find(x=>x.id===id)?.num).filter(Boolean).sort((a,b)=>a-b).join(", ")}번`:""}
     </div>
     <div class="result-btns">${btns}</div>
   </div>`;
 }
 
-function retryW(){state.retry="wrong";state.att++;state.screen="quiz";state.cur=0;state.ans={};state.score=0;render();}
+function retryW(){state.retry="wrong";state.att++;state.screen="quiz";state.cur=0;state.ans={};state.score=0;state.startTime=Date.now();state.elapsed=0;render();}
 function resetAll(){state.retry=null;state.att=1;state.screen="start";state.ans={};state.score=0;state.wrong=[];render();}
 function showRev(){state.screen="review";render();}
 
