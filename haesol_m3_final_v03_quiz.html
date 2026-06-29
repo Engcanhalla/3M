@@ -408,6 +408,7 @@ function rRes(){
     <div class="score-circle ${cls}"><span>${state.score}</span><small>/ ${max}점</small></div>
     <div class="result-msg">${msg}</div>
     <div class="result-detail">
+      <b>📋 시험:</b> finaltermM3 Set 3<br>
       <b>정답:</b> ${cc}문제 / <b>오답:</b> ${wc}문제 / <b>정답률:</b> ${pct}%<br>
       <b>⏱ 풀이 시간:</b> ${fmt(state.elapsed)}<br>
       ${wc>0?`<b>틀린 문제:</b> ${state.wrong.map(id=>Q.find(x=>x.id===id)?.num).filter(Boolean).sort((a,b)=>a-b).join(", ")}번`:""}

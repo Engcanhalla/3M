@@ -333,7 +333,8 @@ B, G: Unbelievable!`,
  answers:[2],explanation:"본문 원문 그대로 'queen ants fall asleep 90 times a day, and they sleep for about six minutes at a time'"}
 ];
 
-let state={screen:"start",currentQ:0,userAnswers:{},score:0,wrongIds:[],retryMode:null,attempt:1};
+let state={screen:"start",currentQ:0,userAnswers:{},score:0,wrongIds:[],retryMode:null,attempt:1,startTime:0,elapsed:0};
+function fmt(ms){if(!ms||ms<0) return "0초";const s=Math.floor(ms/1000);const m=Math.floor(s/60);const r=s%60;return m>0?`${m}분 ${r}초`:`${r}초`;}
 const app=document.getElementById("app");
 const totalPts=QUESTIONS.reduce((s,q)=>s+q.pts,0);
 const objCount=QUESTIONS.length;
@@ -366,7 +367,7 @@ function renderStart(){
   </div>`;
 }
 
-function startQuiz(){state.screen="quiz";state.currentQ=0;state.userAnswers={};state.score=0;state.wrongIds=[];render();}
+function startQuiz(){state.screen="quiz";state.currentQ=0;state.userAnswers={};state.score=0;state.wrongIds=[];state.startTime=Date.now();state.elapsed=0;render();}
 
 function renderQuiz(){
   const qs=getActiveQs();const q=qs[state.currentQ];const total=qs.length;
@@ -415,6 +416,7 @@ function submitQuiz(){
   if(unanswered.length>0){if(!confirm(`아직 ${unanswered.length}문제를 풀지 않았습니다. 그래도 제출하시겠습니까?`)) return;}
   let score=0;const wrong=[];
   qs.forEach(q=>{if(isCorrect(state.userAnswers[q.id],q.answers)) score+=q.pts;else wrong.push(q.id);});
+  state.elapsed=Date.now()-state.startTime;
   state.score=score;state.wrongIds=wrong;state.screen="result";render();
   if(state.score>=95) launchConfetti();
 }
@@ -438,15 +440,17 @@ function renderResult(){
     <div class="score-circle ${cls}"><span>${state.score}</span><small>/ ${maxPts}점</small></div>
     <div class="result-msg">${msg}</div>
     <div class="result-detail">
+      <b>📋 시험:</b> finaltermM3 Set 2<br>
       <b>정답:</b> ${correctCount}문제 / <b>오답:</b> ${wrongCount}문제<br>
       <b>정답률:</b> ${pct}%<br>
+      <b>⏱ 풀이 시간:</b> ${fmt(state.elapsed)}<br>
       ${wrongCount>0?`<b>틀린 문제 번호:</b> ${state.wrongIds.map(id=>QUESTIONS.find(x=>x.id===id)?.num).filter(Boolean).sort((a,b)=>a-b).join(", ")}번`:""}
     </div>
     <div class="result-btns">${btns}</div>
   </div>`;
 }
 
-function retryWrong(){state.retryMode="wrong";state.attempt++;state.screen="quiz";state.currentQ=0;state.userAnswers={};state.score=0;render();}
+function retryWrong(){state.retryMode="wrong";state.attempt++;state.screen="quiz";state.currentQ=0;state.userAnswers={};state.score=0;state.startTime=Date.now();state.elapsed=0;render();}
 function resetAll(){state.retryMode=null;state.attempt=1;state.screen="start";state.userAnswers={};state.score=0;state.wrongIds=[];render();}
 function showReview(){state.screen="review";render();}
 
