@@ -257,6 +257,60 @@
   .cloze-input.correct{border-color:var(--grade);background:rgba(16,185,129,.15);color:#a7f3d0;}
   .cloze-input.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
   .input-box.only-btn{justify-content:center;}
+  /* 첫글자 프리필 인풋 — 미리 채워진 첫 글자를 시각적으로 강조 */
+  .prefill-input{caret-color:#fef3c7;font-family:'Courier New',ui-monospace,monospace;letter-spacing:.05em;font-weight:700;}
+  .prefill-hint{color:#c4b5fd;font-size:.82rem;font-weight:500;margin-left:6px;letter-spacing:0;}
+  /* ---------- 낱말박스 (자동완성 방어) ---------- */
+  .word-answer{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:center;margin:6px 0;}
+  .word-answer.inline{display:inline-flex;gap:8px;vertical-align:middle;margin:0 4px;}
+  .word-group{
+    display:inline-flex;align-items:center;gap:0;
+    background:rgba(11,18,32,.7);border:1.5px solid #334155;border-radius:8px;
+    padding:0;transition:all .15s;overflow:hidden;flex-shrink:0;
+  }
+  .word-group:focus-within{border-color:#a78bfa;box-shadow:0 0 0 3px rgba(168,139,250,.22);}
+  .word-group.correct{border-color:var(--grade);background:rgba(16,185,129,.10);}
+  .word-group.wrong{border-color:var(--danger);background:rgba(239,68,68,.10);}
+  /* 폰트: body 상속 sans-serif (이전 .input-box input과 동일한 스타일) */
+  .first-letter{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:26px;padding:0 8px;height:44px;line-height:44px;
+    background:linear-gradient(180deg,#3b2966 0%,#2a1e4d 100%);
+    color:#fef3c7;
+    font-family:inherit;
+    font-size:1.15rem;font-weight:600;letter-spacing:.5px;
+    text-transform:lowercase;
+    border-right:1px solid #8b5cf6;user-select:none;
+  }
+  .rest-input{
+    border:0;background:transparent;color:var(--text);outline:none;
+    font-family:inherit;
+    font-size:1.15rem;font-weight:600;letter-spacing:.5px;
+    padding:0 10px;height:44px;line-height:44px;width:120px;min-width:90px;
+    text-transform:lowercase;
+  }
+  .rest-input::placeholder{color:#475569;font-weight:400;}
+  .word-group.correct .rest-input{color:#a7f3d0;}
+  .word-group.wrong .rest-input{color:#fca5a5;}
+  .cloze-sentence .word-answer{display:inline-flex;flex-wrap:wrap;gap:6px 8px;margin:0 4px;vertical-align:middle;}
+  .cloze-sentence .word-group{border-radius:6px;}
+  .cloze-sentence .first-letter{height:38px;line-height:38px;font-size:1.05rem;min-width:22px;padding:0 7px;}
+  .cloze-sentence .rest-input{height:38px;line-height:38px;font-size:1.05rem;width:100px;min-width:70px;padding:0 9px;}
+  /* .input-box input 스타일이 .rest-input을 override 하는 문제 해결 */
+  .input-box .word-answer input.rest-input{
+    background:transparent;border:0;padding:0 10px;
+    min-height:44px;height:44px;line-height:44px;text-align:left;
+    font-family:inherit;
+    font-size:1.15rem;font-weight:600;letter-spacing:.5px;
+    text-transform:lowercase;
+    width:120px;min-width:90px;box-shadow:none;
+  }
+  .input-box .word-answer input.rest-input:focus{border:0;box-shadow:none;}
+  /* single-letter 그룹 */
+  .word-group.single-letter{background:rgba(11,18,32,.5);}
+  .word-group.single-letter input.rest-input{width:80px;min-width:60px;}
+  .hint-line{margin-top:12px;padding:10px 14px;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.35);border-radius:10px;color:#c4b5fd;font-size:.95rem;line-height:1.55;text-align:center;letter-spacing:.03em;}
+  .hint-line b{color:#fef3c7;font-weight:800;font-family:'Courier New',ui-monospace,monospace;font-size:1.05rem;letter-spacing:.15em;margin:0 2px;}
 
   /* ---------- CARD STUDY ---------- */
   .stage{position:relative;padding:14px 2px;perspective:1200px;flex:1;display:flex;flex-direction:column;}
@@ -649,6 +703,66 @@
     from{box-shadow:0 12px 40px rgba(168,85,247,.45),0 0 0 1px rgba(255,255,255,.15) inset;}
     to  {box-shadow:0 20px 60px rgba(245,158,11,.65),0 0 0 1px rgba(255,255,255,.35) inset;}
   }
+  /* 고등학교 심화 100% — 화면 전체 랜덤 축하 오버레이 */
+  .hg-celebration{
+    position:fixed;inset:0;z-index:9999;pointer-events:none;
+    background:radial-gradient(ellipse at center, rgba(15,23,42,.55) 0%, rgba(2,6,23,.90) 60%, rgba(0,0,0,.98) 100%);
+    display:flex;align-items:center;justify-content:center;padding:24px;
+    animation:hgFadeIn .35s ease-out both, hgFadeOut .8s ease-in 5.2s forwards;
+  }
+  .hg-celebration::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(251,191,36,.30), transparent 20%),
+      radial-gradient(circle at 80% 25%, rgba(236,72,153,.28), transparent 22%),
+      radial-gradient(circle at 30% 75%, rgba(59,130,246,.28), transparent 24%),
+      radial-gradient(circle at 75% 80%, rgba(16,185,129,.28), transparent 22%);
+    animation:hgSwirl 6s ease-in-out infinite alternate;
+    pointer-events:none;
+  }
+  .hg-halo{
+    position:absolute;inset:0;pointer-events:none;
+    background:conic-gradient(from 0deg,#fbbf24,#ef4444,#a855f7,#3b82f6,#10b981,#fbbf24);
+    mix-blend-mode:screen;opacity:.28;
+    animation:hgRotate 12s linear infinite;
+  }
+  .hg-msg{
+    position:relative;font-family:inherit;
+    font-size:clamp(28px, 6vw, 68px);font-weight:900;line-height:1.25;text-align:center;
+    padding:32px 40px;max-width:92vw;letter-spacing:-.01em;
+    background:linear-gradient(90deg,#fbbf24,#ef4444,#ec4899,#a855f7,#3b82f6,#10b981,#fbbf24);
+    background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 24px rgba(251,191,36,.75)) drop-shadow(0 0 40px rgba(236,72,153,.45));
+    animation:hgRainbow 3.5s linear infinite, hgPop 1.6s cubic-bezier(.2,.7,.1,1.4) both, hgFloat 4s ease-in-out infinite alternate 1.6s;
+  }
+  .hg-sparkle{
+    position:absolute;pointer-events:none;font-size:clamp(24px,3vw,36px);
+    animation:hgSparkle 1.8s ease-in-out infinite;
+  }
+  @keyframes hgFadeIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes hgFadeOut{to{opacity:0;visibility:hidden;}}
+  @keyframes hgRainbow{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+  @keyframes hgPop{
+    0%{transform:scale(.15) rotate(-25deg);opacity:0;}
+    35%{transform:scale(1.28) rotate(6deg);opacity:1;}
+    55%{transform:scale(.94) rotate(-3deg);}
+    75%{transform:scale(1.08) rotate(1.5deg);}
+    100%{transform:scale(1) rotate(0);opacity:1;}
+  }
+  @keyframes hgFloat{
+    from{transform:translateY(-6px) scale(1);}
+    to{transform:translateY(6px) scale(1.02);}
+  }
+  @keyframes hgSwirl{
+    0%{transform:scale(1) rotate(0);}
+    100%{transform:scale(1.15) rotate(8deg);}
+  }
+  @keyframes hgRotate{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+  @keyframes hgSparkle{
+    0%,100%{opacity:0;transform:scale(.4) rotate(0deg);}
+    50%{opacity:1;transform:scale(1.2) rotate(180deg);}
+  }
   .result-stats{
     display:grid;grid-template-columns:1fr 1fr;gap:10px;
     margin:22px 0;
@@ -793,45 +907,45 @@ const DATA = {
   gradeColor: "#8b5cf6",
   newWords: [
     {"id":"w04858","w":"photograph","pos":["n","v"],"ph":"/ˈfoʊtəɡræf/","cefr":"A2","kr":["사진","사진 찍다"],"ex":[{"en":"She framed the photograph of her family.","ko":"그녀는 가족 사진을 액자에 넣었다."}],"mnemonic":{"soundHint":"포토그래프 → 포토(사진)+그래프(그림)","story":"'포토(photo)'는 이미 우리말처럼 쓰는 사진, '그래프(graph)'는 그림·기록이야. 합치면 '빛으로 그린 그림' = 사진(photograph)이 되지.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"camera","ko":"카메라","reason":"photograph를 찍는 도구, 필수 연상 콜로케이션"},{"w":"album","ko":"앨범","reason":"photograph를 모아 보관하는 장소"},{"w":"portrait","ko":"초상 사진","reason":"photograph의 하위 종류로 시나리오 연결"}],"collocBest":[{"en":"take a photograph","ko":"사진을 찍다"},{"en":"black and white photograph","ko":"흑백 사진"}]},"nuance":{"koSimple":"찰칵 셔터로 담아 액자에 넣는 한 컷","whenToUse":"사진 자체나 사진 찍는 행위 말할 때"},"krDetail":[{"ko":"사진","explain":"빛으로 찍어낸 그림"},{"ko":"사진 찍다","explain":"카메라로 모습을 담다"}],"usageExamples":[{"en":"My uncle photographed the whole wedding for free.","ko":"우리 삼촌은 결혼식 전체를 무료로 사진 찍어 주셨다."},{"en":"The rare bird was photographed by a lucky tourist yesterday.","ko":"그 희귀한 새가 어제 운 좋은 관광객에 의해 사진에 찍혔다."}],"grammarNote":"photograph는 명사(사진)와 동사(사진 찍다) 모두 사용되지만, 학생들은 '사진 찍다'를 표현할 때 take a picture만 떠올려서 photograph를 동사로 쓰지 못하는 경우가 많다.","grammarQuiz":[{"sentence":"The reporter wanted to _____ the famous singer at the concert.","ko":"기자는 콘서트에서 유명 가수를 사진 찍기를 원했다.","answer":["photograph"],"hint":"동사 원형으로"},{"sentence":"This old _____ shows my grandparents on their wedding day.","ko":"이 오래된 사진은 결혼식 날의 조부모님을 보여준다.","answer":["photograph"],"hint":"명사로"}]},
-    {"id":"w04864","w":"piano","pos":["n"],"ph":"/piˈænoʊ/","cefr":"A2","kr":["피아노"],"ex":[{"en":"She plays the piano beautifully.","ko":"그녀는 피아노를 아름답게 연주한다."}],"mnemonic":{"soundHint":"피아노 → 그대로 '피아노'","story":"'피아노(piano)'는 우리말에서도 그대로 쓰는 악기 이름이야. 발음과 뜻이 완전히 같아서 헷갈릴 일이 없어.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"keyboard","ko":"건반","reason":"piano의 핵심 부품이자 동의어"},{"w":"concert","ko":"연주회","reason":"piano 연주 시나리오의 대표 장면"},{"w":"melody","ko":"선율","reason":"piano로 만들어내는 결과물"}],"collocBest":[{"en":"play the piano","ko":"피아노를 치다"},{"en":"piano lesson","ko":"피아노 수업"}]},"nuance":{"koSimple":"검은 건반 흰 건반 두드리는 큰 악기","whenToUse":"피아노 악기·연주 얘기할 때"},"krDetail":[{"ko":"피아노","explain":"건반을 눌러 소리내는 악기"}],"usageExamples":null,"grammarNote":"악기 앞에는 정관사 the를 붙여 play the piano로 쓴다. 학생들은 관사를 빠뜨리고 play piano로 쓰는 실수를 자주 한다.","grammarQuiz":[{"sentence":"My sister can play _____ piano very well every evening.","ko":"내 여동생은 매일 저녁 피아노를 아주 잘 친다.","answer":["the"],"hint":"악기 앞 관사"},{"sentence":"He bought a new _____ for his daughter last month.","ko":"그는 지난달 딸을 위해 새 피아노를 샀다.","answer":["piano"],"hint":"악기 이름"}]},
-    {"id":"w04874","w":"pillow","pos":["n"],"ph":"/ˈpɪloʊ/","cefr":"A2","kr":["베개"],"ex":[{"en":"She fluffed her pillow before going to sleep.","ko":"그녀는 자기 전에 베개를 부풀렸다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"bed","ko":"침대","reason":"pillow가 놓이는 대표 장소"},{"w":"sleep","ko":"잠자다","reason":"pillow의 주 사용 시나리오"},{"w":"blanket","ko":"담요","reason":"pillow와 함께 쓰는 침구 세트"}],"collocBest":[{"en":"fluffy pillow","ko":"폭신한 베개"},{"en":"pillow case","ko":"베갯잇"}]},"nuance":{"koSimple":"머리 아래 폭신하게 받쳐 주는 쿠션","whenToUse":"잘 때 머리 대는 물건 말할 때"},"krDetail":[{"ko":"베개","explain":"잠잘 때 머리 받치는 물건"}],"usageExamples":null,"grammarNote":"pillow는 셀 수 있는 명사이므로 단수일 때 a pillow, 복수일 때 pillows로 써야 한다. 학생들은 셀 수 없는 것으로 착각하여 관사를 빠뜨린다.","grammarQuiz":[{"sentence":"She hugged _____ soft pillow tightly and fell asleep.","ko":"그녀는 부드러운 베개를 꼭 껴안고 잠들었다.","answer":["a","the"],"hint":"가산 명사 관사"},{"sentence":"The hotel bed had four fluffy _____ on it neatly.","ko":"호텔 침대에는 폭신한 베개 네 개가 깔끔하게 놓여 있었다.","answer":["pillows"],"hint":"복수형"}]},
+    {"id":"w04864","w":"piano","pos":["n"],"ph":"/piˈænoʊ/","cefr":"A2","kr":["피아노"],"ex":[{"en":"She plays the piano beautifully.","ko":"그녀는 피아노를 아름답게 연주한다."}],"mnemonic":{"soundHint":"피아노 → 그대로 '피아노'","story":"'피아노(piano)'는 우리말에서도 그대로 쓰는 악기 이름이야. 발음과 뜻이 완전히 같아서 헷갈릴 일이 없어.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"keyboard","ko":"건반","reason":"piano의 핵심 부품이자 동의어"},{"w":"concert","ko":"연주회","reason":"piano 연주 시나리오의 대표 장면"},{"w":"melody","ko":"선율","reason":"piano로 만들어내는 결과물"}],"collocBest":[{"en":"play the piano","ko":"피아노를 치다"},{"en":"piano lesson","ko":"피아노 수업"}]},"nuance":{"koSimple":"검은 건반 흰 건반 두드리는 큰 악기","whenToUse":"피아노 악기·연주 얘기할 때"},"krDetail":[{"ko":"피아노","explain":"건반을 눌러 소리내는 악기"}],"usageExamples":[{"en":"He practices the piano every evening.","ko":"그는 매일 저녁 피아노를 연습한다."},{"en":"There is an old piano in the living room.","ko":"거실에 오래된 피아노가 있다."}],"grammarNote":"악기 앞에는 정관사 the를 붙여 play the piano로 쓴다. 학생들은 관사를 빠뜨리고 play piano로 쓰는 실수를 자주 한다.","grammarQuiz":[{"sentence":"My sister can play _____ piano very well every evening.","ko":"내 여동생은 매일 저녁 피아노를 아주 잘 친다.","answer":["the"],"hint":"악기 앞 관사"},{"sentence":"He bought a new _____ for his daughter last month.","ko":"그는 지난달 딸을 위해 새 피아노를 샀다.","answer":["piano"],"hint":"악기 이름"}]},
+    {"id":"w04874","w":"pillow","pos":["n"],"ph":"/ˈpɪloʊ/","cefr":"A2","kr":["베개"],"ex":[{"en":"She fluffed her pillow before going to sleep.","ko":"그녀는 자기 전에 베개를 부풀렸다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"bed","ko":"침대","reason":"pillow가 놓이는 대표 장소"},{"w":"sleep","ko":"잠자다","reason":"pillow의 주 사용 시나리오"},{"w":"blanket","ko":"담요","reason":"pillow와 함께 쓰는 침구 세트"}],"collocBest":[{"en":"fluffy pillow","ko":"폭신한 베개"},{"en":"pillow case","ko":"베갯잇"}]},"nuance":{"koSimple":"머리 아래 폭신하게 받쳐 주는 쿠션","whenToUse":"잘 때 머리 대는 물건 말할 때"},"krDetail":[{"ko":"베개","explain":"잠잘 때 머리 받치는 물건"}],"usageExamples":[{"en":"This pillow is too soft for me.","ko":"이 베개는 나에게 너무 푹신하다."},{"en":"She hugged the pillow and fell asleep.","ko":"그녀는 베개를 껴안고 잠들었다."}],"grammarNote":"pillow는 셀 수 있는 명사이므로 단수일 때 a pillow, 복수일 때 pillows로 써야 한다. 학생들은 셀 수 없는 것으로 착각하여 관사를 빠뜨린다.","grammarQuiz":[{"sentence":"She hugged _____ soft pillow tightly and fell asleep.","ko":"그녀는 부드러운 베개를 꼭 껴안고 잠들었다.","answer":["a","the"],"hint":"가산 명사 관사"},{"sentence":"The hotel bed had four fluffy _____ on it neatly.","ko":"호텔 침대에는 폭신한 베개 네 개가 깔끔하게 놓여 있었다.","answer":["pillows"],"hint":"복수형"}]},
     {"id":"w04875","w":"pilot","pos":["n","v","adj"],"ph":"/ˈpaɪlət/","cefr":"A2","kr":["조종사","시범적인"],"ex":[{"en":"The pilot flew the plane safely.","ko":"조종사는 비행기를 안전하게 조종했다."}],"mnemonic":{"soundHint":"파일럿 → 그대로 '파일럿'","story":"비행기 조종사를 우리도 '파일럿(pilot)'이라 부르지. 시범 프로그램을 '파일럿 프로그램'이라 하는 것도 같은 단어야.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"airplane","ko":"비행기","reason":"pilot이 조종하는 기본 대상"},{"w":"cockpit","ko":"조종석","reason":"pilot의 근무 위치"},{"w":"flight","ko":"비행","reason":"pilot의 업무 시나리오"}],"collocBest":[{"en":"airline pilot","ko":"항공기 조종사"},{"en":"pilot program","ko":"시범 프로그램"}]},"nuance":{"koSimple":"조종석에서 비행기 모는 사람","whenToUse":"비행기·항공기 조종사 말할 때"},"krDetail":[{"ko":"조종사","explain":"비행기 모는 사람"},{"ko":"시범적인","explain":"먼저 해보는"}],"usageExamples":[{"en":"A young pilot smoothly piloted the small plane over the hills.","ko":"젊은 조종사가 작은 비행기를 언덕 위로 부드럽게 조종했다."},{"en":"My cousin wants to become a pilot after high school.","ko":"내 사촌은 고등학교 후에 조종사가 되고 싶어 한다."}],"grammarNote":"pilot이 형용사로 쓰일 때는 '시범적인'을 의미하며 pilot program(시범 프로그램), pilot study(예비 연구)처럼 쓰인다. 학생들은 명사로만 알고 형용사 용법을 놓친다.","grammarQuiz":[{"sentence":"The company started a _____ program to test the new service.","ko":"회사는 새 서비스를 시험하기 위해 시범 프로그램을 시작했다.","answer":["pilot"],"hint":"형용사로"},{"sentence":"He dreams of becoming an airline _____ someday soon.","ko":"그는 언젠가 항공기 조종사가 되기를 꿈꾼다.","answer":["pilot"],"hint":"명사로"}]},
-    {"id":"w04877","w":"pineapple","pos":["n"],"ph":"/ˈpaɪnæpəl/","cefr":"A2","kr":["파인애플"],"ex":[{"en":"Pineapple tastes sweet and sour.","ko":"파인애플은 새콤달콤하다."}],"mnemonic":{"soundHint":"파인애플 → 그대로 '파인애플'","story":"'파인애플(pineapple)'은 우리말로도 그대로 쓰는 과일이야. pine(솔방울) + apple(사과) 모양을 닮았대.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"tropical","ko":"열대의","reason":"pineapple이 자라는 기후대"},{"w":"juice","ko":"주스","reason":"pineapple의 대표 가공품"},{"w":"fruit","ko":"과일","reason":"pineapple의 상위 개념 카테고리"}],"collocBest":[{"en":"pineapple juice","ko":"파인애플 주스"},{"en":"fresh pineapple","ko":"신선한 파인애플"}]},"nuance":{"koSimple":"뾰족한 껍질 안에 노란 새콤달콤 과일","whenToUse":"파인애플 과일 자체 말할 때"},"krDetail":[{"ko":"파인애플","explain":"달콤한 열대 과일"}],"usageExamples":null,"grammarNote":"pineapple은 셀 수 있는 명사이므로 단수 앞에 a를 붙이거나 복수형 pineapples로 써야 한다. 주스나 조각을 언급할 때만 셀 수 없는 명사처럼 쓴다.","grammarQuiz":[{"sentence":"I bought _____ pineapple at the farmers' market this morning.","ko":"나는 오늘 아침 농산물 시장에서 파인애플 하나를 샀다.","answer":["a"],"hint":"가산 명사 관사"},{"sentence":"The kids ate three whole _____ during the beach picnic.","ko":"아이들은 해변 소풍에서 파인애플 세 개를 통째로 먹었다.","answer":["pineapples"],"hint":"복수형"}]},
-    {"id":"w04896","w":"planet","pos":["n"],"ph":"/ˈplænɪt/","cefr":"A2","kr":["행성","지구"],"ex":[{"en":"Earth is the only planet with life.","ko":"지구는 생명체가 있는 유일한 행성이다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"Earth","ko":"지구","reason":"planet의 대표 사례"},{"w":"solar","ko":"태양의","reason":"planet은 solar system(태양계) 구성원"},{"w":"orbit","ko":"궤도","reason":"planet의 운동 시나리오"}],"collocBest":[{"en":"planet Earth","ko":"지구"},{"en":"save the planet","ko":"지구를 구하다"}]},"nuance":{"koSimple":"우주에 둥둥 떠 있는 커다란 별 덩어리","whenToUse":"지구·화성 같은 우주 천체 말할 때"},"krDetail":[{"ko":"행성","explain":"별 둘레를 도는 큰 천체"},{"ko":"지구","explain":"우리가 사는 별"}],"usageExamples":null,"grammarNote":"planet Earth처럼 고유명사와 함께 쓰면 the를 붙이지 않지만 the planet만 단독으로 쓸 때는 the를 붙인다. 학생들은 이 두 경우를 헷갈려한다.","grammarQuiz":[{"sentence":"We must protect _____ planet from pollution and waste.","ko":"우리는 오염과 쓰레기로부터 지구를 보호해야 한다.","answer":["the"],"hint":"단독 명사 관사"},{"sentence":"Mars is the fourth _____ from the sun in space.","ko":"화성은 태양으로부터 네 번째 행성이다.","answer":["planet"],"hint":"명사 원형"}]},
-    {"id":"w04900","w":"plastic","pos":["n","adj"],"ph":"/ˈplæstɪk/","cefr":"A2","kr":["플라스틱","플라스틱으로 만든"],"ex":[{"en":"The bottle is made of plastic.","ko":"그 병은 플라스틱으로 만들어졌다."}],"mnemonic":{"soundHint":"플라스틱 → 그대로 '플라스틱'","story":"'플라스틱(plastic)'은 우리말에도 그대로 정착한 외래어야. 발음·뜻이 완전히 같아 별도 힌트 필요 없어.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"recycle","ko":"재활용하다","reason":"plastic 처리와 직결되는 환경 시나리오"},{"w":"bottle","ko":"병","reason":"plastic 제품의 대표 사례"},{"w":"waste","ko":"쓰레기","reason":"plastic pollution의 핵심 문제"}],"collocBest":[{"en":"plastic bag","ko":"비닐봉투"},{"en":"plastic pollution","ko":"플라스틱 오염"}]},"nuance":{"koSimple":"가볍고 잘 안 부서지는 인공 재료","whenToUse":"병·봉투·환경오염 말할 때"},"krDetail":[{"ko":"플라스틱","explain":"합성 소재"},{"ko":"플라스틱으로 만든","explain":"합성 소재로 된"}],"usageExamples":null,"grammarNote":"plastic이 형용사로 쓰일 때는 명사 앞에 위치해 재료를 나타낸다. 학생들은 be made of plastic처럼 명사 자리에 써야 할 때와 형용사 자리를 구분하지 못한다.","grammarQuiz":[{"sentence":"Please do not use _____ bags at the grocery store.","ko":"식료품점에서 비닐봉투를 사용하지 마세요.","answer":["plastic"],"hint":"형용사로"},{"sentence":"This bottle is made _____ recycled plastic materials completely.","ko":"이 병은 재활용된 플라스틱 소재로 완전히 만들어졌다.","answer":["of"],"hint":"재료 전치사"}]},
+    {"id":"w04877","w":"pineapple","pos":["n"],"ph":"/ˈpaɪnæpəl/","cefr":"A2","kr":["파인애플"],"ex":[{"en":"Pineapple tastes sweet and sour.","ko":"파인애플은 새콤달콤하다."}],"mnemonic":{"soundHint":"파인애플 → 그대로 '파인애플'","story":"'파인애플(pineapple)'은 우리말로도 그대로 쓰는 과일이야. pine(솔방울) + apple(사과) 모양을 닮았대.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"tropical","ko":"열대의","reason":"pineapple이 자라는 기후대"},{"w":"juice","ko":"주스","reason":"pineapple의 대표 가공품"},{"w":"fruit","ko":"과일","reason":"pineapple의 상위 개념 카테고리"}],"collocBest":[{"en":"pineapple juice","ko":"파인애플 주스"},{"en":"fresh pineapple","ko":"신선한 파인애플"}]},"nuance":{"koSimple":"뾰족한 껍질 안에 노란 새콤달콤 과일","whenToUse":"파인애플 과일 자체 말할 때"},"krDetail":[{"ko":"파인애플","explain":"달콤한 열대 과일"}],"usageExamples":[{"en":"We put pineapple on the pizza.","ko":"우리는 피자 위에 파인애플을 올렸다."},{"en":"A fresh pineapple smells wonderful.","ko":"신선한 파인애플은 아주 좋은 향이 난다."}],"grammarNote":"pineapple은 셀 수 있는 명사이므로 단수 앞에 a를 붙이거나 복수형 pineapples로 써야 한다. 주스나 조각을 언급할 때만 셀 수 없는 명사처럼 쓴다.","grammarQuiz":[{"sentence":"I bought _____ pineapple at the farmers' market this morning.","ko":"나는 오늘 아침 농산물 시장에서 파인애플 하나를 샀다.","answer":["a"],"hint":"가산 명사 관사"},{"sentence":"The kids ate three whole _____ during the beach picnic.","ko":"아이들은 해변 소풍에서 파인애플 세 개를 통째로 먹었다.","answer":["pineapples"],"hint":"복수형"}]},
+    {"id":"w04896","w":"planet","pos":["n"],"ph":"/ˈplænɪt/","cefr":"A2","kr":["행성","지구"],"ex":[{"en":"Earth is the only planet with life.","ko":"지구는 생명체가 있는 유일한 행성이다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"Earth","ko":"지구","reason":"planet의 대표 사례"},{"w":"solar","ko":"태양의","reason":"planet은 solar system(태양계) 구성원"},{"w":"orbit","ko":"궤도","reason":"planet의 운동 시나리오"}],"collocBest":[{"en":"planet Earth","ko":"지구"},{"en":"save the planet","ko":"지구를 구하다"}]},"nuance":{"koSimple":"우주에 둥둥 떠 있는 커다란 별 덩어리","whenToUse":"지구·화성 같은 우주 천체 말할 때"},"krDetail":[{"ko":"행성","explain":"별 둘레를 도는 큰 천체"},{"ko":"지구","explain":"우리가 사는 별"}],"usageExamples":[{"en":"Mars is the fourth planet from the sun.","ko":"화성은 태양에서 네 번째 행성이다."},{"en":"We must protect our planet from pollution.","ko":"우리는 오염으로부터 우리 지구를 보호해야 한다."}],"grammarNote":"planet Earth처럼 고유명사와 함께 쓰면 the를 붙이지 않지만 the planet만 단독으로 쓸 때는 the를 붙인다. 학생들은 이 두 경우를 헷갈려한다.","grammarQuiz":[{"sentence":"We must protect _____ planet from pollution and waste.","ko":"우리는 오염과 쓰레기로부터 지구를 보호해야 한다.","answer":["the"],"hint":"단독 명사 관사"},{"sentence":"Mars is the fourth _____ from the sun in space.","ko":"화성은 태양으로부터 네 번째 행성이다.","answer":["planet"],"hint":"명사 원형"}]},
+    {"id":"w04900","w":"plastic","pos":["n","adj"],"ph":"/ˈplæstɪk/","cefr":"A2","kr":["플라스틱","플라스틱으로 만든"],"ex":[{"en":"The bottle is made of plastic.","ko":"그 병은 플라스틱으로 만들어졌다."}],"mnemonic":{"soundHint":"플라스틱 → 그대로 '플라스틱'","story":"'플라스틱(plastic)'은 우리말에도 그대로 정착한 외래어야. 발음·뜻이 완전히 같아 별도 힌트 필요 없어.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"recycle","ko":"재활용하다","reason":"plastic 처리와 직결되는 환경 시나리오"},{"w":"bottle","ko":"병","reason":"plastic 제품의 대표 사례"},{"w":"waste","ko":"쓰레기","reason":"plastic pollution의 핵심 문제"}],"collocBest":[{"en":"plastic bag","ko":"비닐봉투"},{"en":"plastic pollution","ko":"플라스틱 오염"}]},"nuance":{"koSimple":"가볍고 잘 안 부서지는 인공 재료","whenToUse":"병·봉투·환경오염 말할 때"},"krDetail":[{"ko":"플라스틱","explain":"합성 소재"},{"ko":"플라스틱으로 만든","explain":"합성 소재로 된"}],"usageExamples":[{"en":"Please recycle your plastic bottles.","ko":"플라스틱 병을 재활용해 주세요."},{"en":"She used a plastic bag for the shopping.","ko":"그녀는 장을 볼 때 비닐봉지를 사용했다."}],"grammarNote":"plastic이 형용사로 쓰일 때는 명사 앞에 위치해 재료를 나타낸다. 학생들은 be made of plastic처럼 명사 자리에 써야 할 때와 형용사 자리를 구분하지 못한다.","grammarQuiz":[{"sentence":"Please do not use _____ bags at the grocery store.","ko":"식료품점에서 비닐봉투를 사용하지 마세요.","answer":["plastic"],"hint":"형용사로"},{"sentence":"This bottle is made _____ recycled plastic materials completely.","ko":"이 병은 재활용된 플라스틱 소재로 완전히 만들어졌다.","answer":["of"],"hint":"재료 전치사"}]},
     {"id":"w04901","w":"plate","pos":["n","v"],"ph":"/pleɪt/","cefr":"A2","kr":["접시","판","도금하다"],"ex":[{"en":"She put the food on a clean plate.","ko":"그녀는 깨끗한 접시에 음식을 담았다."}],"mnemonic":{"soundHint":"플레이트 → 그대로 '플레이트'","story":"야구의 '홈 플레이트(home plate)', 자동차 '넘버 플레이트(license plate)'처럼 우리말에도 그대로 쓰여. 접시·판을 뜻해.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"dish","ko":"요리, 접시","reason":"plate의 동의어"},{"w":"meal","ko":"식사","reason":"plate가 사용되는 대표 시나리오"},{"w":"fork","ko":"포크","reason":"plate와 함께 쓰는 식기 콜로케이션"}],"collocBest":[{"en":"dinner plate","ko":"저녁 식사 접시"},{"en":"license plate","ko":"번호판"}]},"nuance":{"koSimple":"음식 담아 식탁에 올리는 납작한 그릇","whenToUse":"접시·판 모양 물건 말할 때"},"krDetail":[{"ko":"접시","explain":"음식 담는 넓은 그릇"},{"ko":"판","explain":"얇고 평평한 조각"},{"ko":"도금하다","explain":"얇은 금속을 입히다"}],"usageExamples":[{"en":"Mom filled every plate with warm rice and vegetables.","ko":"엄마는 모든 접시에 따뜻한 밥과 채소를 담으셨다."},{"en":"The old ring was plated with real gold years ago.","ko":"그 오래된 반지는 몇 년 전에 진짜 금으로 도금되었다."}],"grammarNote":"plate는 명사(접시)로 흔히 쓰지만 동사로 '도금하다'라는 뜻도 있다. 학생들은 gold-plated처럼 과거분사 형태로 쓰인 형용사 용법을 어려워한다.","grammarQuiz":[{"sentence":"He served the pasta on a large white _____ warmly.","ko":"그는 파스타를 커다란 하얀 접시에 따뜻하게 담아냈다.","answer":["plate"],"hint":"명사로"},{"sentence":"This necklace is _____ with real gold from Italy.","ko":"이 목걸이는 이탈리아산 진짜 금으로 도금되어 있다.","answer":["plated"],"hint":"수동태 과거분사"}]},
     {"id":"w04926","w":"pocket","pos":["n","v"],"ph":"/ˈpɒkɪt/","cefr":"A2","kr":["주머니","착복하다"],"ex":[{"en":"She put the coin in her pocket.","ko":"그녀는 동전을 주머니에 넣었다."}],"mnemonic":{"soundHint":"포켓 → 그대로 '포켓'","story":"'포켓(pocket)'은 우리말에도 그대로 쓰이는 주머니. '포켓몬(주머니 속 몬스터)'도 여기서 왔어.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"wallet","ko":"지갑","reason":"pocket에 넣는 대표 물건"},{"w":"coin","ko":"동전","reason":"pocket money 시나리오의 핵심"},{"w":"jacket","ko":"재킷","reason":"pocket이 달린 대표 의류"}],"collocBest":[{"en":"pocket money","ko":"용돈"},{"en":"out of pocket","ko":"손해를 보다"}]},"nuance":{"koSimple":"바지·옷에 달린 작은 손 넣는 공간","whenToUse":"주머니 속 물건 넣는 공간 말할 때"},"krDetail":[{"ko":"주머니","explain":"옷에 붙은 작은 자루"},{"ko":"착복하다","explain":"몰래 자기 것으로 삼다"}],"usageExamples":[{"en":"He quickly pocketed the small change without saying a word.","ko":"그는 말없이 잔돈을 재빨리 주머니에 넣었다."},{"en":"My old jacket has a big pocket for my phone and keys.","ko":"내 낡은 재킷에는 휴대폰과 열쇠를 넣을 큰 주머니가 있다."}],"grammarNote":"pocket은 명사로 잘 알려져 있지만 동사로 '착복하다, 슬쩍 챙기다'라는 부정적인 뜻으로도 쓰인다. 학생들은 이 부정적 뉘앙스를 놓치기 쉽다.","grammarQuiz":[{"sentence":"The thief _____ the wallet quickly before anyone noticed.","ko":"도둑은 아무도 눈치채기 전에 지갑을 슬쩍 챙겼다.","answer":["pocketed"],"hint":"동사 과거형"},{"sentence":"She reached into her _____ and pulled out her phone.","ko":"그녀는 주머니에 손을 넣어 전화기를 꺼냈다.","answer":["pocket"],"hint":"명사로"}]},
-    {"id":"w04941","w":"polite","pos":["adj"],"ph":"/pəˈlaɪt/","cefr":"A2","kr":["예의 바른","공손한"],"ex":[{"en":"He was always polite to others.","ko":"그는 항상 다른 사람들에게 예의 바르게 대했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"manner","ko":"예절","reason":"polite manner 필수 콜로케이션"},{"w":"rude","ko":"무례한","reason":"polite의 대표 반의어"},{"w":"greet","ko":"인사하다","reason":"polite한 행동의 대표 시나리오"}],"collocBest":[{"en":"polite manner","ko":"예의 바른 태도"},{"en":"polite request","ko":"정중한 요청"}]},"nuance":{"koSimple":"고개 숙여 인사하는 반듯한 태도","whenToUse":"예의 있게 말·행동하는 사람에게"},"krDetail":[{"ko":"예의 바른","explain":"남을 존중하며 대하는"},{"ko":"공손한","explain":"말과 행동이 조심스러운"}],"usageExamples":null,"grammarNote":"polite는 사람을 꾸미는 형용사로 be polite to someone처럼 전치사 to를 쓴다. 학생들은 to 대신 with나 for를 쓰는 실수를 자주 한다.","grammarQuiz":[{"sentence":"You should always be _____ to your teachers and elders.","ko":"너는 선생님과 어른들께 항상 예의 발라야 한다.","answer":["polite"],"hint":"형용사"},{"sentence":"She spoke to him in a very _____ manner today.","ko":"그녀는 오늘 그에게 매우 공손한 태도로 말했다.","answer":["polite"],"hint":"형용사 명사수식"}]},
-    {"id":"w04948","w":"pollution","pos":["n"],"ph":"/pəˈluːʃən/","cefr":"A2","kr":["오염","공해"],"ex":[{"en":"Air pollution is a serious problem.","ko":"대기 오염은 심각한 문제이다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"environment","ko":"환경","reason":"pollution의 대상 필수 콜로케이션"},{"w":"smoke","ko":"연기","reason":"air pollution의 대표 원인"},{"w":"factory","ko":"공장","reason":"pollution 발생 대표 시나리오"}],"collocBest":[{"en":"air pollution","ko":"대기 오염"},{"en":"reduce pollution","ko":"오염을 줄이다"}]},"nuance":{"koSimple":"공장 굴뚝 검은 연기와 더러워진 강물","whenToUse":"환경이 더러워지는 문제 말할 때"},"krDetail":[{"ko":"오염","explain":"더러워짐"},{"ko":"공해","explain":"환경을 해치는 것"}],"usageExamples":null,"grammarNote":"pollution은 셀 수 없는 명사이므로 a pollution이나 pollutions로 쓸 수 없다. 학생들은 관사 a나 복수형을 붙이는 실수를 자주 한다.","grammarQuiz":[{"sentence":"Air _____ has become a serious problem in big cities.","ko":"대기 오염은 대도시에서 심각한 문제가 되었다.","answer":["pollution"],"hint":"불가산 명사"},{"sentence":"We must work hard to reduce _____ in our rivers.","ko":"우리는 강의 오염을 줄이기 위해 노력해야 한다.","answer":["pollution"],"hint":"관사 없이"}]},
-    {"id":"w04954","w":"popular","pos":["adj"],"ph":"/ˈpɒpjʊlə/","cefr":"A2","kr":["인기 있는","대중적인"],"ex":[{"en":"Soccer is very popular in Korea.","ko":"한국에서 축구는 매우 인기가 있다."}],"mnemonic":{"soundHint":"파퓰러 → '팝(pop) 스타'","story":"'팝(pop) 음악, 팝 스타'가 인기 있는 대중음악이지. popular는 pop과 뿌리가 같아 '대중적인, 인기 있는' 뜻이야.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"famous","ko":"유명한","reason":"popular의 대표 동의어"},{"w":"trend","ko":"유행","reason":"popular culture 시나리오와 밀접"},{"w":"unpopular","ko":"인기 없는","reason":"popular의 대표 반의어"}],"collocBest":[{"en":"popular culture","ko":"대중문화"},{"en":"popular music","ko":"대중음악"}]},"nuance":{"koSimple":"많은 사람이 좋아해 몰려드는 인기","whenToUse":"사람·물건·노래가 인기 있을 때"},"krDetail":[{"ko":"인기 있는","explain":"많은 사람이 좋아하는"},{"ko":"대중적인","explain":"널리 퍼진"}],"usageExamples":null,"grammarNote":"popular는 be popular with/among (사람들에게 인기 있다) 구문으로 쓴다. 학생들은 to를 쓰는 실수를 자주 하는데, 전치사 with 또는 among이 맞다.","grammarQuiz":[{"sentence":"This song is very _____ with teenagers all around the world.","ko":"이 노래는 전 세계 십대들에게 매우 인기 있다.","answer":["popular"],"hint":"형용사"},{"sentence":"K-pop has become _____ among people of all ages globally.","ko":"케이팝은 전 세계 모든 연령대 사람들에게 인기 있게 되었다.","answer":["popular"],"hint":"become 보어"}]},
-    {"id":"w04956","w":"population","pos":["n"],"ph":"/ˌpɒpjʊˈleɪʃən/","cefr":"A2","kr":["인구","개체 수"],"ex":[{"en":"The city's population is growing fast.","ko":"그 도시의 인구는 빠르게 증가하고 있다."}],"mnemonic":{"soundHint":"파퓰레이션 → popular(대중적) + tion","story":"popular(대중적)에 -tion 붙이면 population(대중 전체 = 인구). 같은 뿌리에서 자란 명사형이야.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"growth","ko":"증가","reason":"population growth 필수 콜로케이션"},{"w":"city","ko":"도시","reason":"population이 집중되는 대표 장소"},{"w":"census","ko":"인구 조사","reason":"population 측정 시나리오"}],"collocBest":[{"en":"world population","ko":"세계 인구"},{"en":"population growth","ko":"인구 증가"}]},"nuance":{"koSimple":"한 지역에 사는 사람 총 숫자","whenToUse":"사람·동물 수를 셀 때"},"krDetail":[{"ko":"인구","explain":"지역에 사는 사람 수"},{"ko":"개체 수","explain":"동식물 무리의 수"}],"usageExamples":null,"grammarNote":"population은 집합명사로 단수 취급이지만 구성원 각각을 강조할 때는 복수 취급이 가능하다. 학생들은 항상 단수만 사용한다고 오해한다.","grammarQuiz":[{"sentence":"The _____ of this city has grown rapidly in recent years.","ko":"이 도시의 인구는 최근 몇 년 동안 급속히 늘었다.","answer":["population"],"hint":"명사 단수"},{"sentence":"The tiger _____ is decreasing quickly due to habitat loss.","ko":"호랑이 개체 수는 서식지 손실 때문에 빠르게 줄고 있다.","answer":["population"],"hint":"동물 개체 수"}]},
-    {"id":"w04957","w":"porch","pos":["n"],"ph":"/pɔːrtʃ/","cefr":"A2","kr":["현관","포치"],"ex":[{"en":"We sat on the porch and watched the sunset.","ko":"우리는 현관에 앉아 일몰을 바라봤다."}],"mnemonic":{"soundHint":"포치 → 그대로 '포치'","story":"'포치(porch)'는 인테리어 용어로도 그대로 쓰여. 집 앞 지붕 있는 현관을 '포치'라 해.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"entrance","ko":"입구","reason":"porch의 위치·기능 콜로케이션"},{"w":"roof","ko":"지붕","reason":"porch의 필수 구성 요소"},{"w":"swing","ko":"그네","reason":"porch swing은 미국 가정 대표 장면"}],"collocBest":[{"en":"front porch","ko":"앞 현관"},{"en":"sit on the porch","ko":"현관에 앉다"}]},"nuance":{"koSimple":"집 앞에 지붕 얹은 작은 마루","whenToUse":"현관 앞 공간·베란다 말할 때"},"krDetail":[{"ko":"현관","explain":"집 입구의 지붕 있는 공간"},{"ko":"포치","explain":"지붕 덮인 앞 공간"}],"usageExamples":null,"grammarNote":"porch는 on the porch(현관에서)처럼 전치사 on과 함께 쓴다. 학생들은 in the porch로 쓰는 실수를 하는데, 지붕 있는 반야외 공간이므로 on이 맞다.","grammarQuiz":[{"sentence":"Grandma likes to sit _____ the porch every summer evening.","ko":"할머니는 여름 저녁마다 현관에 앉는 것을 좋아하신다.","answer":["on"],"hint":"위치 전치사"},{"sentence":"They built a wide wooden _____ in front of the house.","ko":"그들은 집 앞에 넓은 나무 현관을 지었다.","answer":["porch"],"hint":"명사"}]},
+    {"id":"w04941","w":"polite","pos":["adj"],"ph":"/pəˈlaɪt/","cefr":"A2","kr":["예의 바른","공손한"],"ex":[{"en":"He was always polite to others.","ko":"그는 항상 다른 사람들에게 예의 바르게 대했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"manner","ko":"예절","reason":"polite manner 필수 콜로케이션"},{"w":"rude","ko":"무례한","reason":"polite의 대표 반의어"},{"w":"greet","ko":"인사하다","reason":"polite한 행동의 대표 시나리오"}],"collocBest":[{"en":"polite manner","ko":"예의 바른 태도"},{"en":"polite request","ko":"정중한 요청"}]},"nuance":{"koSimple":"고개 숙여 인사하는 반듯한 태도","whenToUse":"예의 있게 말·행동하는 사람에게"},"krDetail":[{"ko":"예의 바른","explain":"남을 존중하며 대하는"},{"ko":"공손한","explain":"말과 행동이 조심스러운"}],"usageExamples":[{"en":"It is polite to say thank you.","ko":"고맙다고 말하는 것은 예의 바른 일이다."},{"en":"She gave a polite answer to the question.","ko":"그녀는 그 질문에 공손한 대답을 했다."}],"grammarNote":"polite는 사람을 꾸미는 형용사로 be polite to someone처럼 전치사 to를 쓴다. 학생들은 to 대신 with나 for를 쓰는 실수를 자주 한다.","grammarQuiz":[{"sentence":"You should always be _____ to your teachers and elders.","ko":"너는 선생님과 어른들께 항상 예의 발라야 한다.","answer":["polite"],"hint":"형용사"},{"sentence":"She spoke to him in a very _____ manner today.","ko":"그녀는 오늘 그에게 매우 공손한 태도로 말했다.","answer":["polite"],"hint":"형용사 명사수식"}]},
+    {"id":"w04948","w":"pollution","pos":["n"],"ph":"/pəˈluːʃən/","cefr":"A2","kr":["오염","공해"],"ex":[{"en":"Air pollution is a serious problem.","ko":"대기 오염은 심각한 문제이다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"environment","ko":"환경","reason":"pollution의 대상 필수 콜로케이션"},{"w":"smoke","ko":"연기","reason":"air pollution의 대표 원인"},{"w":"factory","ko":"공장","reason":"pollution 발생 대표 시나리오"}],"collocBest":[{"en":"air pollution","ko":"대기 오염"},{"en":"reduce pollution","ko":"오염을 줄이다"}]},"nuance":{"koSimple":"공장 굴뚝 검은 연기와 더러워진 강물","whenToUse":"환경이 더러워지는 문제 말할 때"},"krDetail":[{"ko":"오염","explain":"더러워짐"},{"ko":"공해","explain":"환경을 해치는 것"}],"usageExamples":[{"en":"Cars cause a lot of pollution in the city.","ko":"자동차는 도시에서 많은 오염을 일으킨다."},{"en":"We must reduce water pollution.","ko":"우리는 수질 오염을 줄여야 한다."}],"grammarNote":"pollution은 셀 수 없는 명사이므로 a pollution이나 pollutions로 쓸 수 없다. 학생들은 관사 a나 복수형을 붙이는 실수를 자주 한다.","grammarQuiz":[{"sentence":"Air _____ has become a serious problem in big cities.","ko":"대기 오염은 대도시에서 심각한 문제가 되었다.","answer":["pollution"],"hint":"불가산 명사"},{"sentence":"We must work hard to reduce _____ in our rivers.","ko":"우리는 강의 오염을 줄이기 위해 노력해야 한다.","answer":["pollution"],"hint":"관사 없이"}]},
+    {"id":"w04954","w":"popular","pos":["adj"],"ph":"/ˈpɒpjʊlə/","cefr":"A2","kr":["인기 있는","대중적인"],"ex":[{"en":"Soccer is very popular in Korea.","ko":"한국에서 축구는 매우 인기가 있다."}],"mnemonic":{"soundHint":"파퓰러 → '팝(pop) 스타'","story":"'팝(pop) 음악, 팝 스타'가 인기 있는 대중음악이지. popular는 pop과 뿌리가 같아 '대중적인, 인기 있는' 뜻이야.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"famous","ko":"유명한","reason":"popular의 대표 동의어"},{"w":"trend","ko":"유행","reason":"popular culture 시나리오와 밀접"},{"w":"unpopular","ko":"인기 없는","reason":"popular의 대표 반의어"}],"collocBest":[{"en":"popular culture","ko":"대중문화"},{"en":"popular music","ko":"대중음악"}]},"nuance":{"koSimple":"많은 사람이 좋아해 몰려드는 인기","whenToUse":"사람·물건·노래가 인기 있을 때"},"krDetail":[{"ko":"인기 있는","explain":"많은 사람이 좋아하는"},{"ko":"대중적인","explain":"널리 퍼진"}],"usageExamples":[{"en":"This song is popular with teenagers.","ko":"이 노래는 십 대들에게 인기가 있다."},{"en":"The restaurant is popular for its pizza.","ko":"그 식당은 피자로 유명하다."}],"grammarNote":"popular는 be popular with/among (사람들에게 인기 있다) 구문으로 쓴다. 학생들은 to를 쓰는 실수를 자주 하는데, 전치사 with 또는 among이 맞다.","grammarQuiz":[{"sentence":"This song is very _____ with teenagers all around the world.","ko":"이 노래는 전 세계 십대들에게 매우 인기 있다.","answer":["popular"],"hint":"형용사"},{"sentence":"K-pop has become _____ among people of all ages globally.","ko":"케이팝은 전 세계 모든 연령대 사람들에게 인기 있게 되었다.","answer":["popular"],"hint":"become 보어"}]},
+    {"id":"w04956","w":"population","pos":["n"],"ph":"/ˌpɒpjʊˈleɪʃən/","cefr":"A2","kr":["인구","개체 수"],"ex":[{"en":"The city's population is growing fast.","ko":"그 도시의 인구는 빠르게 증가하고 있다."}],"mnemonic":{"soundHint":"파퓰레이션 → popular(대중적) + tion","story":"popular(대중적)에 -tion 붙이면 population(대중 전체 = 인구). 같은 뿌리에서 자란 명사형이야.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"growth","ko":"증가","reason":"population growth 필수 콜로케이션"},{"w":"city","ko":"도시","reason":"population이 집중되는 대표 장소"},{"w":"census","ko":"인구 조사","reason":"population 측정 시나리오"}],"collocBest":[{"en":"world population","ko":"세계 인구"},{"en":"population growth","ko":"인구 증가"}]},"nuance":{"koSimple":"한 지역에 사는 사람 총 숫자","whenToUse":"사람·동물 수를 셀 때"},"krDetail":[{"ko":"인구","explain":"지역에 사는 사람 수"},{"ko":"개체 수","explain":"동식물 무리의 수"}],"usageExamples":[{"en":"The population of the country is over 50 million.","ko":"그 나라의 인구는 5천만 명이 넘는다."},{"en":"The tiger population is decreasing.","ko":"호랑이 개체 수가 줄어들고 있다."}],"grammarNote":"population은 집합명사로 단수 취급이지만 구성원 각각을 강조할 때는 복수 취급이 가능하다. 학생들은 항상 단수만 사용한다고 오해한다.","grammarQuiz":[{"sentence":"The _____ of this city has grown rapidly in recent years.","ko":"이 도시의 인구는 최근 몇 년 동안 급속히 늘었다.","answer":["population"],"hint":"명사 단수"},{"sentence":"The tiger _____ is decreasing quickly due to habitat loss.","ko":"호랑이 개체 수는 서식지 손실 때문에 빠르게 줄고 있다.","answer":["population"],"hint":"동물 개체 수"}]},
+    {"id":"w04957","w":"porch","pos":["n"],"ph":"/pɔːrtʃ/","cefr":"A2","kr":["현관","포치"],"ex":[{"en":"We sat on the porch and watched the sunset.","ko":"우리는 현관에 앉아 일몰을 바라봤다."}],"mnemonic":{"soundHint":"포치 → 그대로 '포치'","story":"'포치(porch)'는 인테리어 용어로도 그대로 쓰여. 집 앞 지붕 있는 현관을 '포치'라 해.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"entrance","ko":"입구","reason":"porch의 위치·기능 콜로케이션"},{"w":"roof","ko":"지붕","reason":"porch의 필수 구성 요소"},{"w":"swing","ko":"그네","reason":"porch swing은 미국 가정 대표 장면"}],"collocBest":[{"en":"front porch","ko":"앞 현관"},{"en":"sit on the porch","ko":"현관에 앉다"}]},"nuance":{"koSimple":"집 앞에 지붕 얹은 작은 마루","whenToUse":"현관 앞 공간·베란다 말할 때"},"krDetail":[{"ko":"현관","explain":"집 입구의 지붕 있는 공간"},{"ko":"포치","explain":"지붕 덮인 앞 공간"}],"usageExamples":[{"en":"A package was left on the porch.","ko":"소포 하나가 현관에 놓여 있었다."},{"en":"They relaxed on the porch after dinner.","ko":"그들은 저녁 후에 포치에서 쉬었다."}],"grammarNote":"porch는 on the porch(현관에서)처럼 전치사 on과 함께 쓴다. 학생들은 in the porch로 쓰는 실수를 하는데, 지붕 있는 반야외 공간이므로 on이 맞다.","grammarQuiz":[{"sentence":"Grandma likes to sit _____ the porch every summer evening.","ko":"할머니는 여름 저녁마다 현관에 앉는 것을 좋아하신다.","answer":["on"],"hint":"위치 전치사"},{"sentence":"They built a wide wooden _____ in front of the house.","ko":"그들은 집 앞에 넓은 나무 현관을 지었다.","answer":["porch"],"hint":"명사"}]},
     {"id":"w04965","w":"position","pos":["n","v"],"ph":"/pəˈzɪʃən/","cefr":"A2","kr":["위치","직위"],"ex":[{"en":"She holds a high position in the company.","ko":"그녀는 회사에서 높은 직위를 갖고 있다."}],"mnemonic":{"soundHint":"포지션 → 그대로 '포지션'","story":"축구·야구에서 '내 포지션(position)'이라 하면 위치·자리. 회사에서 '높은 포지션'이라 하면 직위. 우리말에서도 그대로 써.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"job","ko":"직장","reason":"job position 필수 콜로케이션"},{"w":"location","ko":"위치","reason":"position의 대표 동의어"},{"w":"rank","ko":"지위","reason":"직위 의미의 시나리오 연결"}],"collocBest":[{"en":"job position","ko":"직위"},{"en":"in a good position","ko":"좋은 위치에"}]},"nuance":{"koSimple":"내가 서 있는 자리 또는 맡은 자리","whenToUse":"위치·자세·직위 나타낼 때"},"krDetail":[{"ko":"위치","explain":"있는 자리"},{"ko":"직위","explain":"맡은 자리"}],"usageExamples":[{"en":"The coach positioned the new player near the goalkeeper.","ko":"감독은 새 선수를 골키퍼 근처에 배치했다."},{"en":"She got a new position as class president this semester.","ko":"그녀는 이번 학기에 반장이라는 새 직위를 얻었다."}],"grammarNote":"position은 명사로 '위치, 직위'와 동사로 '~에 두다, 배치하다' 모두 쓰인다. 학생들은 동사 용법을 잘 모르고 명사로만 인식한다.","grammarQuiz":[{"sentence":"He applied for a new _____ at the marketing department.","ko":"그는 마케팅 부서의 새 직위에 지원했다.","answer":["position"],"hint":"명사"},{"sentence":"The soldiers _____ themselves behind the wall for safety.","ko":"군인들은 안전을 위해 벽 뒤에 자리를 잡았다.","answer":["positioned"],"hint":"동사 과거형"}]},
-    {"id":"w04966","w":"positive","pos":["adj"],"ph":"/ˈpɒzɪtɪv/","cefr":"A2","kr":["긍정적인","양성의"],"ex":[{"en":"Try to stay positive during hard times.","ko":"힘든 시간 동안 긍정적인 태도를 유지하려고 노력해라."}],"mnemonic":{"soundHint":"포지티브 → 그대로 '포지티브'","story":"'포지티브(positive)'는 우리말에도 그대로 쓰여. '포지티브 씽킹(긍정적 사고)', 배터리 '+' 극도 positive라 부르지.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"negative","ko":"부정적인","reason":"positive의 대표 반의어"},{"w":"attitude","ko":"태도","reason":"positive attitude 필수 콜로케이션"},{"w":"hope","ko":"희망","reason":"positive thinking의 시나리오 확장"}],"collocBest":[{"en":"positive attitude","ko":"긍정적인 태도"},{"en":"positive result","ko":"긍정적인 결과"}]},"nuance":{"koSimple":"엄지 척 올리며 웃는 밝은 마음","whenToUse":"긍정적 태도·결과 나타낼 때"},"krDetail":[{"ko":"긍정적인","explain":"좋게 보는"},{"ko":"양성의","explain":"검사에서 반응이 나타난"}],"usageExamples":null,"grammarNote":"positive는 be positive about (~에 대해 확신하다)와 test positive for (~에 양성 반응이 나오다) 구문이 다르게 쓰인다. 학생들은 두 구문의 전치사를 혼동한다.","grammarQuiz":[{"sentence":"Try to keep a _____ attitude even when things go wrong.","ko":"일이 잘못될 때에도 긍정적인 태도를 유지하려고 노력해라.","answer":["positive"],"hint":"형용사"},{"sentence":"He tested _____ for the virus during the medical exam.","ko":"그는 건강검진 중에 바이러스 양성 판정을 받았다.","answer":["positive"],"hint":"test와 함께"}]},
-    {"id":"w04971","w":"possibly","pos":["adv"],"ph":"/ˈpɒsɪbli/","cefr":"A2","kr":["아마도","혹시"],"ex":[{"en":"Could you possibly help me with this?","ko":"혹시 이것을 도와주실 수 있나요?"}],"mnemonic":{"soundHint":"파서블리 → possible(가능한) + ly","story":"possible(가능한)의 부사형이 possibly(아마, 혹시). '가능하게' → '아마도'로 확장돼.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"maybe","ko":"아마도","reason":"possibly의 대표 동의어"},{"w":"perhaps","ko":"어쩌면","reason":"possibly와 격식만 다른 동의어"},{"w":"certainly","ko":"확실히","reason":"possibly의 대표 반의어"}],"collocBest":[{"en":"possibly the best","ko":"어쩌면 최고의"},{"en":"could possibly","ko":"~할 수도 있다"}]},"nuance":{"koSimple":"확실하진 않지만 그럴 수도 있는 느낌","whenToUse":"조심스레 부탁하거나 추측할 때"},"krDetail":[{"ko":"아마도","explain":"확실치 않게 어쩌면"},{"ko":"혹시","explain":"그럴 수도 있어"}],"usageExamples":null,"grammarNote":"possibly는 조동사 can/could와 함께 쓰여 강한 궁금증이나 정중한 부탁을 나타낸다. Could you possibly ~?는 정중한 요청 표현으로 중3 수준에서 자주 나온다.","grammarQuiz":[{"sentence":"Could you _____ help me with this heavy box, please?","ko":"혹시 이 무거운 상자를 옮기는 것을 도와주실 수 있나요?","answer":["possibly"],"hint":"정중 요청 부사"},{"sentence":"This is _____ the best pizza I have ever eaten.","ko":"이것은 아마도 내가 먹어본 최고의 피자일 것이다.","answer":["possibly"],"hint":"부사"}]},
-    {"id":"w04988","w":"powerful","pos":["adj"],"ph":"/ˈpaʊəfʊl/","cefr":"A2","kr":["강력한","힘 있는"],"ex":[{"en":"The engine is very powerful.","ko":"그 엔진은 매우 강력하다."}],"mnemonic":{"soundHint":"파워풀 → power(파워) + ful(가득)","story":"'파워(power)'는 우리말에도 쓰이는 힘. -ful(가득)이 붙어 '힘이 가득한 = 강력한(powerful)'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"strong","ko":"강한","reason":"powerful의 대표 동의어"},{"w":"weak","ko":"약한","reason":"powerful의 대표 반의어"},{"w":"engine","ko":"엔진","reason":"powerful engine 시나리오 콜로케이션"}],"collocBest":[{"en":"powerful speech","ko":"강력한 연설"},{"en":"powerful tool","ko":"강력한 도구"}]},"nuance":{"koSimple":"우람한 근육으로 밀어붙이는 큰 힘","whenToUse":"엔진·연설·사람이 강할 때"},"krDetail":[{"ko":"강력한","explain":"힘이 매우 센"},{"ko":"힘 있는","explain":"영향력이 큰"}],"usageExamples":null,"grammarNote":"powerful은 -ful로 끝나는 형용사로 '~로 가득 찬'의 뜻을 나타낸다. 학생들은 powerfull처럼 l을 두 번 쓰는 철자 오류를 자주 낸다.","grammarQuiz":[{"sentence":"The president gave a _____ speech that moved everyone deeply.","ko":"대통령은 모두를 깊이 감동시킨 강력한 연설을 했다.","answer":["powerful"],"hint":"형용사 -ful"},{"sentence":"This new engine is more _____ than the old model here.","ko":"이 새 엔진은 예전 모델보다 더 강력하다.","answer":["powerful"],"hint":"비교급 앞 원급"}]},
+    {"id":"w04966","w":"positive","pos":["adj"],"ph":"/ˈpɒzɪtɪv/","cefr":"A2","kr":["긍정적인","양성의"],"ex":[{"en":"Try to stay positive during hard times.","ko":"힘든 시간 동안 긍정적인 태도를 유지하려고 노력해라."}],"mnemonic":{"soundHint":"포지티브 → 그대로 '포지티브'","story":"'포지티브(positive)'는 우리말에도 그대로 쓰여. '포지티브 씽킹(긍정적 사고)', 배터리 '+' 극도 positive라 부르지.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"negative","ko":"부정적인","reason":"positive의 대표 반의어"},{"w":"attitude","ko":"태도","reason":"positive attitude 필수 콜로케이션"},{"w":"hope","ko":"희망","reason":"positive thinking의 시나리오 확장"}],"collocBest":[{"en":"positive attitude","ko":"긍정적인 태도"},{"en":"positive result","ko":"긍정적인 결과"}]},"nuance":{"koSimple":"엄지 척 올리며 웃는 밝은 마음","whenToUse":"긍정적 태도·결과 나타낼 때"},"krDetail":[{"ko":"긍정적인","explain":"좋게 보는"},{"ko":"양성의","explain":"검사에서 반응이 나타난"}],"usageExamples":[{"en":"She has a positive attitude toward life.","ko":"그녀는 삶에 대해 긍정적인 태도를 지녔다."},{"en":"The test result came back positive.","ko":"검사 결과가 양성으로 나왔다."}],"grammarNote":"positive는 be positive about (~에 대해 확신하다)와 test positive for (~에 양성 반응이 나오다) 구문이 다르게 쓰인다. 학생들은 두 구문의 전치사를 혼동한다.","grammarQuiz":[{"sentence":"Try to keep a _____ attitude even when things go wrong.","ko":"일이 잘못될 때에도 긍정적인 태도를 유지하려고 노력해라.","answer":["positive"],"hint":"형용사"},{"sentence":"He tested _____ for the virus during the medical exam.","ko":"그는 건강검진 중에 바이러스 양성 판정을 받았다.","answer":["positive"],"hint":"test와 함께"}]},
+    {"id":"w04971","w":"possibly","pos":["adv"],"ph":"/ˈpɒsɪbli/","cefr":"A2","kr":["아마도","혹시"],"ex":[{"en":"Could you possibly help me with this?","ko":"혹시 이것을 도와주실 수 있나요?"}],"mnemonic":{"soundHint":"파서블리 → possible(가능한) + ly","story":"possible(가능한)의 부사형이 possibly(아마, 혹시). '가능하게' → '아마도'로 확장돼.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"maybe","ko":"아마도","reason":"possibly의 대표 동의어"},{"w":"perhaps","ko":"어쩌면","reason":"possibly와 격식만 다른 동의어"},{"w":"certainly","ko":"확실히","reason":"possibly의 대표 반의어"}],"collocBest":[{"en":"possibly the best","ko":"어쩌면 최고의"},{"en":"could possibly","ko":"~할 수도 있다"}]},"nuance":{"koSimple":"확실하진 않지만 그럴 수도 있는 느낌","whenToUse":"조심스레 부탁하거나 추측할 때"},"krDetail":[{"ko":"아마도","explain":"확실치 않게 어쩌면"},{"ko":"혹시","explain":"그럴 수도 있어"}],"usageExamples":[{"en":"He will possibly join us later.","ko":"그는 아마도 나중에 우리와 합류할 것이다."},{"en":"Could you possibly close the window?","ko":"혹시 창문 좀 닫아 주실 수 있나요?"}],"grammarNote":"possibly는 조동사 can/could와 함께 쓰여 강한 궁금증이나 정중한 부탁을 나타낸다. Could you possibly ~?는 정중한 요청 표현으로 중3 수준에서 자주 나온다.","grammarQuiz":[{"sentence":"Could you _____ help me with this heavy box, please?","ko":"혹시 이 무거운 상자를 옮기는 것을 도와주실 수 있나요?","answer":["possibly"],"hint":"정중 요청 부사"},{"sentence":"This is _____ the best pizza I have ever eaten.","ko":"이것은 아마도 내가 먹어본 최고의 피자일 것이다.","answer":["possibly"],"hint":"부사"}]},
+    {"id":"w04988","w":"powerful","pos":["adj"],"ph":"/ˈpaʊəfʊl/","cefr":"A2","kr":["강력한","힘 있는"],"ex":[{"en":"The engine is very powerful.","ko":"그 엔진은 매우 강력하다."}],"mnemonic":{"soundHint":"파워풀 → power(파워) + ful(가득)","story":"'파워(power)'는 우리말에도 쓰이는 힘. -ful(가득)이 붙어 '힘이 가득한 = 강력한(powerful)'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"strong","ko":"강한","reason":"powerful의 대표 동의어"},{"w":"weak","ko":"약한","reason":"powerful의 대표 반의어"},{"w":"engine","ko":"엔진","reason":"powerful engine 시나리오 콜로케이션"}],"collocBest":[{"en":"powerful speech","ko":"강력한 연설"},{"en":"powerful tool","ko":"강력한 도구"}]},"nuance":{"koSimple":"우람한 근육으로 밀어붙이는 큰 힘","whenToUse":"엔진·연설·사람이 강할 때"},"krDetail":[{"ko":"강력한","explain":"힘이 매우 센"},{"ko":"힘 있는","explain":"영향력이 큰"}],"usageExamples":[{"en":"The president is a powerful leader.","ko":"그 대통령은 강력한 지도자이다."},{"en":"The storm was very powerful.","ko":"그 폭풍은 매우 강력했다."}],"grammarNote":"powerful은 -ful로 끝나는 형용사로 '~로 가득 찬'의 뜻을 나타낸다. 학생들은 powerfull처럼 l을 두 번 쓰는 철자 오류를 자주 낸다.","grammarQuiz":[{"sentence":"The president gave a _____ speech that moved everyone deeply.","ko":"대통령은 모두를 깊이 감동시킨 강력한 연설을 했다.","answer":["powerful"],"hint":"형용사 -ful"},{"sentence":"This new engine is more _____ than the old model here.","ko":"이 새 엔진은 예전 모델보다 더 강력하다.","answer":["powerful"],"hint":"비교급 앞 원급"}]},
     {"id":"w04990","w":"practice","pos":["n","v"],"ph":"/ˈpræktɪs/","cefr":"A2","kr":["연습","실행하다"],"ex":[{"en":"Practice makes perfect.","ko":"연습이 완벽을 만든다."}],"mnemonic":{"soundHint":"프랙티스 → 그대로 '프랙티스'","story":"스포츠에서 '프랙티스 게임(practice game, 연습 경기)'을 그대로 쓰지. 연습·실행·관행이라는 뜻이야.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"training","ko":"훈련","reason":"practice의 대표 동의어"},{"w":"theory","ko":"이론","reason":"practice의 대표 반의어"},{"w":"skill","ko":"기술","reason":"practice로 얻는 결과 시나리오"}],"collocBest":[{"en":"in practice","ko":"실제로는"},{"en":"put into practice","ko":"실행에 옮기다"}]},"nuance":{"koSimple":"매일 반복해서 몸에 익히는 훈련","whenToUse":"운동·악기 반복 훈련 말할 때"},"krDetail":[{"ko":"연습","explain":"실력 늘리려 되풀이하기"},{"ko":"실행하다","explain":"실제로 해보다"}],"usageExamples":[{"en":"The players practiced the same play for over two hours.","ko":"선수들은 같은 플레이를 두 시간 넘게 연습했다."},{"en":"Daily practice is the key to speaking English well.","ko":"매일의 연습이 영어를 잘 말하는 열쇠이다."}],"grammarNote":"practice는 동사로 쓸 때 목적어로 동명사(-ing)를 취한다. 학생들은 to부정사를 쓰는 실수를 자주 한다: practice speaking English(O), practice to speak(X).","grammarQuiz":[{"sentence":"He _____ playing the guitar for two hours every day.","ko":"그는 매일 두 시간씩 기타 치는 것을 연습한다.","answer":["practices"],"hint":"3인칭 단수 현재"},{"sentence":"Regular _____ is the key to becoming a great athlete.","ko":"규칙적인 연습이 훌륭한 운동선수가 되는 열쇠이다.","answer":["practice"],"hint":"명사"}]},
-    {"id":"w04996","w":"prayer","pos":["n"],"ph":"/preə/","cefr":"A2","kr":["기도","기원"],"ex":[{"en":"Her prayer was answered.","ko":"그녀의 기도가 응답받았다."}],"mnemonic":{"soundHint":"프레이어 → pray(기도하다) + er","story":"pray(기도하다) + -er = prayer(기도 행위/기도하는 사람). 동사에 -er 붙는 규칙 파생어야.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"church","ko":"교회","reason":"prayer가 이루어지는 대표 장소"},{"w":"worship","ko":"예배","reason":"prayer의 상위 시나리오"},{"w":"silent","ko":"고요한","reason":"silent prayer 콜로케이션"}],"collocBest":[{"en":"say a prayer","ko":"기도를 드리다"},{"en":"prayer book","ko":"기도서"}]},"nuance":{"koSimple":"두 손 모으고 조용히 비는 마음","whenToUse":"소원·종교적으로 비는 행위"},"krDetail":[{"ko":"기도","explain":"신에게 비는 말"},{"ko":"기원","explain":"간절히 바라는 마음"}],"usageExamples":null,"grammarNote":"prayer는 명사이고 pray가 동사이다. 학생들은 prayer를 동사로 오용하는 실수를 자주 한다: I pray every night(O), I prayer every night(X).","grammarQuiz":[{"sentence":"She said a short _____ before going to bed last night.","ko":"그녀는 어젯밤 잠자리에 들기 전에 짧은 기도를 드렸다.","answer":["prayer"],"hint":"명사"},{"sentence":"The priest led the morning _____ in the small chapel.","ko":"신부는 작은 예배당에서 아침 기도를 이끌었다.","answer":["prayer"],"hint":"명사"}]},
-    {"id":"w05014","w":"prefer","pos":["v"],"ph":"/prɪˈfɜː/","cefr":"A2","kr":["선호하다","더 좋아하다"],"ex":[{"en":"I prefer tea to coffee.","ko":"나는 커피보다 차를 좋아한다."}],"mnemonic":{"soundHint":"프리퍼 → pre(앞) + fer(가지고 가다)","story":"pre(앞)+fer(가져가다) = 여러 개 중 '앞으로 가지고 가다' → 선호하다(prefer). A를 앞으로 뽑아 오는 이미지.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"choose","ko":"선택하다","reason":"prefer의 대표 동의어"},{"w":"favor","ko":"선호","reason":"prefer의 격식 동의어"},{"w":"rather","ko":"차라리","reason":"prefer to의 대체 표현 시나리오"}],"collocBest":[{"en":"prefer to","ko":"~을 더 좋아하다"},{"en":"strongly prefer","ko":"강하게 선호하다"}]},"nuance":{"koSimple":"둘 중 하나를 더 좋아해 손드는 것","whenToUse":"둘을 비교해 더 좋은 걸 고를 때"},"krDetail":[{"ko":"선호하다","explain":"여럿 중 더 좋아하다"},{"ko":"더 좋아하다","explain":"다른 것보다 낫다고 여기다"}],"usageExamples":null,"grammarNote":"prefer A to B (B보다 A를 선호하다) 구문에서 to를 쓰는 것이 특징이다. 학생들은 than을 쓰는 실수를 자주 하는데, prefer는 than이 아닌 to를 쓴다.","grammarQuiz":[{"sentence":"I prefer coffee _____ tea in the morning every day.","ko":"나는 아침마다 차보다 커피를 선호한다.","answer":["to"],"hint":"prefer A __ B"},{"sentence":"She prefers _____ read books rather than watch TV shows.","ko":"그녀는 TV 프로그램을 보기보다 책을 읽는 것을 선호한다.","answer":["to"],"hint":"prefer to + 동사원형"}]},
-    {"id":"w05016","w":"pregnant","pos":["adj"],"ph":"/ˈpreɡnənt/","cefr":"A2","kr":["임신한"],"ex":[{"en":"She found out she was pregnant last month.","ko":"그녀는 지난달에 임신한 것을 알았다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"baby","ko":"아기","reason":"pregnant의 결과·시나리오"},{"w":"mother","ko":"어머니","reason":"pregnant woman 콜로케이션"},{"w":"birth","ko":"출산","reason":"pregnancy 이후 시나리오"}],"collocBest":[{"en":"pregnant woman","ko":"임신한 여성"},{"en":"become pregnant","ko":"임신하다"}]},"nuance":{"koSimple":"배 속에 아기가 자라는 상태","whenToUse":"아기를 가진 상태 말할 때"},"krDetail":[{"ko":"임신한","explain":"배 안에 아기가 든"}],"usageExamples":null,"grammarNote":"pregnant는 형용사로 be pregnant with (~을 임신한) 구문을 쓴다. 학생들은 pregnant를 동사로 오용하거나 with 대신 of를 쓰는 실수를 한다.","grammarQuiz":[{"sentence":"She is _____ with her first baby and feels very excited.","ko":"그녀는 첫아이를 임신 중이고 매우 들뜬 기분이다.","answer":["pregnant"],"hint":"형용사"},{"sentence":"The _____ woman received a seat on the crowded train.","ko":"임신한 여성은 붐비는 기차에서 자리를 양보받았다.","answer":["pregnant"],"hint":"명사수식 형용사"}]},
-    {"id":"w05023","w":"prepare","pos":["v"],"ph":"/prɪˈpeə/","cefr":"A2","kr":["준비하다","대비하다"],"ex":[{"en":"Please prepare your materials for class.","ko":"수업을 위한 자료를 준비하세요."}],"mnemonic":{"soundHint":"프리페어 → pre(미리) + pare(갖추다)","story":"pre(미리)+pare(갖추다) = prepare(준비하다). 어원 그대로 '미리 갖춰 두다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"ready","ko":"준비된","reason":"prepare의 결과 상태"},{"w":"plan","ko":"계획하다","reason":"prepare의 선행 단계"},{"w":"exam","ko":"시험","reason":"prepare for exam 콜로케이션"}],"collocBest":[{"en":"prepare for","ko":"~을 준비하다"},{"en":"prepare a meal","ko":"식사를 준비하다"}]},"nuance":{"koSimple":"필요한 걸 미리 챙겨 두는 손놀림","whenToUse":"수업·시험·식사 미리 준비할 때"},"krDetail":[{"ko":"준비하다","explain":"미리 갖추어 두다"},{"ko":"대비하다","explain":"닥칠 일에 미리 갖추다"}],"usageExamples":null,"grammarNote":"prepare for(~을 대비하다)와 prepare(~을 준비하다)의 차이가 중요하다. 학생들은 prepare for the exam(시험 대비)과 prepare dinner(저녁 준비)를 혼동한다.","grammarQuiz":[{"sentence":"We need to _____ for the final exam next week seriously.","ko":"우리는 다음 주 기말고사를 진지하게 대비해야 한다.","answer":["prepare"],"hint":"동사 원형"},{"sentence":"Mom is _____ dinner for the whole family right now.","ko":"엄마는 지금 온 가족을 위해 저녁을 준비하고 계신다.","answer":["preparing"],"hint":"현재진행"}]},
-    {"id":"w05031","w":"president","pos":["n"],"ph":"/ˈprezɪdənt/","cefr":"A2","kr":["대통령","회장"],"ex":[{"en":"The president signed the new law.","ko":"대통령은 새 법안에 서명했다."}],"mnemonic":{"soundHint":"프레지던트 → pre(앞) + sid(앉다) + ent(사람)","story":"pre(앞)+sid(앉다)+ent(사람) = '앞에 앉는 사람' = 대통령/회장(president). 회의 맨 앞자리에 앉는 이미지.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"leader","ko":"지도자","reason":"president의 대표 동의어"},{"w":"election","ko":"선거","reason":"president 선출 시나리오"},{"w":"vice","ko":"부-","reason":"vice president 필수 콜로케이션"}],"collocBest":[{"en":"U.S. president","ko":"미국 대통령"},{"en":"company president","ko":"회사 사장"}]},"nuance":{"koSimple":"나라·회사를 대표하는 최고 지도자","whenToUse":"대통령·회장 직함 말할 때"},"krDetail":[{"ko":"대통령","explain":"나라를 대표해 이끄는 사람"},{"ko":"회장","explain":"단체를 이끄는 우두머리"}],"usageExamples":null,"grammarNote":"President가 특정 대통령을 가리키는 직함으로 쓰일 때는 첫 글자를 대문자로 쓰고 the를 붙이지 않는다: President Lincoln(O), the President Lincoln(X).","grammarQuiz":[{"sentence":"_____ Lincoln freed the slaves during the American Civil War.","ko":"링컨 대통령은 미국 남북전쟁 동안 노예를 해방시켰다.","answer":["President"],"hint":"대문자 직함"},{"sentence":"He was elected _____ of the student council this semester.","ko":"그는 이번 학기 학생회장에 선출되었다.","answer":["president"],"hint":"일반명사"}]},
+    {"id":"w04996","w":"prayer","pos":["n"],"ph":"/preə/","cefr":"A2","kr":["기도","기원"],"ex":[{"en":"Her prayer was answered.","ko":"그녀의 기도가 응답받았다."}],"mnemonic":{"soundHint":"프레이어 → pray(기도하다) + er","story":"pray(기도하다) + -er = prayer(기도 행위/기도하는 사람). 동사에 -er 붙는 규칙 파생어야.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"church","ko":"교회","reason":"prayer가 이루어지는 대표 장소"},{"w":"worship","ko":"예배","reason":"prayer의 상위 시나리오"},{"w":"silent","ko":"고요한","reason":"silent prayer 콜로케이션"}],"collocBest":[{"en":"say a prayer","ko":"기도를 드리다"},{"en":"prayer book","ko":"기도서"}]},"nuance":{"koSimple":"두 손 모으고 조용히 비는 마음","whenToUse":"소원·종교적으로 비는 행위"},"krDetail":[{"ko":"기도","explain":"신에게 비는 말"},{"ko":"기원","explain":"간절히 바라는 마음"}],"usageExamples":[{"en":"They said a prayer before the meal.","ko":"그들은 식사 전에 기도를 했다."},{"en":"She closed her eyes in prayer.","ko":"그녀는 기도하며 눈을 감았다."}],"grammarNote":"prayer는 명사이고 pray가 동사이다. 학생들은 prayer를 동사로 오용하는 실수를 자주 한다: I pray every night(O), I prayer every night(X).","grammarQuiz":[{"sentence":"She said a short _____ before going to bed last night.","ko":"그녀는 어젯밤 잠자리에 들기 전에 짧은 기도를 드렸다.","answer":["prayer"],"hint":"명사"},{"sentence":"The priest led the morning _____ in the small chapel.","ko":"신부는 작은 예배당에서 아침 기도를 이끌었다.","answer":["prayer"],"hint":"명사"}]},
+    {"id":"w05014","w":"prefer","pos":["v"],"ph":"/prɪˈfɜː/","cefr":"A2","kr":["선호하다","더 좋아하다"],"ex":[{"en":"I prefer tea to coffee.","ko":"나는 커피보다 차를 좋아한다."}],"mnemonic":{"soundHint":"프리퍼 → pre(앞) + fer(가지고 가다)","story":"pre(앞)+fer(가져가다) = 여러 개 중 '앞으로 가지고 가다' → 선호하다(prefer). A를 앞으로 뽑아 오는 이미지.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"choose","ko":"선택하다","reason":"prefer의 대표 동의어"},{"w":"favor","ko":"선호","reason":"prefer의 격식 동의어"},{"w":"rather","ko":"차라리","reason":"prefer to의 대체 표현 시나리오"}],"collocBest":[{"en":"prefer to","ko":"~을 더 좋아하다"},{"en":"strongly prefer","ko":"강하게 선호하다"}]},"nuance":{"koSimple":"둘 중 하나를 더 좋아해 손드는 것","whenToUse":"둘을 비교해 더 좋은 걸 고를 때"},"krDetail":[{"ko":"선호하다","explain":"여럿 중 더 좋아하다"},{"ko":"더 좋아하다","explain":"다른 것보다 낫다고 여기다"}],"usageExamples":[{"en":"I prefer walking to driving.","ko":"나는 운전보다 걷기를 더 좋아한다."},{"en":"She prefers to eat at home.","ko":"그녀는 집에서 먹는 것을 선호한다."}],"grammarNote":"prefer A to B (B보다 A를 선호하다) 구문에서 to를 쓰는 것이 특징이다. 학생들은 than을 쓰는 실수를 자주 하는데, prefer는 than이 아닌 to를 쓴다.","grammarQuiz":[{"sentence":"I prefer coffee _____ tea in the morning every day.","ko":"나는 아침마다 차보다 커피를 선호한다.","answer":["to"],"hint":"prefer A __ B"},{"sentence":"She prefers _____ read books rather than watch TV shows.","ko":"그녀는 TV 프로그램을 보기보다 책을 읽는 것을 선호한다.","answer":["to"],"hint":"prefer to + 동사원형"}]},
+    {"id":"w05016","w":"pregnant","pos":["adj"],"ph":"/ˈpreɡnənt/","cefr":"A2","kr":["임신한"],"ex":[{"en":"She found out she was pregnant last month.","ko":"그녀는 지난달에 임신한 것을 알았다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"baby","ko":"아기","reason":"pregnant의 결과·시나리오"},{"w":"mother","ko":"어머니","reason":"pregnant woman 콜로케이션"},{"w":"birth","ko":"출산","reason":"pregnancy 이후 시나리오"}],"collocBest":[{"en":"pregnant woman","ko":"임신한 여성"},{"en":"become pregnant","ko":"임신하다"}]},"nuance":{"koSimple":"배 속에 아기가 자라는 상태","whenToUse":"아기를 가진 상태 말할 때"},"krDetail":[{"ko":"임신한","explain":"배 안에 아기가 든"}],"usageExamples":[{"en":"My sister is pregnant with her first baby.","ko":"내 언니는 첫 아이를 임신 중이다."},{"en":"The pregnant woman rested on the sofa.","ko":"그 임신한 여성은 소파에서 쉬었다."}],"grammarNote":"pregnant는 형용사로 be pregnant with (~을 임신한) 구문을 쓴다. 학생들은 pregnant를 동사로 오용하거나 with 대신 of를 쓰는 실수를 한다.","grammarQuiz":[{"sentence":"She is _____ with her first baby and feels very excited.","ko":"그녀는 첫아이를 임신 중이고 매우 들뜬 기분이다.","answer":["pregnant"],"hint":"형용사"},{"sentence":"The _____ woman received a seat on the crowded train.","ko":"임신한 여성은 붐비는 기차에서 자리를 양보받았다.","answer":["pregnant"],"hint":"명사수식 형용사"}]},
+    {"id":"w05023","w":"prepare","pos":["v"],"ph":"/prɪˈpeə/","cefr":"A2","kr":["준비하다","대비하다"],"ex":[{"en":"Please prepare your materials for class.","ko":"수업을 위한 자료를 준비하세요."}],"mnemonic":{"soundHint":"프리페어 → pre(미리) + pare(갖추다)","story":"pre(미리)+pare(갖추다) = prepare(준비하다). 어원 그대로 '미리 갖춰 두다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"ready","ko":"준비된","reason":"prepare의 결과 상태"},{"w":"plan","ko":"계획하다","reason":"prepare의 선행 단계"},{"w":"exam","ko":"시험","reason":"prepare for exam 콜로케이션"}],"collocBest":[{"en":"prepare for","ko":"~을 준비하다"},{"en":"prepare a meal","ko":"식사를 준비하다"}]},"nuance":{"koSimple":"필요한 걸 미리 챙겨 두는 손놀림","whenToUse":"수업·시험·식사 미리 준비할 때"},"krDetail":[{"ko":"준비하다","explain":"미리 갖추어 두다"},{"ko":"대비하다","explain":"닥칠 일에 미리 갖추다"}],"usageExamples":[{"en":"We need to prepare for the exam.","ko":"우리는 시험을 대비해야 한다."},{"en":"He prepared dinner for the family.","ko":"그는 가족을 위해 저녁을 준비했다."}],"grammarNote":"prepare for(~을 대비하다)와 prepare(~을 준비하다)의 차이가 중요하다. 학생들은 prepare for the exam(시험 대비)과 prepare dinner(저녁 준비)를 혼동한다.","grammarQuiz":[{"sentence":"We need to _____ for the final exam next week seriously.","ko":"우리는 다음 주 기말고사를 진지하게 대비해야 한다.","answer":["prepare"],"hint":"동사 원형"},{"sentence":"Mom is _____ dinner for the whole family right now.","ko":"엄마는 지금 온 가족을 위해 저녁을 준비하고 계신다.","answer":["preparing"],"hint":"현재진행"}]},
+    {"id":"w05031","w":"president","pos":["n"],"ph":"/ˈprezɪdənt/","cefr":"A2","kr":["대통령","회장"],"ex":[{"en":"The president signed the new law.","ko":"대통령은 새 법안에 서명했다."}],"mnemonic":{"soundHint":"프레지던트 → pre(앞) + sid(앉다) + ent(사람)","story":"pre(앞)+sid(앉다)+ent(사람) = '앞에 앉는 사람' = 대통령/회장(president). 회의 맨 앞자리에 앉는 이미지.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"leader","ko":"지도자","reason":"president의 대표 동의어"},{"w":"election","ko":"선거","reason":"president 선출 시나리오"},{"w":"vice","ko":"부-","reason":"vice president 필수 콜로케이션"}],"collocBest":[{"en":"U.S. president","ko":"미국 대통령"},{"en":"company president","ko":"회사 사장"}]},"nuance":{"koSimple":"나라·회사를 대표하는 최고 지도자","whenToUse":"대통령·회장 직함 말할 때"},"krDetail":[{"ko":"대통령","explain":"나라를 대표해 이끄는 사람"},{"ko":"회장","explain":"단체를 이끄는 우두머리"}],"usageExamples":[{"en":"The president gave a speech on TV.","ko":"대통령이 TV에서 연설을 했다."},{"en":"She was elected president of the club.","ko":"그녀는 그 동아리의 회장으로 선출되었다."}],"grammarNote":"President가 특정 대통령을 가리키는 직함으로 쓰일 때는 첫 글자를 대문자로 쓰고 the를 붙이지 않는다: President Lincoln(O), the President Lincoln(X).","grammarQuiz":[{"sentence":"_____ Lincoln freed the slaves during the American Civil War.","ko":"링컨 대통령은 미국 남북전쟁 동안 노예를 해방시켰다.","answer":["President"],"hint":"대문자 직함"},{"sentence":"He was elected _____ of the student council this semester.","ko":"그는 이번 학기 학생회장에 선출되었다.","answer":["president"],"hint":"일반명사"}]},
     {"id":"w05032","w":"press","pos":["v","n"],"ph":"/pres/","cefr":"A2","kr":["누르다","언론"],"ex":[{"en":"Press the button to start the machine.","ko":"버튼을 눌러 기계를 작동시켜라."}],"mnemonic":{"soundHint":"프레스 → 그대로 '프레스'","story":"'프레스(press)'는 우리말에도 쓰이는 누르는 기계. 신문사도 '프레스'라 부르는 이유는 활자를 눌러 찍었기 때문이야.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"button","ko":"버튼","reason":"press a button 필수 콜로케이션"},{"w":"media","ko":"언론","reason":"press의 대표 동의어"},{"w":"reporter","ko":"기자","reason":"press 시나리오의 핵심 인물"}],"collocBest":[{"en":"press a button","ko":"버튼을 누르다"},{"en":"freedom of the press","ko":"언론의 자유"}]},"nuance":{"koSimple":"손가락으로 꾹 눌러 작동시키는 것","whenToUse":"버튼 누르기·언론 뜻할 때"},"krDetail":[{"ko":"누르다","explain":"위에서 힘을 가하다"},{"ko":"언론","explain":"신문과 방송"}],"usageExamples":[{"en":"She gently pressed the button on the elevator wall.","ko":"그녀는 엘리베이터 벽에 있는 버튼을 부드럽게 눌렀다."},{"en":"The press reported the story about the missing puppy.","ko":"언론은 사라진 강아지에 관한 이야기를 보도했다."}],"grammarNote":"press가 명사로 '언론'을 뜻할 때는 항상 the를 붙여 the press로 쓴다. 학생들은 관사를 빠뜨리거나 presses(복수)로 쓰는 실수를 한다.","grammarQuiz":[{"sentence":"_____ press criticized the new policy of the government.","ko":"언론은 정부의 새 정책을 비판했다.","answer":["The"],"hint":"언론 앞 관사"},{"sentence":"You should _____ this key to save your file safely.","ko":"파일을 안전하게 저장하려면 이 키를 눌러야 한다.","answer":["press"],"hint":"동사 원형"}]},
-    {"id":"w05039","w":"pretend","pos":["v"],"ph":"/prɪˈtend/","cefr":"A2","kr":["~인 척하다","가장하다"],"ex":[{"en":"Don't pretend you don't know.","ko":"모르는 척하지 마라."}],"mnemonic":{"soundHint":"프리텐드 → pre(앞) + tend(펴다)","story":"pre(앞)+tend(펴다) = 앞에서 다른 모습을 펼쳐 보이다 → ~인 척하다(pretend). 가면을 앞으로 펼치는 이미지.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"fake","ko":"가짜의","reason":"pretend의 대표 동의어"},{"w":"act","ko":"행동하다","reason":"pretend to be의 시나리오"},{"w":"sleep","ko":"자다","reason":"pretend to sleep 대표 콜로케이션"}],"collocBest":[{"en":"pretend to be","ko":"~인 척하다"},{"en":"pretend not to","ko":"~하지 않는 척하다"}]},"nuance":{"koSimple":"안 그런데 그런 척 연기하는 표정","whenToUse":"모르는 척·아픈 척할 때"},"krDetail":[{"ko":"~인 척하다","explain":"실제와 다르게 꾸미다"},{"ko":"가장하다","explain":"그런 것처럼 흉내내다"}],"usageExamples":null,"grammarNote":"pretend to + 동사원형(~인 척하다)과 pretend that + 절 구문이 자주 나온다. 학생들은 pretend + 동명사(-ing)를 쓰는 실수를 자주 한다.","grammarQuiz":[{"sentence":"He _____ to be asleep when his mother came in.","ko":"그는 어머니가 들어오셨을 때 자는 척했다.","answer":["pretended"],"hint":"동사 과거형"},{"sentence":"Do not _____ to know the answer if you really don't.","ko":"정말 모른다면 아는 척하지 마.","answer":["pretend"],"hint":"동사 원형"}]},
-    {"id":"w05043","w":"prevent","pos":["v"],"ph":"/prɪˈvent/","cefr":"A2","kr":["막다","예방하다"],"ex":[{"en":"Washing hands can prevent illness.","ko":"손 씻기는 질병을 예방할 수 있다."}],"mnemonic":{"soundHint":"프리벤트 → pre(미리) + vent(오다)","story":"pre(미리)+vent(오다=event의 vent) = 미리 와서 막다 → 예방하다(prevent). 사고가 오기 전에 먼저 도착해 차단하는 이미지.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"disease","ko":"질병","reason":"prevent disease 필수 콜로케이션"},{"w":"stop","ko":"멈추다","reason":"prevent의 대표 동의어"},{"w":"vaccine","ko":"백신","reason":"prevent 시나리오의 대표 수단"}],"collocBest":[{"en":"prevent disease","ko":"질병을 예방하다"},{"en":"prevent from","ko":"~을 막다"}]},"nuance":{"koSimple":"손 씻어 병균이 못 들어오게 막는 것","whenToUse":"질병·사고를 미리 막을 때"},"krDetail":[{"ko":"막다","explain":"일어나지 못하게 하다"},{"ko":"예방하다","explain":"미리 대비해 막다"}],"usageExamples":null,"grammarNote":"prevent A from -ing (A가 ~하는 것을 막다) 구문이 자주 나온다. 학생들은 from을 빠뜨리거나 to부정사를 쓰는 실수를 자주 한다.","grammarQuiz":[{"sentence":"The heavy rain _____ us from going out yesterday afternoon.","ko":"어제 오후 폭우 때문에 우리는 외출하지 못했다.","answer":["prevented"],"hint":"동사 과거형"},{"sentence":"Washing hands can _____ many kinds of diseases and infections.","ko":"손 씻기는 많은 종류의 질병과 감염을 예방할 수 있다.","answer":["prevent"],"hint":"동사 원형"}]},
-    {"id":"w05045","w":"previous","pos":["adj"],"ph":"/ˈpriːvɪəs/","cefr":"A2","kr":["이전의","앞의"],"ex":[{"en":"He learned from his previous mistakes.","ko":"그는 이전의 실수에서 배웠다."}],"mnemonic":{"soundHint":"프리비어스 → pre(앞) + vi(길·via)","story":"pre(앞)+vi(길·via) = 앞서 지나간 길 → 이전의(previous). 이미 걸어간 앞선 길의 이미지.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"former","ko":"이전의","reason":"previous의 대표 동의어"},{"w":"next","ko":"다음의","reason":"previous의 대표 반의어"},{"w":"experience","ko":"경험","reason":"previous experience 필수 콜로케이션"}],"collocBest":[{"en":"previous experience","ko":"이전 경험"},{"en":"previous day","ko":"전날"}]},"nuance":{"koSimple":"바로 앞 순번, 지금 전 단계","whenToUse":"이전 경험·앞 페이지 말할 때"},"krDetail":[{"ko":"이전의","explain":"그전에 있던"},{"ko":"앞의","explain":"먼저 있었던"}],"usageExamples":null,"grammarNote":"previous는 명사 앞에서 명사를 꾸미는 한정적 용법으로 주로 쓰인다. 서술적 용법(be동사 뒤)으로는 잘 쓰지 않으며, 이 자리에는 previous 대신 before/earlier를 쓴다.","grammarQuiz":[{"sentence":"In the _____ chapter, we learned about ancient Egyptian culture.","ko":"앞 장에서 우리는 고대 이집트 문화에 대해 배웠다.","answer":["previous"],"hint":"명사 수식 형용사"},{"sentence":"Do you have any _____ experience in this kind of job?","ko":"이런 종류의 일에 이전 경험이 있으신가요?","answer":["previous"],"hint":"형용사"}]},
-    {"id":"w05062","w":"prison","pos":["n"],"ph":"/ˈprɪzən/","cefr":"A2","kr":["감옥","교도소"],"ex":[{"en":"He was sent to prison for five years.","ko":"그는 5년 동안 감옥에 보내졌다."}],"mnemonic":{"soundHint":"프리즌 → prison = free를 잃은 곳","story":"prison(감옥)은 free(자유)를 잃은 곳. 발음도 free(프리)와 비슷해서 'free를 잃은 곳 = pri-son'으로 기억.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"jail","ko":"구치소","reason":"prison의 대표 동의어"},{"w":"guard","ko":"간수","reason":"prison 시나리오의 핵심 인물"},{"w":"escape","ko":"탈출하다","reason":"prison escape 대표 시나리오"}],"collocBest":[{"en":"go to prison","ko":"감옥에 가다"},{"en":"prison sentence","ko":"징역 선고"}]},"nuance":{"koSimple":"쇠창살에 갇힌 죄인이 사는 건물","whenToUse":"교도소·감옥 시설 말할 때"},"krDetail":[{"ko":"감옥","explain":"죄인 가두는 곳"},{"ko":"교도소","explain":"죄인을 바로잡는 시설"}],"usageExamples":null,"grammarNote":"go to prison(수감되러 가다)과 go to the prison(방문 목적으로 감옥에 가다)의 차이가 중요하다. 관사 유무에 따라 의미가 달라진다.","grammarQuiz":[{"sentence":"The criminal was sent to _____ for ten long years.","ko":"그 범죄자는 10년의 긴 세월 동안 수감되었다.","answer":["prison"],"hint":"관사 없이"},{"sentence":"She visited her brother at _____ prison last weekend.","ko":"그녀는 지난 주말 감옥에 있는 오빠를 방문했다.","answer":["the"],"hint":"방문 목적 관사"}]},
-    {"id":"w05063","w":"prisoner","pos":["n"],"ph":"/ˈprɪzənə/","cefr":"A2","kr":["죄수","수감자"],"ex":[{"en":"The prisoner was released after ten years.","ko":"그 죄수는 10년 후에 석방되었다."}],"mnemonic":{"soundHint":"프리즈너 → prison(감옥) + er(사람)","story":"prison(감옥)+er(사람) = prisoner(죄수). 감옥에 있는 사람이야.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"crime","ko":"범죄","reason":"prisoner의 원인 시나리오"},{"w":"guard","ko":"간수","reason":"prisoner를 감시하는 대응 인물"},{"w":"release","ko":"석방하다","reason":"prisoner 시나리오의 결말"}],"collocBest":[{"en":"prisoner of war","ko":"전쟁 포로"},{"en":"political prisoner","ko":"정치범"}]},"nuance":{"koSimple":"쇠창살 뒤 죄수복 입은 사람","whenToUse":"감옥에 갇힌 죄수·포로 말할 때"},"krDetail":[{"ko":"죄수","explain":"감옥에 갇힌 사람"},{"ko":"수감자","explain":"형을 받아 갇힌 사람"}],"usageExamples":null,"grammarNote":"prisoner는 셀 수 있는 명사로 복수형은 prisoners이다. prisoner of war(전쟁 포로)는 굳어진 표현으로 관사를 붙이지 않는다.","grammarQuiz":[{"sentence":"The _____ tried to escape from the high stone walls.","ko":"그 죄수는 높은 돌담에서 탈출하려고 시도했다.","answer":["prisoner"],"hint":"단수 명사"},{"sentence":"Many _____ were released after the new law was passed.","ko":"새 법이 통과된 후 많은 수감자들이 석방되었다.","answer":["prisoners"],"hint":"복수형"}]},
-    {"id":"w05065","w":"private","pos":["adj"],"ph":"/ˈpraɪvɪt/","cefr":"A2","kr":["사적인","민간의"],"ex":[{"en":"This is a private conversation.","ko":"이것은 사적인 대화이다."}],"mnemonic":{"soundHint":"프라이빗 → 그대로 '프라이빗'","story":"카페의 '프라이빗 룸(private room)', '프라이빗 라이프(사생활)' 우리말에도 그대로 쓰여. '사적인'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"public","ko":"공적인","reason":"private의 대표 반의어"},{"w":"personal","ko":"개인적인","reason":"private의 대표 동의어"},{"w":"secret","ko":"비밀","reason":"private life 시나리오 확장"}],"collocBest":[{"en":"private school","ko":"사립학교"},{"en":"private life","ko":"사생활"}]},"nuance":{"koSimple":"'나만 아는' 문 잠긴 개인 공간","whenToUse":"사생활·사립·개인적 것 말할 때"},"krDetail":[{"ko":"사적인","explain":"개인에게 속한"},{"ko":"민간의","explain":"정부가 아닌"}],"usageExamples":null,"grammarNote":"private과 public은 반의어 관계이다. private school(사립학교)/public school(공립학교), private life(사생활)처럼 대비되는 표현을 함께 익혀야 한다.","grammarQuiz":[{"sentence":"He attended a _____ school when he was young boy.","ko":"그는 어린 소년이었을 때 사립학교에 다녔다.","answer":["private"],"hint":"형용사"},{"sentence":"Please respect her _____ life and do not spread rumors.","ko":"그녀의 사생활을 존중하고 소문을 퍼뜨리지 마세요.","answer":["private"],"hint":"명사 수식 형용사"}]},
+    {"id":"w05039","w":"pretend","pos":["v"],"ph":"/prɪˈtend/","cefr":"A2","kr":["~인 척하다","가장하다"],"ex":[{"en":"Don't pretend you don't know.","ko":"모르는 척하지 마라."}],"mnemonic":{"soundHint":"프리텐드 → pre(앞) + tend(펴다)","story":"pre(앞)+tend(펴다) = 앞에서 다른 모습을 펼쳐 보이다 → ~인 척하다(pretend). 가면을 앞으로 펼치는 이미지.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"fake","ko":"가짜의","reason":"pretend의 대표 동의어"},{"w":"act","ko":"행동하다","reason":"pretend to be의 시나리오"},{"w":"sleep","ko":"자다","reason":"pretend to sleep 대표 콜로케이션"}],"collocBest":[{"en":"pretend to be","ko":"~인 척하다"},{"en":"pretend not to","ko":"~하지 않는 척하다"}]},"nuance":{"koSimple":"안 그런데 그런 척 연기하는 표정","whenToUse":"모르는 척·아픈 척할 때"},"krDetail":[{"ko":"~인 척하다","explain":"실제와 다르게 꾸미다"},{"ko":"가장하다","explain":"그런 것처럼 흉내내다"}],"usageExamples":[{"en":"The children pretended to be superheroes.","ko":"아이들은 슈퍼히어로인 척했다."},{"en":"He pretended that he was asleep.","ko":"그는 자고 있는 척했다."}],"grammarNote":"pretend to + 동사원형(~인 척하다)과 pretend that + 절 구문이 자주 나온다. 학생들은 pretend + 동명사(-ing)를 쓰는 실수를 자주 한다.","grammarQuiz":[{"sentence":"He _____ to be asleep when his mother came in.","ko":"그는 어머니가 들어오셨을 때 자는 척했다.","answer":["pretended"],"hint":"동사 과거형"},{"sentence":"Do not _____ to know the answer if you really don't.","ko":"정말 모른다면 아는 척하지 마.","answer":["pretend"],"hint":"동사 원형"}]},
+    {"id":"w05043","w":"prevent","pos":["v"],"ph":"/prɪˈvent/","cefr":"A2","kr":["막다","예방하다"],"ex":[{"en":"Washing hands can prevent illness.","ko":"손 씻기는 질병을 예방할 수 있다."}],"mnemonic":{"soundHint":"프리벤트 → pre(미리) + vent(오다)","story":"pre(미리)+vent(오다=event의 vent) = 미리 와서 막다 → 예방하다(prevent). 사고가 오기 전에 먼저 도착해 차단하는 이미지.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"disease","ko":"질병","reason":"prevent disease 필수 콜로케이션"},{"w":"stop","ko":"멈추다","reason":"prevent의 대표 동의어"},{"w":"vaccine","ko":"백신","reason":"prevent 시나리오의 대표 수단"}],"collocBest":[{"en":"prevent disease","ko":"질병을 예방하다"},{"en":"prevent from","ko":"~을 막다"}]},"nuance":{"koSimple":"손 씻어 병균이 못 들어오게 막는 것","whenToUse":"질병·사고를 미리 막을 때"},"krDetail":[{"ko":"막다","explain":"일어나지 못하게 하다"},{"ko":"예방하다","explain":"미리 대비해 막다"}],"usageExamples":[{"en":"Seat belts can prevent injuries.","ko":"안전벨트는 부상을 막을 수 있다."},{"en":"The rain prevented us from going out.","ko":"비 때문에 우리는 외출하지 못했다."}],"grammarNote":"prevent A from -ing (A가 ~하는 것을 막다) 구문이 자주 나온다. 학생들은 from을 빠뜨리거나 to부정사를 쓰는 실수를 자주 한다.","grammarQuiz":[{"sentence":"The heavy rain _____ us from going out yesterday afternoon.","ko":"어제 오후 폭우 때문에 우리는 외출하지 못했다.","answer":["prevented"],"hint":"동사 과거형"},{"sentence":"Washing hands can _____ many kinds of diseases and infections.","ko":"손 씻기는 많은 종류의 질병과 감염을 예방할 수 있다.","answer":["prevent"],"hint":"동사 원형"}]},
+    {"id":"w05045","w":"previous","pos":["adj"],"ph":"/ˈpriːvɪəs/","cefr":"A2","kr":["이전의","앞의"],"ex":[{"en":"He learned from his previous mistakes.","ko":"그는 이전의 실수에서 배웠다."}],"mnemonic":{"soundHint":"프리비어스 → pre(앞) + vi(길·via)","story":"pre(앞)+vi(길·via) = 앞서 지나간 길 → 이전의(previous). 이미 걸어간 앞선 길의 이미지.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"former","ko":"이전의","reason":"previous의 대표 동의어"},{"w":"next","ko":"다음의","reason":"previous의 대표 반의어"},{"w":"experience","ko":"경험","reason":"previous experience 필수 콜로케이션"}],"collocBest":[{"en":"previous experience","ko":"이전 경험"},{"en":"previous day","ko":"전날"}]},"nuance":{"koSimple":"바로 앞 순번, 지금 전 단계","whenToUse":"이전 경험·앞 페이지 말할 때"},"krDetail":[{"ko":"이전의","explain":"그전에 있던"},{"ko":"앞의","explain":"먼저 있었던"}],"usageExamples":[{"en":"We met at a previous meeting.","ko":"우리는 이전 회의에서 만났다."},{"en":"Read the previous chapter first.","ko":"먼저 앞 장을 읽어라."}],"grammarNote":"previous는 명사 앞에서 명사를 꾸미는 한정적 용법으로 주로 쓰인다. 서술적 용법(be동사 뒤)으로는 잘 쓰지 않으며, 이 자리에는 previous 대신 before/earlier를 쓴다.","grammarQuiz":[{"sentence":"In the _____ chapter, we learned about ancient Egyptian culture.","ko":"앞 장에서 우리는 고대 이집트 문화에 대해 배웠다.","answer":["previous"],"hint":"명사 수식 형용사"},{"sentence":"Do you have any _____ experience in this kind of job?","ko":"이런 종류의 일에 이전 경험이 있으신가요?","answer":["previous"],"hint":"형용사"}]},
+    {"id":"w05062","w":"prison","pos":["n"],"ph":"/ˈprɪzən/","cefr":"A2","kr":["감옥","교도소"],"ex":[{"en":"He was sent to prison for five years.","ko":"그는 5년 동안 감옥에 보내졌다."}],"mnemonic":{"soundHint":"프리즌 → prison = free를 잃은 곳","story":"prison(감옥)은 free(자유)를 잃은 곳. 발음도 free(프리)와 비슷해서 'free를 잃은 곳 = pri-son'으로 기억.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"jail","ko":"구치소","reason":"prison의 대표 동의어"},{"w":"guard","ko":"간수","reason":"prison 시나리오의 핵심 인물"},{"w":"escape","ko":"탈출하다","reason":"prison escape 대표 시나리오"}],"collocBest":[{"en":"go to prison","ko":"감옥에 가다"},{"en":"prison sentence","ko":"징역 선고"}]},"nuance":{"koSimple":"쇠창살에 갇힌 죄인이 사는 건물","whenToUse":"교도소·감옥 시설 말할 때"},"krDetail":[{"ko":"감옥","explain":"죄인 가두는 곳"},{"ko":"교도소","explain":"죄인을 바로잡는 시설"}],"usageExamples":[{"en":"The thief spent three years in prison.","ko":"그 도둑은 3년을 감옥에서 보냈다."},{"en":"He escaped from prison at night.","ko":"그는 밤에 감옥에서 탈출했다."}],"grammarNote":"go to prison(수감되러 가다)과 go to the prison(방문 목적으로 감옥에 가다)의 차이가 중요하다. 관사 유무에 따라 의미가 달라진다.","grammarQuiz":[{"sentence":"The criminal was sent to _____ for ten long years.","ko":"그 범죄자는 10년의 긴 세월 동안 수감되었다.","answer":["prison"],"hint":"관사 없이"},{"sentence":"She visited her brother at _____ prison last weekend.","ko":"그녀는 지난 주말 감옥에 있는 오빠를 방문했다.","answer":["the"],"hint":"방문 목적 관사"}]},
+    {"id":"w05063","w":"prisoner","pos":["n"],"ph":"/ˈprɪzənə/","cefr":"A2","kr":["죄수","수감자"],"ex":[{"en":"The prisoner was released after ten years.","ko":"그 죄수는 10년 후에 석방되었다."}],"mnemonic":{"soundHint":"프리즈너 → prison(감옥) + er(사람)","story":"prison(감옥)+er(사람) = prisoner(죄수). 감옥에 있는 사람이야.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"crime","ko":"범죄","reason":"prisoner의 원인 시나리오"},{"w":"guard","ko":"간수","reason":"prisoner를 감시하는 대응 인물"},{"w":"release","ko":"석방하다","reason":"prisoner 시나리오의 결말"}],"collocBest":[{"en":"prisoner of war","ko":"전쟁 포로"},{"en":"political prisoner","ko":"정치범"}]},"nuance":{"koSimple":"쇠창살 뒤 죄수복 입은 사람","whenToUse":"감옥에 갇힌 죄수·포로 말할 때"},"krDetail":[{"ko":"죄수","explain":"감옥에 갇힌 사람"},{"ko":"수감자","explain":"형을 받아 갇힌 사람"}],"usageExamples":[{"en":"The prisoner asked for a lawyer.","ko":"그 죄수는 변호사를 요청했다."},{"en":"Two prisoners escaped last night.","ko":"두 명의 수감자가 어젯밤 탈출했다."}],"grammarNote":"prisoner는 셀 수 있는 명사로 복수형은 prisoners이다. prisoner of war(전쟁 포로)는 굳어진 표현으로 관사를 붙이지 않는다.","grammarQuiz":[{"sentence":"The _____ tried to escape from the high stone walls.","ko":"그 죄수는 높은 돌담에서 탈출하려고 시도했다.","answer":["prisoner"],"hint":"단수 명사"},{"sentence":"Many _____ were released after the new law was passed.","ko":"새 법이 통과된 후 많은 수감자들이 석방되었다.","answer":["prisoners"],"hint":"복수형"}]},
+    {"id":"w05065","w":"private","pos":["adj"],"ph":"/ˈpraɪvɪt/","cefr":"A2","kr":["사적인","민간의"],"ex":[{"en":"This is a private conversation.","ko":"이것은 사적인 대화이다."}],"mnemonic":{"soundHint":"프라이빗 → 그대로 '프라이빗'","story":"카페의 '프라이빗 룸(private room)', '프라이빗 라이프(사생활)' 우리말에도 그대로 쓰여. '사적인'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"public","ko":"공적인","reason":"private의 대표 반의어"},{"w":"personal","ko":"개인적인","reason":"private의 대표 동의어"},{"w":"secret","ko":"비밀","reason":"private life 시나리오 확장"}],"collocBest":[{"en":"private school","ko":"사립학교"},{"en":"private life","ko":"사생활"}]},"nuance":{"koSimple":"'나만 아는' 문 잠긴 개인 공간","whenToUse":"사생활·사립·개인적 것 말할 때"},"krDetail":[{"ko":"사적인","explain":"개인에게 속한"},{"ko":"민간의","explain":"정부가 아닌"}],"usageExamples":[{"en":"Please respect my private life.","ko":"제 사생활을 존중해 주세요."},{"en":"He goes to a private school.","ko":"그는 사립 학교에 다닌다."}],"grammarNote":"private과 public은 반의어 관계이다. private school(사립학교)/public school(공립학교), private life(사생활)처럼 대비되는 표현을 함께 익혀야 한다.","grammarQuiz":[{"sentence":"He attended a _____ school when he was young boy.","ko":"그는 어린 소년이었을 때 사립학교에 다녔다.","answer":["private"],"hint":"형용사"},{"sentence":"Please respect her _____ life and do not spread rumors.","ko":"그녀의 사생활을 존중하고 소문을 퍼뜨리지 마세요.","answer":["private"],"hint":"명사 수식 형용사"}]},
     {"id":"w05067","w":"prize","pos":["n","v"],"ph":"/praɪz/","cefr":"A2","kr":["상","상품"],"ex":[{"en":"She won first prize in the contest.","ko":"그녀는 대회에서 1등 상을 받았다."}],"mnemonic":{"soundHint":"프라이즈 → 그대로 '프라이즈'","story":"'노벨 프라이즈(Nobel Prize)', '그랑프리(Grand Prix)'처럼 우리말에도 쓰이는 상·상금. '프라이즈 받다 = 상 받다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"award","ko":"상, 수여하다","reason":"prize의 대표 동의어"},{"w":"winner","ko":"우승자","reason":"prize를 받는 대상"},{"w":"Nobel","ko":"노벨","reason":"Nobel Prize 대표 콜로케이션"}],"collocBest":[{"en":"win a prize","ko":"상을 받다"},{"en":"first prize","ko":"1등상"}]},"nuance":{"koSimple":"1등에게 주는 반짝이는 트로피","whenToUse":"대회에서 받는 상·상품 말할 때"},"krDetail":[{"ko":"상","explain":"잘한 사람에게 주는 것"},{"ko":"상품","explain":"상으로 주는 물건"}],"usageExamples":[{"en":"The judges prized her painting above all the others.","ko":"심사위원들은 다른 어떤 것보다 그녀의 그림을 높이 평가했다."},{"en":"He won first prize in the school science fair last week.","ko":"그는 지난주 학교 과학경진대회에서 1등 상을 받았다."}],"grammarNote":"prize가 동사로 쓰일 때는 '소중히 여기다'라는 뜻이다. 학생들은 명사로만 알고 동사 용법(=treasure, value)을 놓치는 경우가 많다.","grammarQuiz":[{"sentence":"She won the first _____ in the piano competition yesterday.","ko":"그녀는 어제 피아노 대회에서 1등상을 받았다.","answer":["prize"],"hint":"명사"},{"sentence":"He _____ his grandfather's old watch above all his belongings.","ko":"그는 자기 모든 소지품 중 할아버지의 오래된 시계를 가장 소중히 여긴다.","answer":["prizes"],"hint":"동사 3인칭 단수"}]},
-    {"id":"w04530","w":"opposite","pos":["adj","n","prep"],"ph":"/ˈɒpəzɪt/","cefr":"A2","kr":["반대의","맞은편"],"ex":[{"en":"They sat on opposite sides.","ko":"그들은 반대편에 앉았다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"direction","ko":"방향","reason":"콜로케이션 - opposite direction"},{"w":"same","ko":"같은","reason":"반의어 - 반대 vs 같음"},{"w":"contrary","ko":"반대되는","reason":"동의어 - 정반대의 뜻"}],"collocBest":[{"en":"opposite direction","ko":"반대 방향"},{"en":"exact opposite","ko":"정반대"}]},"nuance":{"koSimple":"정반대 방향을 가리키는 화살표 두 개","whenToUse":"반대편·정반대 개념 강조할 때"},"krDetail":[{"ko":"반대의","explain":"서로 정반대되는"},{"ko":"맞은편","explain":"바로 마주 보는 자리"}],"usageExamples":null,"grammarNote":"opposite가 전치사로 쓰일 때는 to 없이 바로 명사가 온다(opposite the bank). 반면 형용사로 be동사와 함께 쓸 때는 opposite to가 가능하다. 학생들이 항상 to를 붙이려 한다.","grammarQuiz":[{"sentence":"The bakery is right _____ the post office on Main Street.","ko":"그 빵집은 메인 스트리트에서 우체국 바로 맞은편에 있다.","answer":["opposite"],"hint":"전치사로 to 없이"}]},
+    {"id":"w04530","w":"opposite","pos":["adj","n","prep"],"ph":"/ˈɒpəzɪt/","cefr":"A2","kr":["반대의","맞은편"],"ex":[{"en":"They sat on opposite sides.","ko":"그들은 반대편에 앉았다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"direction","ko":"방향","reason":"콜로케이션 - opposite direction"},{"w":"same","ko":"같은","reason":"반의어 - 반대 vs 같음"},{"w":"contrary","ko":"반대되는","reason":"동의어 - 정반대의 뜻"}],"collocBest":[{"en":"opposite direction","ko":"반대 방향"},{"en":"exact opposite","ko":"정반대"}]},"nuance":{"koSimple":"정반대 방향을 가리키는 화살표 두 개","whenToUse":"반대편·정반대 개념 강조할 때"},"krDetail":[{"ko":"반대의","explain":"서로 정반대되는"},{"ko":"맞은편","explain":"바로 마주 보는 자리"}],"usageExamples":[{"en":"The bank is on the opposite side of the street.","ko":"은행은 길 맞은편에 있다."},{"en":"Hot and cold have opposite meanings.","ko":"hot과 cold는 반대의 뜻을 가진다."}],"grammarNote":"opposite가 전치사로 쓰일 때는 to 없이 바로 명사가 온다(opposite the bank). 반면 형용사로 be동사와 함께 쓸 때는 opposite to가 가능하다. 학생들이 항상 to를 붙이려 한다.","grammarQuiz":[{"sentence":"The bakery is right _____ the post office on Main Street.","ko":"그 빵집은 메인 스트리트에서 우체국 바로 맞은편에 있다.","answer":["opposite"],"hint":"전치사로 to 없이"}]},
     {"id":"w03256","w":"increase","pos":["v","n"],"ph":"/ɪnˈkriːs/","cefr":"A2","kr":["증가하다","증가"],"ex":[{"en":"Prices continue to increase.","ko":"가격이 계속 증가하고 있다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"rise","ko":"오르다","reason":"동의어로 함께 상승 표현"},{"w":"decrease","ko":"감소하다","reason":"반의어로 항상 대비"},{"w":"significant","ko":"상당한","reason":"significant increase 콜로케이션"}],"collocBest":[{"en":"increase in number","ko":"수가 증가하다"},{"en":"significant increase","ko":"상당한 증가"}]},"nuance":{"koSimple":"숫자나 양이 위로 쭉 올라가는 흐름","whenToUse":"가격·인구·수치가 늘 때"},"krDetail":[{"ko":"증가하다","explain":"수나 양이 더 늘어나다"}],"usageExamples":[{"en":"The school increased the library hours during exam week.","ko":"학교는 시험 주간 동안 도서관 개방 시간을 늘렸다."},{"en":"The number of club members increased after the festival.","ko":"축제 이후 동아리 회원 수가 증가했다."}],"grammarNote":"increase는 자·타동사 겸용. 명사·동사 형태가 같아 강세로 구분한다(명사 앞, 동사 뒤).","grammarQuiz":[{"sentence":"The number of tourists _____ by ten percent this year.","ko":"관광객의 수가 올해 10퍼센트 증가했다.","answer":["increased"],"hint":"과거형"}]},
-    {"id":"w03775","w":"leader","pos":["n"],"ph":"/ˈliːdər/","cefr":"A2","kr":["지도자","리더"],"ex":[{"en":"A good leader inspires their team daily.","ko":"좋은 지도자는 매일 팀을 고무시킨다."}],"mnemonic":{"soundHint":"리더","story":"'리더(leader)'는 팀장, 지도자를 뜻하는 외래어 그대로 사용. '리더십'도 같은 어원","hintConfidence":3},"pairs":{"buddyWords":[{"w":"team","ko":"팀","reason":"콜로케이션 - team leader"},{"w":"follower","ko":"추종자","reason":"반의어"},{"w":"guide","ko":"안내하다","reason":"동의어 - 이끄는 사람"}],"collocBest":[{"en":"strong leader","ko":"강한 지도자"},{"en":"team leader","ko":"팀 리더"}]},"nuance":{"koSimple":"앞장서서 사람들을 이끄는 대장","whenToUse":"팀·나라·모임 이끄는 사람에게"},"krDetail":[{"ko":"지도자","explain":"무리를 이끌어 가는 사람"}],"usageExamples":null,"grammarNote":"leader는 lead(동사: 이끌다)의 명사형. -er가 붙어 '~하는 사람'이 된다.","grammarQuiz":[{"sentence":"A good _____ always listens carefully _____ the opinions of the team.","ko":"좋은 지도자는 항상 팀의 의견에 주의 깊게 귀 기울인다.","answer":["leader","to"],"hint":"지도자 + 전치사"}]},
-    {"id":"w04256","w":"musician","pos":["n"],"ph":"/mjuːˈzɪʃən/","cefr":"A2","kr":["음악가","뮤지션"],"ex":[{"en":"He is a professional musician.","ko":"그는 전문 음악가이다."}],"mnemonic":{"soundHint":"뮤지션(외래어)","story":"'뮤지션'은 그대로 외래어야. music + ian(사람) = 음악가.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"band","ko":"밴드","reason":"시나리오. musicians play in a band"},{"w":"artist","ko":"예술가","reason":"동의어. musician은 artist의 한 유형"}],"collocBest":[{"en":"professional musician","ko":"전문 음악가"},{"en":"street musician","ko":"거리 음악가"}]},"nuance":{"koSimple":"무대 위 악기 다루는 예술가","whenToUse":"직업으로 음악하는 사람 말할 때"},"krDetail":[{"ko":"음악가","explain":"음악을 만들거나 연주하는 사람"},{"ko":"뮤지션","explain":"직업으로 음악을 하는 사람"}],"usageExamples":null,"grammarNote":"musician은 music + ian(사람 어미)로 만들어졌어요. -cian으로 끝나는 직업 단어에는 physician(내과의사), politician(정치인)이 있어요.","grammarQuiz":[{"sentence":"He wants to become a professional _____ and play in famous concert halls.","ko":"그는 전문 음악가가 되어 유명한 콘서트홀에서 연주하고 싶어 한다.","answer":["musician"],"hint":"music에 사람 어미 -ian을 붙여요."}]},
+    {"id":"w03775","w":"leader","pos":["n"],"ph":"/ˈliːdər/","cefr":"A2","kr":["지도자","리더"],"ex":[{"en":"A good leader inspires their team daily.","ko":"좋은 지도자는 매일 팀을 고무시킨다."}],"mnemonic":{"soundHint":"리더","story":"'리더(leader)'는 팀장, 지도자를 뜻하는 외래어 그대로 사용. '리더십'도 같은 어원","hintConfidence":3},"pairs":{"buddyWords":[{"w":"team","ko":"팀","reason":"콜로케이션 - team leader"},{"w":"follower","ko":"추종자","reason":"반의어"},{"w":"guide","ko":"안내하다","reason":"동의어 - 이끄는 사람"}],"collocBest":[{"en":"strong leader","ko":"강한 지도자"},{"en":"team leader","ko":"팀 리더"}]},"nuance":{"koSimple":"앞장서서 사람들을 이끄는 대장","whenToUse":"팀·나라·모임 이끄는 사람에게"},"krDetail":[{"ko":"지도자","explain":"무리를 이끌어 가는 사람"}],"usageExamples":[{"en":"Our class chose her as the new leader.","ko":"우리 반은 그녀를 새 지도자로 뽑았다."},{"en":"A good leader listens to everyone's opinion.","ko":"좋은 지도자는 모두의 의견을 듣는다."}],"grammarNote":"leader는 lead(동사: 이끌다)의 명사형. -er가 붙어 '~하는 사람'이 된다.","grammarQuiz":[{"sentence":"A good _____ always listens carefully _____ the opinions of the team.","ko":"좋은 지도자는 항상 팀의 의견에 주의 깊게 귀 기울인다.","answer":["leader","to"],"hint":"지도자 + 전치사"}]},
+    {"id":"w04256","w":"musician","pos":["n"],"ph":"/mjuːˈzɪʃən/","cefr":"A2","kr":["음악가","뮤지션"],"ex":[{"en":"He is a professional musician.","ko":"그는 전문 음악가이다."}],"mnemonic":{"soundHint":"뮤지션(외래어)","story":"'뮤지션'은 그대로 외래어야. music + ian(사람) = 음악가.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"band","ko":"밴드","reason":"시나리오. musicians play in a band"},{"w":"artist","ko":"예술가","reason":"동의어. musician은 artist의 한 유형"}],"collocBest":[{"en":"professional musician","ko":"전문 음악가"},{"en":"street musician","ko":"거리 음악가"}]},"nuance":{"koSimple":"무대 위 악기 다루는 예술가","whenToUse":"직업으로 음악하는 사람 말할 때"},"krDetail":[{"ko":"음악가","explain":"음악을 만들거나 연주하는 사람"},{"ko":"뮤지션","explain":"직업으로 음악을 하는 사람"}],"usageExamples":[{"en":"The young musician played the violin beautifully.","ko":"그 젊은 음악가는 바이올린을 아름답게 연주했다."},{"en":"Many famous musicians started playing as children.","ko":"많은 유명한 음악가들이 어릴 때 연주를 시작했다."}],"grammarNote":"musician은 music + ian(사람 어미)로 만들어졌어요. -cian으로 끝나는 직업 단어에는 physician(내과의사), politician(정치인)이 있어요.","grammarQuiz":[{"sentence":"He wants to become a professional _____ and play in famous concert halls.","ko":"그는 전문 음악가가 되어 유명한 콘서트홀에서 연주하고 싶어 한다.","answer":["musician"],"hint":"music에 사람 어미 -ian을 붙여요."}]},
     {"id":"w04367","w":"notice","pos":["v","n"],"ph":"/ˈnoʊtɪs/","cefr":"A2","kr":["알아채다","공고"],"ex":[{"en":"Did you notice the sign?","ko":"그 표지판을 알아챘니?"}],"mnemonic":{"soundHint":null,"story":"note(주목)에서 온 말. 주목해서 알아채다 = notice.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"observe","ko":"관찰하다","reason":"동의어. notice = observe 알아채다"},{"w":"ignore","ko":"무시하다","reason":"반의어. notice(알아채다) vs ignore(무시)"}],"collocBest":[{"en":"notice board","ko":"게시판"},{"en":"on short notice","ko":"짧은 통보로"}]},"nuance":{"koSimple":"눈이 번쩍 알아채는 순간","whenToUse":"변화·표지판 알아챌 때, 안내문"},"krDetail":[{"ko":"알아채다","explain":"무엇을 보거나 느껴서 알게 되다"},{"ko":"공고","explain":"여러 사람에게 알리는 글이나 종이"}],"usageExamples":[{"en":"The teacher immediately noticed my new haircut this morning.","ko":"선생님은 오늘 아침 내 새 머리를 바로 알아채셨다."},{"en":"The change in the schedule was noticed by only a few students.","ko":"일정 변경은 몇몇 학생들에게만 알아채졌다."}],"grammarNote":"notice는 동사(알아채다)와 명사(공고) 둘 다 가능해요. 'notice + 사람 + 동사원형/-ing'로 '~가 …하는 것을 알아채다'라는 지각동사로 써요.","grammarQuiz":[{"sentence":"I _____ a strange man _____ around the neighborhood late at night.","ko":"나는 낯선 남자가 밤늦게 동네를 돌아다니는 것을 알아챘다.","answer":["noticed","walking"],"hint":"지각동사 뒤에는 동사원형이나 -ing 형태가 와요. 과거시제로 쓰세요."}]},
-    {"id":"w04297","w":"necklace","pos":["n"],"ph":"/ˈnekləs/","cefr":"A2","kr":["목걸이"],"ex":[{"en":"She wore a pearl necklace to the ceremony.","ko":"그녀는 행사에 진주 목걸이를 했다."}],"mnemonic":{"soundHint":null,"story":"neck(목) + lace(끈). 목에 두르는 끈 = 목걸이.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"wear","ko":"착용하다","reason":"콜로 짝. wear a necklace"},{"w":"neck","ko":"목","reason":"어근. neck에 걸치는 것이 necklace"}],"collocBest":[{"en":"wear a necklace","ko":"목걸이를 하다"},{"en":"gold necklace","ko":"금 목걸이"}]},"nuance":{"koSimple":"목에 걸어 반짝이는 줄 장식","whenToUse":"목에 걸치는 액세서리 말할 때"},"krDetail":[{"ko":"목걸이","explain":"목에 두르는 장신구"}],"usageExamples":null,"grammarNote":"necklace의 발음은 [넥리스]가 아니라 [네클리스]예요. neck(목) + lace(끈)로 만들어진 합성어예요.","grammarQuiz":[{"sentence":"She wore a beautiful gold _____ that her grandmother had given her.","ko":"그녀는 할머니가 주신 아름다운 금목걸이를 하고 있었다.","answer":["necklace"],"hint":"neck에 lace를 붙인 합성어예요."}]},
-    {"id":"w04666","w":"owner","pos":["n"],"ph":"/ˈoʊnə/","cefr":"A2","kr":["소유자","주인"],"ex":[{"en":"The owner was very friendly.","ko":"주인은 매우 친절했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"own","ko":"소유하다","reason":"어원 - 동사 own에서 파생"},{"w":"business","ko":"사업","reason":"콜로케이션 - business owner"},{"w":"renter","ko":"임차인","reason":"반의어 - 소유자 vs 세입자"}],"collocBest":[{"en":"home owner","ko":"집 소유자"},{"en":"business owner","ko":"사업주"}]},"nuance":{"koSimple":"'이건 내 거예요' 하고 열쇠 든 사람","whenToUse":"물건·가게·집 주인 말할 때"},"krDetail":[{"ko":"소유자","explain":"무언가를 자기 것으로 가진 사람"},{"ko":"주인","explain":"어떤 것을 가진 임자"}],"usageExamples":null,"grammarNote":null,"grammarQuiz":null},
-    {"id":"w04175","w":"mobile","pos":["adj","n"],"ph":"/ˈmoʊbəl/","cefr":"A2","kr":["이동식의","휴대폰"],"ex":[{"en":"Mobile devices are everywhere.","ko":"이동 기기는 어디에나 있다."}],"mnemonic":{"soundHint":"모바일","story":"'모바일 폰'의 모바일이 바로 mobile(이동식의)","hintConfidence":3},"pairs":{"buddyWords":[{"w":"portable","ko":"휴대용의","reason":"mobile의 동의어"},{"w":"fixed","ko":"고정된","reason":"mobile의 반의어"}],"collocBest":[{"en":"mobile phone","ko":"휴대폰"},{"en":"mobile app","ko":"모바일 앱"}]},"nuance":{"koSimple":"어디든 들고 다닐 수 있는 이동성","whenToUse":"휴대폰·이동식 장치 말할 때"},"krDetail":[{"ko":"이동식의","explain":"쉽게 옮길 수 있게 만들어진 상태"},{"ko":"휴대폰","explain":"들고 다니며 통화할 수 있는 전화기"}],"usageExamples":null,"grammarNote":"영국식에서는 mobile phone → mobile로 줄여 부름. 미국식에서는 주로 cell phone. 형용사·명사 겸용.","grammarQuiz":[{"sentence":"I always keep my _____ phone in my pocket when I go outside.","ko":"밖에 나갈 때 나는 항상 휴대폰을 주머니에 넣어 둔다.","answer":["mobile"],"hint":"형용사, phone 수식"}]}
+    {"id":"w04297","w":"necklace","pos":["n"],"ph":"/ˈnekləs/","cefr":"A2","kr":["목걸이"],"ex":[{"en":"She wore a pearl necklace to the ceremony.","ko":"그녀는 행사에 진주 목걸이를 했다."}],"mnemonic":{"soundHint":null,"story":"neck(목) + lace(끈). 목에 두르는 끈 = 목걸이.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"wear","ko":"착용하다","reason":"콜로 짝. wear a necklace"},{"w":"neck","ko":"목","reason":"어근. neck에 걸치는 것이 necklace"}],"collocBest":[{"en":"wear a necklace","ko":"목걸이를 하다"},{"en":"gold necklace","ko":"금 목걸이"}]},"nuance":{"koSimple":"목에 걸어 반짝이는 줄 장식","whenToUse":"목에 걸치는 액세서리 말할 때"},"krDetail":[{"ko":"목걸이","explain":"목에 두르는 장신구"}],"usageExamples":[{"en":"He gave her a gold necklace for her birthday.","ko":"그는 그녀의 생일에 금 목걸이를 선물했다."},{"en":"The necklace matched her blue dress perfectly.","ko":"그 목걸이는 그녀의 파란 드레스와 완벽하게 어울렸다."}],"grammarNote":"necklace의 발음은 [넥리스]가 아니라 [네클리스]예요. neck(목) + lace(끈)로 만들어진 합성어예요.","grammarQuiz":[{"sentence":"She wore a beautiful gold _____ that her grandmother had given her.","ko":"그녀는 할머니가 주신 아름다운 금목걸이를 하고 있었다.","answer":["necklace"],"hint":"neck에 lace를 붙인 합성어예요."}]},
+    {"id":"w04666","w":"owner","pos":["n"],"ph":"/ˈoʊnə/","cefr":"A2","kr":["소유자","주인"],"ex":[{"en":"The owner was very friendly.","ko":"주인은 매우 친절했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"own","ko":"소유하다","reason":"어원 - 동사 own에서 파생"},{"w":"business","ko":"사업","reason":"콜로케이션 - business owner"},{"w":"renter","ko":"임차인","reason":"반의어 - 소유자 vs 세입자"}],"collocBest":[{"en":"home owner","ko":"집 소유자"},{"en":"business owner","ko":"사업주"}]},"nuance":{"koSimple":"'이건 내 거예요' 하고 열쇠 든 사람","whenToUse":"물건·가게·집 주인 말할 때"},"krDetail":[{"ko":"소유자","explain":"무언가를 자기 것으로 가진 사람"},{"ko":"주인","explain":"어떤 것을 가진 임자"}],"usageExamples":[{"en":"The dog ran happily to its owner.","ko":"그 개는 주인에게 기쁘게 달려갔다."},{"en":"She is the owner of a small bakery.","ko":"그녀는 작은 빵집의 주인이다."}],"grammarNote":"owner는 동사 own(소유하다)에 -er이 붙어 '소유한 사람'을 뜻한다. '~의 주인'은 the owner of ~로 나타낸다.","grammarQuiz":null},
+    {"id":"w04175","w":"mobile","pos":["adj","n"],"ph":"/ˈmoʊbəl/","cefr":"A2","kr":["이동식의","휴대폰"],"ex":[{"en":"Mobile devices are everywhere.","ko":"이동 기기는 어디에나 있다."}],"mnemonic":{"soundHint":"모바일","story":"'모바일 폰'의 모바일이 바로 mobile(이동식의)","hintConfidence":3},"pairs":{"buddyWords":[{"w":"portable","ko":"휴대용의","reason":"mobile의 동의어"},{"w":"fixed","ko":"고정된","reason":"mobile의 반의어"}],"collocBest":[{"en":"mobile phone","ko":"휴대폰"},{"en":"mobile app","ko":"모바일 앱"}]},"nuance":{"koSimple":"어디든 들고 다닐 수 있는 이동성","whenToUse":"휴대폰·이동식 장치 말할 때"},"krDetail":[{"ko":"이동식의","explain":"쉽게 옮길 수 있게 만들어진 상태"},{"ko":"휴대폰","explain":"들고 다니며 통화할 수 있는 전화기"}],"usageExamples":[{"en":"The hospital sent a mobile clinic to the village.","ko":"병원은 마을에 이동식 진료소를 보냈다."},{"en":"I left my mobile at home this morning.","ko":"나는 오늘 아침 휴대폰을 집에 두고 왔다."}],"grammarNote":"영국식에서는 mobile phone → mobile로 줄여 부름. 미국식에서는 주로 cell phone. 형용사·명사 겸용.","grammarQuiz":[{"sentence":"I always keep my _____ phone in my pocket when I go outside.","ko":"밖에 나갈 때 나는 항상 휴대폰을 주머니에 넣어 둔다.","answer":["mobile"],"hint":"형용사, phone 수식"}]}
   ],
   reviewPolicy:{ leitnerBoxes:5 },
   xpTable:{ correct:10, streakBonus:5, perfectChapter:200, firstClear:100 },
@@ -1831,56 +1945,51 @@ function renderQuiz(){
   } else if(mode === "spelling"){
     promptHTML = `
       <div class="quiz-prompt">
-        <div class="label">뜻을 보고 영어 단어를 입력하세요</div>
+        <div class="label">뜻을 보고 영어 단어를 입력하세요 <span class="prefill-hint">(첫 글자는 잠겨 있음)</span></div>
         <div class="qkr">${escape(word.kr.join(" · "))}</div>
         <div class="qph">${escape(word.ph||"")}</div>
       </div>`;
     answerHTML = `
       <div class="input-box">
-        <input type="text" id="ansInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="영어로 입력...">
+        <div class="word-answer" id="wordAnswer" data-answer="${escape(word.w)}"></div>
         <button class="submit-btn" id="submitBtn">제출</button>
       </div>`;
   } else if(mode === "listening"){
     promptHTML = `
       <div class="quiz-prompt">
-        <div class="label">발음을 듣고 단어를 입력하세요</div>
+        <div class="label">발음을 듣고 단어를 입력하세요 <span class="prefill-hint">(첫 글자는 잠겨 있음)</span></div>
         <button class="lis-btn" id="lisBtn">🔊 다시 듣기</button>
         <div class="qph">${escape(word.ph||"")}</div>
       </div>`;
     answerHTML = `
       <div class="input-box">
-        <input type="text" id="ansInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="영어로 입력...">
+        <div class="word-answer" id="wordAnswer" data-answer="${escape(word.w)}"></div>
         <button class="submit-btn" id="submitBtn">제출</button>
       </div>`;
   } else if(mode === "colloc-write"){
     const c = state.quizCurrent.colloc;
-    const hint = firstCharsHint(c.en);
     promptHTML = `
       <div class="quiz-prompt">
-        <div class="label">뜻에 맞는 <b>콜로케이션</b>을 영어로 쓰세요</div>
+        <div class="label">뜻에 맞는 <b>콜로케이션</b>을 영어로 쓰세요 <span class="prefill-hint">(각 단어 첫 글자 잠금)</span></div>
         <div class="qkr">${escape(c.ko)}</div>
       </div>`;
     answerHTML = `
       <div class="input-box">
-        <input type="text" id="ansInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${escape(hint)}">
+        <div class="word-answer" id="wordAnswer" data-answer="${escape(c.en)}"></div>
         <button class="submit-btn" id="submitBtn">제출</button>
       </div>`;
   } else if(mode === "cloze"){
     const { tokens, blankIdxs, sentence } = state.quizCurrent;
-    // 문장 렌더 — 빈칸 위치에 인풋 (정답의 첫 글자 placeholder 힌트)
     const sentHTML = tokens.map((t, i) => {
       const bIdx = blankIdxs.indexOf(i);
       if(bIdx >= 0){
-        const ans = t.text;
-        const size = Math.max(4, Math.min(14, ans.length + 2));
-        const hint = firstCharsHint(ans);
-        return `<input type="text" class="cloze-input" data-blank-idx="${bIdx}" data-ans="${escape(ans)}" size="${size}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${escape(hint)}">`;
+        return `<span class="word-answer inline cloze-wa" data-blank-idx="${bIdx}" data-answer="${escape(t.text)}"></span>`;
       }
       return escape(t.text);
     }).join("");
     promptHTML = `
       <div class="quiz-prompt cloze-prompt">
-        <div class="label">해석에 맞게 <b>${blankIdxs.length}개 빈칸</b>을 채우세요</div>
+        <div class="label">해석에 맞게 <b>${blankIdxs.length}개 빈칸</b>을 채우세요 <span class="prefill-hint">(각 단어 첫 글자 잠금)</span></div>
         <div class="qkr">${escape(sentence.ko)}</div>
         <div class="cloze-sentence">${sentHTML}</div>
       </div>`;
@@ -1890,19 +1999,16 @@ function renderQuiz(){
       </div>`;
   } else if(mode === "grammar-fill"){
     const { quiz } = state.quizCurrent;
-    // sentence 안의 _____ (밑줄 3개 이상)을 인풋으로 대체 · 각 빈칸에 정답의 첫 글자만 placeholder 로 힌트
     const ansList = Array.isArray(quiz.answer) ? quiz.answer : [quiz.answer];
     let blankSeq = 0;
     const sentHTML = escape(quiz.sentence).replace(/_{3,}/g, () => {
       const ans = ansList[blankSeq] ?? ansList[0];
-      const size = Math.max(5, Math.min(20, (ans||'').length + 2));
       const idx = blankSeq++;
-      const hint = firstCharsHint(ans);
-      return `<input type="text" class="cloze-input grammar-input" data-blank-idx="${idx}" data-ans="${escape(ans)}" size="${size}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${escape(hint)}">`;
+      return `<span class="word-answer inline cloze-wa" data-blank-idx="${idx}" data-answer="${escape(ans)}"></span>`;
     });
     promptHTML = `
       <div class="quiz-prompt cloze-prompt grammar-prompt">
-        <div class="label">📌 <b>문법 포인트</b> — 해석에 맞게 빈칸을 채우세요</div>
+        <div class="label">📌 <b>문법 포인트</b> — 해석에 맞게 빈칸을 채우세요 <span class="prefill-hint">(각 단어 첫 글자 잠금)</span></div>
         <div class="qkr">${escape(quiz.ko)}</div>
         <div class="cloze-sentence">${sentHTML}</div>
       </div>`;
@@ -1932,25 +2038,17 @@ function renderQuiz(){
       btn.addEventListener("click", ()=> handleChoice(btn));
     });
   } else if(mode === "cloze" || mode === "grammar-fill"){
-    const inputs = document.querySelectorAll(".cloze-input");
-    inputs.forEach((inp, i)=>{
-      inp.addEventListener("keydown", e=>{
-        if(e.key === "Enter"){
-          const next = inputs[i+1];
-          if(next) next.focus();
-          else handleSubmit();
-        }
-      });
-    });
+    const containers = Array.from(document.querySelectorAll(".cloze-wa"));
+    containers.forEach(c => renderWordAnswer(c, c.dataset.answer));
     document.getElementById("submitBtn").addEventListener("click", handleSubmit);
-    if(inputs[0]) setTimeout(()=>inputs[0].focus(), 100);
+    const first = document.querySelector(".cloze-wa .rest-input");
+    if(first) setTimeout(()=>first.focus(), 100);
   } else {
-    const inp = document.getElementById("ansInput");
-    inp.addEventListener("keydown", e=>{
-      if(e.key === "Enter") handleSubmit();
-    });
+    const container = document.getElementById("wordAnswer");
+    renderWordAnswer(container, container.dataset.answer);
     document.getElementById("submitBtn").addEventListener("click", handleSubmit);
-    setTimeout(()=>inp.focus(), 100);
+    const first = container.querySelector(".rest-input");
+    if(first) setTimeout(()=>first.focus(), 100);
     if(mode === "listening"){
       setTimeout(()=>speak(word.w), 250);
       document.getElementById("lisBtn").addEventListener("click", ()=>speak(word.w));
@@ -1996,58 +2094,50 @@ function handleSubmit(){
   if(state.quizAnswered) return;
   const { word, mode } = state.quizCurrent;
 
-  // ── 심화: 콜로케이션 영작 ──────────────────────────────
-  if(mode === "colloc-write"){
-    const inp = document.getElementById("ansInput");
-    const val = normalizeAnswer(inp.value);
-    if(!val) return;
-    state.quizAnswered = true;
-    const correct = normalizeAnswer(state.quizCurrent.colloc.en);
-    const isCorrect = val === correct;
-    inp.classList.add(isCorrect ? "correct" : "wrong");
-    inp.disabled = true;
-    document.getElementById("submitBtn").disabled = true;
-    if(!isCorrect){
-      document.getElementById("feedback").innerHTML = `정답: <b style="color:var(--grade)">${escape(state.quizCurrent.colloc.en)}</b>`;
-    }
-    finishQuestion(isCorrect);
-    return;
-  }
-
-  // ── 심화: 예문 빈칸 채우기 · 문법 빈칸 채우기 ────────────
+  // ── 심화: 예문 빈칸 · 문법 빈칸 ────────────────────────
   if(mode === "cloze" || mode === "grammar-fill"){
-    const inputs = Array.from(document.querySelectorAll(".cloze-input"));
-    if(inputs.some(i => !i.value.trim())) return;
+    const containers = Array.from(document.querySelectorAll(".cloze-wa"));
+    if(containers.some(anyWordEmpty)) return;
     state.quizAnswered = true;
     let allOk = true;
-    inputs.forEach(i => {
-      const guess = normalizeAnswer(i.value);
-      const ans = normalizeAnswer(i.dataset.ans);
-      const ok = guess === ans;
-      i.classList.add(ok ? "correct" : "wrong");
-      i.disabled = true;
-      if(!ok) allOk = false;
+    containers.forEach(function(c){
+      const guess = normalizeAnswer(collectWordAnswer(c));
+      const ans = normalizeAnswer(c.dataset.answer);
+      const okAll = guess === ans;
+      const perGroup = Array.from(c.querySelectorAll('.word-group')).map(function(g, i){
+        const w = (c.dataset.answer || '').split(/\s+/)[i] || '';
+        const combined = (g.dataset.first || '') + (g.querySelector('.rest-input') ? g.querySelector('.rest-input').value : '');
+        return normalizeAnswer(combined) === normalizeAnswer(w);
+      });
+      markWordAnswer(c, perGroup);
+      if(!okAll) allOk = false;
     });
     document.getElementById("submitBtn").disabled = true;
     if(!allOk){
-      const answers = inputs.map(i => `<b style="color:var(--grade)">${escape(i.dataset.ans)}</b>`).join(" , ");
+      const answers = containers.map(function(c){ return `<b style="color:var(--grade)">${escape(c.dataset.answer)}</b>`; }).join(" , ");
       document.getElementById("feedback").innerHTML = `정답: ${answers}`;
     }
     finishQuestion(allOk);
     return;
   }
 
-  // ── 기본: 철자·리스닝 ────────────────────────────────
-  const inp = document.getElementById("ansInput");
-  const val = (inp.value||"").trim().toLowerCase();
-  if(!val) return;
+  // ── 기본/심화 단일 컨테이너: spelling / listening / colloc-write
+  const container = document.getElementById("wordAnswer");
+  if(!container) return;
+  if(anyWordEmpty(container)) return;
   state.quizAnswered = true;
-  const isCorrect = val === word.w.toLowerCase();
-  inp.classList.add(isCorrect ? "correct" : "wrong");
-  inp.disabled = true;
+  const correctAns = container.dataset.answer;
+  const guess = normalizeAnswer(collectWordAnswer(container));
+  const isCorrect = guess === normalizeAnswer(correctAns);
+  const perGroup = Array.from(container.querySelectorAll('.word-group')).map(function(g, i){
+    const w = (correctAns || '').split(/\s+/)[i] || '';
+    const combined = (g.dataset.first || '') + (g.querySelector('.rest-input') ? g.querySelector('.rest-input').value : '');
+    return normalizeAnswer(combined) === normalizeAnswer(w);
+  });
+  markWordAnswer(container, perGroup);
   document.getElementById("submitBtn").disabled = true;
   if(!isCorrect){
-    document.getElementById("feedback").innerHTML = `정답: <b style="color:var(--grade)">${escape(word.w)}</b>`;
+    document.getElementById("feedback").innerHTML = `정답: <b style="color:var(--grade)">${escape(correctAns)}</b>`;
   }
   finishQuestion(isCorrect);
 }
@@ -2139,9 +2229,14 @@ function finishSession(){
   const main = document.getElementById("main");
   const stageLbl = isAdv ? "심화단계" : "기본단계";
   const passedM3 = (pct >= 60) && (DATA.grade === '중3');
-  const title = passedM3
-    ? `💰 방금 당신의 미래 연봉이 10만원 더 올라갔슴돠!!`
-    : (isPerfect ? `🎊 ${stageLbl} 무결점 클리어!` : (pct >= 80 ? `🎉 ${stageLbl} 잘했어요!` : pct >= 60 ? `👍 ${stageLbl} 통과!` : "💪 다시 도전!"));
+  const isHighGrade = ['고1','고2','수능'].includes(DATA.grade);
+  const highGradePerfect = isHighGrade && isAdv && isPerfect;
+  const highGradeMsg = highGradePerfect ? pickHGMessage() : null;
+  const title = highGradeMsg
+    ? `🏆 ${escape(highGradeMsg)}`
+    : passedM3
+      ? `💰 방금 당신의 미래 연봉이 10만원 더 올라갔슴돠!!`
+      : (isPerfect ? `🎊 ${stageLbl} 무결점 클리어!` : (pct >= 80 ? `🎉 ${stageLbl} 잘했어요!` : pct >= 60 ? `👍 ${stageLbl} 통과!` : "💪 다시 도전!"));
 
   // 심화면 [🎯 심화 다시] + [🏠 홈으로]. 기본이면 [🔁 다시 보기] + (심화 해금 시) [🎯 심화 도전]
   const canGoAdvanced = !isAdv && state.basicThresholdPassed;
@@ -2167,8 +2262,7 @@ function finishSession(){
        <button class="start-btn alt" id="homeBtn">🏠 Home</button>`
     : `<button class="start-btn" id="retryBtn">🔁 다시 보기</button>
        ${hasWrong ? `<button class="start-btn wrong-only" id="retryWrongBtn">🔴 틀린문제만 (${state.quizWrongItems.length})</button>` : ""}
-       ${canGoAdvanced ? `<button class="start-btn adv" id="goAdvBtn">🎯 심화단계 도전</button>`
-                       : `<button class="start-btn alt" id="nextBtn">▶ 다음 챕터</button>`}`;
+       ${canGoAdvanced ? `<button class="start-btn adv" id="goAdvBtn">🎯 심화단계 도전</button>` : ""}`;
 
   main.innerHTML = `
     <div class="result">
@@ -2206,6 +2300,20 @@ function finishSession(){
 
   // celebration
   setTimeout(()=>{
+    if(highGradeMsg){
+      // 고등학교 심화 100% — 화면 오버레이 + 랜덤 메시지 + TTS + 폭죽 다량
+      showHighGradeCelebration(highGradeMsg);
+      SFX.grandFanfare();
+      fx.spawn("rainbow-burst");
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.fireworks(); }, 350);
+      setTimeout(()=>{ fx.spawn("jackpot-full"); SFX.coinDrop(); }, 800);
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.bigWin(); }, 1400);
+      setTimeout(()=>{ fx.spawn("rainbow-burst"); SFX.streak(); }, 2100);
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.fireworks(); }, 2900);
+      setTimeout(()=>{ fx.spawn("jackpot-full"); SFX.coinDrop(); }, 3700);
+      setTimeout(()=>{ SFX.grandFanfare(); }, 4500);
+      return;
+    }
     if(advGrand){
       // 심화 90%+ — 화려·명랑 팡파레 + 축포 다량 (배곧 쵝오!)
       fx.spawn("rainbow-burst");
@@ -2259,10 +2367,159 @@ function finishSession(){
 /* ============================================================
    UTILS
    ============================================================ */
+/* 고등학교 심화 100% — 랜덤 축하 메시지 + 화면 오버레이 + TTS */
+const HG_MESSAGES = [
+  "당신의 노력에 경의를 표합니다!!",
+  "배곧 쵝오를 넘어서!!",
+  "이러다 연세대 가는거 아냐??",
+  "자꾸 이러면 서울대 들어간다.",
+  "왜 이렇게 잘 해?",
+  "커서 훌륭한 사람 되겠어!!",
+  "미래의 당신 집이 한 평 커졌어!!"
+];
+function pickHGMessage(){
+  return HG_MESSAGES[Math.floor(Math.random() * HG_MESSAGES.length)];
+}
+function showHighGradeCelebration(msg){
+  const old = document.querySelector('.hg-celebration');
+  if(old) old.remove();
+  const overlay = document.createElement('div');
+  overlay.className = 'hg-celebration';
+  const sparkles = ['✨','🎉','🎊','⭐','💫','🌟','🎆','🎇','💥']
+    .map((e,i)=>{
+      const x = 8 + Math.random()*84, y = 8 + Math.random()*84;
+      const d = (Math.random()*1.6).toFixed(2);
+      return `<span class="hg-sparkle" style="left:${x}%;top:${y}%;animation-delay:${d}s">${e}</span>`;
+    }).join('');
+  overlay.innerHTML = `<div class="hg-halo"></div>${sparkles}<div class="hg-msg">${escape(msg)}</div>`;
+  document.body.appendChild(overlay);
+  setTimeout(()=>overlay.remove(), 6100);
+  try{
+    if('speechSynthesis' in window){
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(msg);
+      u.lang = 'ko-KR'; u.rate = 0.98; u.pitch = 1.12; u.volume = 1;
+      const voices = speechSynthesis.getVoices();
+      const ko = voices.find(v => /^ko/i.test(v.lang));
+      if(ko) u.voice = ko;
+      setTimeout(()=>speechSynthesis.speak(u), 400);
+    }
+  }catch(e){}
+}
+
 /* 빈칸 힌트: 정답 문자열의 각 단어 첫 글자를 "a… b…" 형태로 반환
    예: "appeared" → "a…"  ·  "in the absence of" → "i… t… a… o…"  ·  "feel bad" → "f… b…"  */
 function firstCharsHint(s){
   return (s||'').trim().split(/\s+/).filter(Boolean).map(w => (w.charAt(0)||'') + '…').join(' ');
+}
+/* 빈칸 프리필: 정답 각 단어의 첫 글자를 공백으로 이어붙여 반환 (인풋 value 로 채워둠)
+   예: "appeared" → "a"  ·  "in the absence of" → "i t a o"  ·  "feel bad" → "f b"  */
+function firstCharsPrefill(s){
+  return (s||'').trim().split(/\s+/).filter(Boolean).map(w => (w.charAt(0)||'')).join(' ');
+}
+/* 인풋에 프리필된 첫 글자 잠금 + 커서 이동 훅 부착 */
+function attachPrefillGuard(inp){
+  const prefill = inp.dataset.prefill || '';
+  if(!prefill) return;
+  const moveCursorEnd = () => { try{ inp.setSelectionRange(inp.value.length, inp.value.length); }catch(e){} };
+  inp.addEventListener('focus', () => setTimeout(moveCursorEnd, 0));
+  inp.addEventListener('click', () => {
+    if(inp.selectionStart < prefill.length) moveCursorEnd();
+  });
+  inp.addEventListener('keydown', e => {
+    // 프리필 영역 보호: 첫 글자들을 지우거나 그 앞으로 이동하는 키 방지
+    const s = inp.selectionStart, e2 = inp.selectionEnd;
+    if(e.key === 'Backspace' && s <= prefill.length && s === e2){ e.preventDefault(); moveCursorEnd(); return; }
+    if(e.key === 'Delete'    && s <  prefill.length){ e.preventDefault(); moveCursorEnd(); return; }
+    if((e.key === 'ArrowLeft' || e.key === 'Home') && s <= prefill.length){ e.preventDefault(); moveCursorEnd(); return; }
+  });
+  inp.addEventListener('input', () => {
+    // 사용자 값이 프리필로 시작하지 않으면 프리필을 앞에 다시 붙임 (드래그·잘라내기 등 방지)
+    if(!inp.value.startsWith(prefill)){
+      inp.value = prefill + inp.value.replace(new RegExp('^' + prefill.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').slice(0,0)),'');
+      moveCursorEnd();
+    }
+  });
+}
+/* 프리필 인풋에서 사용자가 실제로 추가 입력한 부분이 있는지 (첫 글자만 남은 상태는 미제출) */
+function hasUserInput(inp){
+  const prefill = inp.dataset.prefill || '';
+  return (inp.value||'').trim().length > prefill.trim().length;
+}
+/* ============================================================
+   낱말박스 (자동완성 방어) — 각 단어당 [잠금 첫글자] + [빈 인풋]
+   ============================================================ */
+function renderWordAnswer(container, answer){
+  container.innerHTML = '';
+  const words = String(answer || '').trim().split(/\s+/).filter(Boolean);
+  words.forEach((word, wi) => {
+    const group = document.createElement('span');
+    const isSingle = word.length <= 1;
+    group.className = 'word-group' + (isSingle ? ' single-letter' : '');
+    group.dataset.first = isSingle ? '' : (word[0] || '');
+    group.dataset.full = word;
+    if(!isSingle){
+      const first = document.createElement('span');
+      first.className = 'first-letter';
+      first.textContent = word[0] || '';
+      group.appendChild(first);
+    }
+    const inp = document.createElement('input');
+    inp.className = 'rest-input';
+    inp.type = 'text';
+    inp.autocomplete = 'off';
+    inp.autocorrect = 'off';
+    inp.setAttribute('autocapitalize','off');
+    inp.spellcheck = false;
+    inp.inputMode = 'text';
+    inp.name = 'wa-' + Math.random().toString(36).slice(2,8);
+    inp.dataset.wi = wi;
+    inp.setAttribute('aria-label', (wi+1) + '번째 단어의 나머지 스펠링');
+    group.appendChild(inp);
+    container.appendChild(group);
+  });
+  wireWordInputs(container);
+}
+function wireWordInputs(container){
+  const inputs = Array.from(container.querySelectorAll('.rest-input'));
+  inputs.forEach((inp, i) => {
+    inp.addEventListener('input', () => {
+      inp.value = (inp.value || '').toLowerCase().replace(/[^a-z'\-]/g,'');
+    });
+    inp.addEventListener('keydown', e => {
+      if(e.key === 'Enter'){
+        const next = inputs[i+1];
+        if(next){ e.preventDefault(); next.focus(); }
+        else { e.preventDefault(); handleSubmit(); }
+      } else if(e.key === 'Tab' && !e.shiftKey){
+        const next = inputs[i+1];
+        if(next){ e.preventDefault(); next.focus(); }
+      } else if(e.key === 'Backspace' && !inp.value && i > 0){
+        e.preventDefault();
+        const prev = inputs[i-1];
+        prev.focus();
+        try{ prev.setSelectionRange(prev.value.length, prev.value.length); }catch(_e){}
+      }
+    });
+  });
+}
+function collectWordAnswer(container){
+  const groups = Array.from(container.querySelectorAll('.word-group'));
+  return groups.map(function(g){
+    var inp = g.querySelector('.rest-input');
+    return (g.dataset.first || '') + (inp ? inp.value : '');
+  }).join(' ');
+}
+function anyWordEmpty(container){
+  return Array.from(container.querySelectorAll('.rest-input')).some(function(i){ return !i.value.trim(); });
+}
+function markWordAnswer(container, perGroupOk){
+  const groups = Array.from(container.querySelectorAll('.word-group'));
+  groups.forEach(function(g, i){
+    g.classList.add(perGroupOk[i] ? 'correct' : 'wrong');
+    var inp = g.querySelector('.rest-input');
+    if(inp) inp.disabled = true;
+  });
 }
 function shuffle(arr){
   for(let i=arr.length-1;i>0;i--){

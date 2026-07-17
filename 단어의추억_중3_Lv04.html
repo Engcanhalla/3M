@@ -257,6 +257,60 @@
   .cloze-input.correct{border-color:var(--grade);background:rgba(16,185,129,.15);color:#a7f3d0;}
   .cloze-input.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
   .input-box.only-btn{justify-content:center;}
+  /* 첫글자 프리필 인풋 — 미리 채워진 첫 글자를 시각적으로 강조 */
+  .prefill-input{caret-color:#fef3c7;font-family:'Courier New',ui-monospace,monospace;letter-spacing:.05em;font-weight:700;}
+  .prefill-hint{color:#c4b5fd;font-size:.82rem;font-weight:500;margin-left:6px;letter-spacing:0;}
+  /* ---------- 낱말박스 (자동완성 방어) ---------- */
+  .word-answer{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:center;margin:6px 0;}
+  .word-answer.inline{display:inline-flex;gap:8px;vertical-align:middle;margin:0 4px;}
+  .word-group{
+    display:inline-flex;align-items:center;gap:0;
+    background:rgba(11,18,32,.7);border:1.5px solid #334155;border-radius:8px;
+    padding:0;transition:all .15s;overflow:hidden;flex-shrink:0;
+  }
+  .word-group:focus-within{border-color:#a78bfa;box-shadow:0 0 0 3px rgba(168,139,250,.22);}
+  .word-group.correct{border-color:var(--grade);background:rgba(16,185,129,.10);}
+  .word-group.wrong{border-color:var(--danger);background:rgba(239,68,68,.10);}
+  /* 폰트: body 상속 sans-serif (이전 .input-box input과 동일한 스타일) */
+  .first-letter{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:26px;padding:0 8px;height:44px;line-height:44px;
+    background:linear-gradient(180deg,#3b2966 0%,#2a1e4d 100%);
+    color:#fef3c7;
+    font-family:inherit;
+    font-size:1.15rem;font-weight:600;letter-spacing:.5px;
+    text-transform:lowercase;
+    border-right:1px solid #8b5cf6;user-select:none;
+  }
+  .rest-input{
+    border:0;background:transparent;color:var(--text);outline:none;
+    font-family:inherit;
+    font-size:1.15rem;font-weight:600;letter-spacing:.5px;
+    padding:0 10px;height:44px;line-height:44px;width:120px;min-width:90px;
+    text-transform:lowercase;
+  }
+  .rest-input::placeholder{color:#475569;font-weight:400;}
+  .word-group.correct .rest-input{color:#a7f3d0;}
+  .word-group.wrong .rest-input{color:#fca5a5;}
+  .cloze-sentence .word-answer{display:inline-flex;flex-wrap:wrap;gap:6px 8px;margin:0 4px;vertical-align:middle;}
+  .cloze-sentence .word-group{border-radius:6px;}
+  .cloze-sentence .first-letter{height:38px;line-height:38px;font-size:1.05rem;min-width:22px;padding:0 7px;}
+  .cloze-sentence .rest-input{height:38px;line-height:38px;font-size:1.05rem;width:100px;min-width:70px;padding:0 9px;}
+  /* .input-box input 스타일이 .rest-input을 override 하는 문제 해결 */
+  .input-box .word-answer input.rest-input{
+    background:transparent;border:0;padding:0 10px;
+    min-height:44px;height:44px;line-height:44px;text-align:left;
+    font-family:inherit;
+    font-size:1.15rem;font-weight:600;letter-spacing:.5px;
+    text-transform:lowercase;
+    width:120px;min-width:90px;box-shadow:none;
+  }
+  .input-box .word-answer input.rest-input:focus{border:0;box-shadow:none;}
+  /* single-letter 그룹 */
+  .word-group.single-letter{background:rgba(11,18,32,.5);}
+  .word-group.single-letter input.rest-input{width:80px;min-width:60px;}
+  .hint-line{margin-top:12px;padding:10px 14px;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.35);border-radius:10px;color:#c4b5fd;font-size:.95rem;line-height:1.55;text-align:center;letter-spacing:.03em;}
+  .hint-line b{color:#fef3c7;font-weight:800;font-family:'Courier New',ui-monospace,monospace;font-size:1.05rem;letter-spacing:.15em;margin:0 2px;}
 
   /* ---------- CARD STUDY ---------- */
   .stage{position:relative;padding:14px 2px;perspective:1200px;flex:1;display:flex;flex-direction:column;}
@@ -649,6 +703,66 @@
     from{box-shadow:0 12px 40px rgba(168,85,247,.45),0 0 0 1px rgba(255,255,255,.15) inset;}
     to  {box-shadow:0 20px 60px rgba(245,158,11,.65),0 0 0 1px rgba(255,255,255,.35) inset;}
   }
+  /* 고등학교 심화 100% — 화면 전체 랜덤 축하 오버레이 */
+  .hg-celebration{
+    position:fixed;inset:0;z-index:9999;pointer-events:none;
+    background:radial-gradient(ellipse at center, rgba(15,23,42,.55) 0%, rgba(2,6,23,.90) 60%, rgba(0,0,0,.98) 100%);
+    display:flex;align-items:center;justify-content:center;padding:24px;
+    animation:hgFadeIn .35s ease-out both, hgFadeOut .8s ease-in 5.2s forwards;
+  }
+  .hg-celebration::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(251,191,36,.30), transparent 20%),
+      radial-gradient(circle at 80% 25%, rgba(236,72,153,.28), transparent 22%),
+      radial-gradient(circle at 30% 75%, rgba(59,130,246,.28), transparent 24%),
+      radial-gradient(circle at 75% 80%, rgba(16,185,129,.28), transparent 22%);
+    animation:hgSwirl 6s ease-in-out infinite alternate;
+    pointer-events:none;
+  }
+  .hg-halo{
+    position:absolute;inset:0;pointer-events:none;
+    background:conic-gradient(from 0deg,#fbbf24,#ef4444,#a855f7,#3b82f6,#10b981,#fbbf24);
+    mix-blend-mode:screen;opacity:.28;
+    animation:hgRotate 12s linear infinite;
+  }
+  .hg-msg{
+    position:relative;font-family:inherit;
+    font-size:clamp(28px, 6vw, 68px);font-weight:900;line-height:1.25;text-align:center;
+    padding:32px 40px;max-width:92vw;letter-spacing:-.01em;
+    background:linear-gradient(90deg,#fbbf24,#ef4444,#ec4899,#a855f7,#3b82f6,#10b981,#fbbf24);
+    background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 24px rgba(251,191,36,.75)) drop-shadow(0 0 40px rgba(236,72,153,.45));
+    animation:hgRainbow 3.5s linear infinite, hgPop 1.6s cubic-bezier(.2,.7,.1,1.4) both, hgFloat 4s ease-in-out infinite alternate 1.6s;
+  }
+  .hg-sparkle{
+    position:absolute;pointer-events:none;font-size:clamp(24px,3vw,36px);
+    animation:hgSparkle 1.8s ease-in-out infinite;
+  }
+  @keyframes hgFadeIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes hgFadeOut{to{opacity:0;visibility:hidden;}}
+  @keyframes hgRainbow{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+  @keyframes hgPop{
+    0%{transform:scale(.15) rotate(-25deg);opacity:0;}
+    35%{transform:scale(1.28) rotate(6deg);opacity:1;}
+    55%{transform:scale(.94) rotate(-3deg);}
+    75%{transform:scale(1.08) rotate(1.5deg);}
+    100%{transform:scale(1) rotate(0);opacity:1;}
+  }
+  @keyframes hgFloat{
+    from{transform:translateY(-6px) scale(1);}
+    to{transform:translateY(6px) scale(1.02);}
+  }
+  @keyframes hgSwirl{
+    0%{transform:scale(1) rotate(0);}
+    100%{transform:scale(1.15) rotate(8deg);}
+  }
+  @keyframes hgRotate{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+  @keyframes hgSparkle{
+    0%,100%{opacity:0;transform:scale(.4) rotate(0deg);}
+    50%{opacity:1;transform:scale(1.2) rotate(180deg);}
+  }
   .result-stats{
     display:grid;grid-template-columns:1fr 1fr;gap:10px;
     margin:22px 0;
@@ -792,46 +906,46 @@ const DATA = {
   chapter: { id:"중3-L04", title:"중3 Lv.4", index:4, totalCount:40 },
   gradeColor: "#8b5cf6",
   newWords: [
-    {"id":"w00512","w":"basically","pos":["adv"],"ph":"/ˈbeɪsɪkli/","cefr":"B1","kr":["기본적으로","사실"],"ex":[{"en":"Basically, the plan is simple.","ko":"기본적으로, 계획은 간단하다."}],"mnemonic":{"soundHint":null,"story":"'베이식(basic)'에 -ally가 붙어 '기본적으로'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"essentially","ko":"본질적으로","reason":"동의어"},{"w":"fundamentally","ko":"근본적으로","reason":"동의어"},{"w":"actually","ko":"실제로","reason":"부사 짝"}],"collocBest":[{"en":"basically correct","ko":"기본적으로 맞다"},{"en":"basically the same","ko":"기본적으로 같다"}]},"nuance":{"koSimple":"복잡한 말 다 걷어내고 '한마디로 말하면'","whenToUse":"핵심만 요약해서 설명을 시작할 때"},"krDetail":[{"ko":"기본적으로","explain":"밑바탕이 되게"},{"ko":"사실","explain":"실제로는"}],"usageExamples":null,"grammarNote":null,"grammarQuiz":null},
-    {"id":"w00513","w":"basis","pos":["n"],"ph":"/ˈbeɪsɪs/","cefr":"B1","kr":["기초","근거"],"ex":[{"en":"On what basis did you decide?","ko":"무슨 근거로 결정했나?"}],"mnemonic":{"soundHint":null,"story":"base(기초)에서 온 명사. 매일(daily) 하는 일의 '근거'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"foundation","ko":"토대","reason":"동의어"},{"w":"ground","ko":"근거","reason":"동의어"},{"w":"daily","ko":"매일의","reason":"on a daily basis 콜로"}],"collocBest":[{"en":"on a daily basis","ko":"매일"},{"en":"on the basis of","ko":"~을 바탕으로"}]},"nuance":{"koSimple":"건물 밑을 받치는 주춧돌 같은 근거","whenToUse":"이유·근거·판단 기준을 말할 때"},"krDetail":[{"ko":"기초","explain":"밑바탕"},{"ko":"근거","explain":"까닭이 되는 밑바탕"}],"usageExamples":null,"grammarNote":"복수형은 bases(/ˈbeɪsiːz/)로 형태가 특이하다. 발음도 단수와 달라진다.","grammarQuiz":[{"sentence":"The two _____ of the theory are strong.","ko":"그 이론의 두 가지 근거는 튼튼하다.","answer":["bases"],"hint":"basis의 복수형(불규칙)"}]},
-    {"id":"w00515","w":"bass","pos":["n","adj"],"ph":"/beɪs/","cefr":"B1","kr":["저음","베이스"],"ex":[{"en":"He sings bass in the choir.","ko":"그는 합창단에서 베이스를 노래한다."}],"mnemonic":{"soundHint":"'베이스' 기타의 그 '베이스'—낮은 소리.","story":null,"hintConfidence":3},"pairs":{"buddyWords":[{"w":"low","ko":"낮은","reason":"동의어(음역)"},{"w":"deep","ko":"깊은","reason":"저음 묘사"},{"w":"treble","ko":"고음","reason":"반의어"}],"collocBest":[{"en":"bass guitar","ko":"베이스 기타"},{"en":"bass voice","ko":"저음 목소리"}]},"nuance":{"koSimple":"가슴이 울리는 낮고 굵은 소리","whenToUse":"저음 목소리·저음 악기 이야기할 때"},"krDetail":[{"ko":"저음","explain":"낮은 소리"}],"usageExamples":null,"grammarNote":"물고기 bass(농어)는 /bæs/로 발음이 다르다. 같은 철자지만 뜻·발음이 완전히 다른 동형이의어.","grammarQuiz":[{"sentence":"He caught a _____ in the river yesterday.","ko":"그는 어제 강에서 농어 한 마리를 잡았다.","answer":["bass"],"hint":"물고기 이름 /bæs/"}]},
+    {"id":"w00512","w":"basically","pos":["adv"],"ph":"/ˈbeɪsɪkli/","cefr":"B1","kr":["기본적으로","사실"],"ex":[{"en":"Basically, the plan is simple.","ko":"기본적으로, 계획은 간단하다."}],"mnemonic":{"soundHint":null,"story":"'베이식(basic)'에 -ally가 붙어 '기본적으로'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"essentially","ko":"본질적으로","reason":"동의어"},{"w":"fundamentally","ko":"근본적으로","reason":"동의어"},{"w":"actually","ko":"실제로","reason":"부사 짝"}],"collocBest":[{"en":"basically correct","ko":"기본적으로 맞다"},{"en":"basically the same","ko":"기본적으로 같다"}]},"nuance":{"koSimple":"복잡한 말 다 걷어내고 '한마디로 말하면'","whenToUse":"핵심만 요약해서 설명을 시작할 때"},"krDetail":[{"ko":"기본적으로","explain":"밑바탕이 되게"},{"ko":"사실","explain":"실제로는"}],"usageExamples":[{"en":"Basically, we agree on everything.","ko":"기본적으로 우리는 모든 것에 동의한다."},{"en":"The two phones are basically the same.","ko":"그 두 휴대폰은 사실 거의 같다."}],"grammarNote":"부사 basically는 문장 맨 앞에 콤마와 함께 써서 요약하거나 핵심을 짚을 때 자주 쓴다. 형용사 basic에 -ally가 붙은 형태다.","grammarQuiz":null},
+    {"id":"w00513","w":"basis","pos":["n"],"ph":"/ˈbeɪsɪs/","cefr":"B1","kr":["기초","근거"],"ex":[{"en":"On what basis did you decide?","ko":"무슨 근거로 결정했나?"}],"mnemonic":{"soundHint":null,"story":"base(기초)에서 온 명사. 매일(daily) 하는 일의 '근거'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"foundation","ko":"토대","reason":"동의어"},{"w":"ground","ko":"근거","reason":"동의어"},{"w":"daily","ko":"매일의","reason":"on a daily basis 콜로"}],"collocBest":[{"en":"on a daily basis","ko":"매일"},{"en":"on the basis of","ko":"~을 바탕으로"}]},"nuance":{"koSimple":"건물 밑을 받치는 주춧돌 같은 근거","whenToUse":"이유·근거·판단 기준을 말할 때"},"krDetail":[{"ko":"기초","explain":"밑바탕"},{"ko":"근거","explain":"까닭이 되는 밑바탕"}],"usageExamples":[{"en":"Trust is the basis of friendship.","ko":"신뢰는 우정의 기초이다."},{"en":"We meet on a regular basis.","ko":"우리는 정기적으로 만난다."}],"grammarNote":"복수형은 bases(/ˈbeɪsiːz/)로 형태가 특이하다. 발음도 단수와 달라진다.","grammarQuiz":[{"sentence":"The two _____ of the theory are strong.","ko":"그 이론의 두 가지 근거는 튼튼하다.","answer":["bases"],"hint":"basis의 복수형(불규칙)"}]},
+    {"id":"w00515","w":"bass","pos":["n","adj"],"ph":"/beɪs/","cefr":"B1","kr":["저음","베이스"],"ex":[{"en":"He sings bass in the choir.","ko":"그는 합창단에서 베이스를 노래한다."}],"mnemonic":{"soundHint":"'베이스' 기타의 그 '베이스'—낮은 소리.","story":null,"hintConfidence":3},"pairs":{"buddyWords":[{"w":"low","ko":"낮은","reason":"동의어(음역)"},{"w":"deep","ko":"깊은","reason":"저음 묘사"},{"w":"treble","ko":"고음","reason":"반의어"}],"collocBest":[{"en":"bass guitar","ko":"베이스 기타"},{"en":"bass voice","ko":"저음 목소리"}]},"nuance":{"koSimple":"가슴이 울리는 낮고 굵은 소리","whenToUse":"저음 목소리·저음 악기 이야기할 때"},"krDetail":[{"ko":"저음","explain":"낮은 소리"}],"usageExamples":[{"en":"He plays the bass in a band.","ko":"그는 밴드에서 베이스를 연주한다."},{"en":"Turn up the bass on the speaker.","ko":"스피커의 저음을 높여라."}],"grammarNote":"물고기 bass(농어)는 /bæs/로 발음이 다르다. 같은 철자지만 뜻·발음이 완전히 다른 동형이의어.","grammarQuiz":[{"sentence":"He caught a _____ in the river yesterday.","ko":"그는 어제 강에서 농어 한 마리를 잡았다.","answer":["bass"],"hint":"물고기 이름 /bæs/"}]},
     {"id":"w00518","w":"bathe","pos":["v"],"ph":"/beɪð/","cefr":"B1","kr":["목욕하다","씻다"],"ex":[{"en":"She bathes her baby every evening.","ko":"그녀는 매일 저녁 아기를 목욕시킨다."}],"mnemonic":{"soundHint":null,"story":"bath(목욕)에 -e 붙여 동사 '목욕하다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"wash","ko":"씻다","reason":"동의어"},{"w":"soak","ko":"담그다","reason":"동의어"},{"w":"sunbathe","ko":"일광욕하다","reason":"복합어"}],"collocBest":[{"en":"bathe in the sun","ko":"햇볕을 쬐다"},{"en":"bathe a wound","ko":"상처를 씻다"}]},"nuance":{"koSimple":"물에 몸을 담가 씻거나 물에 잠기게 하기","whenToUse":"아기 목욕, 상처 씻기, 햇볕 쬐기를 말할 때"},"krDetail":[{"ko":"목욕","explain":"몸을 씻는 것"}],"usageExamples":[{"en":"My mother bathes our puppy every Saturday morning.","ko":"우리 엄마는 토요일 아침마다 강아지를 목욕시키신다."},{"en":"The garden was bathed in warm afternoon sunlight.","ko":"정원은 따뜻한 오후 햇살에 잠겨 있었다."}],"grammarNote":"bath(명사, /bæθ/)와 bathe(동사, /beɪð/)는 발음·품사가 다르다. 미국에서는 동사로 take a bath를 더 많이 쓴다.","grammarQuiz":[{"sentence":"She _____ the puppy in warm water gently.","ko":"그녀는 강아지를 따뜻한 물로 부드럽게 씻긴다.","answer":["bathes"],"hint":"동사 bathe의 3인칭 단수형"}]},
-    {"id":"w00523","w":"battle","pos":["n","v"],"ph":"/ˈbætl/","cefr":"B1","kr":["전투","싸우다"],"ex":[{"en":"They won the battle.","ko":"그들은 전투에서 이겼다."}],"mnemonic":{"soundHint":null,"story":"'배틀(battle) 로얄'—온라인 게임의 그 '전투'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"fight","ko":"싸움","reason":"동의어"},{"w":"conflict","ko":"충돌","reason":"동의어"},{"w":"peace","ko":"평화","reason":"반의어"}],"collocBest":[{"en":"battle against","ko":"~에 맞서 싸우다"},{"en":"uphill battle","ko":"힘든 싸움"}]},"nuance":{"koSimple":"칼과 창이 부딪치는 큰 규모 싸움","whenToUse":"전쟁·병·문제와의 큰 싸움을 말할 때"},"krDetail":[{"ko":"전투","explain":"서로 싸움"}],"usageExamples":[{"en":"The knights battled the enemy on the wide field.","ko":"그 기사들은 넓은 들판에서 적과 싸웠다."},{"en":"A long battle was fought near this old castle.","ko":"긴 전투가 이 오래된 성 근처에서 벌어졌다."}],"grammarNote":null,"grammarQuiz":null},
-    {"id":"w00526","w":"bay","pos":["n","v"],"ph":"/beɪ/","cefr":"B1","kr":["만","짖다"],"ex":[{"en":"The ship sailed into the bay.","ko":"배가 만으로 들어왔다."}],"mnemonic":{"soundHint":null,"story":"샌프란시스코 '베이(bay)'—바다가 육지로 들어온 '만'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"inlet","ko":"후미","reason":"동의어"},{"w":"cove","ko":"작은 만","reason":"동의어"},{"w":"gulf","ko":"큰 만","reason":"관련어"}],"collocBest":[{"en":"keep at bay","ko":"접근을 막다"},{"en":"bay window","ko":"출창"}]},"nuance":{"koSimple":"바다가 육지 안쪽으로 쏙 들어온 만","whenToUse":"지도상 만이나 지명을 말할 때"},"krDetail":null,"usageExamples":null,"grammarNote":"명사 '만(bay)'과 동사 '(개가)짖다' 뜻이 전혀 다르다. 문맥으로 구별해야 한다.","grammarQuiz":[{"sentence":"The dogs _____ loudly at the stranger.","ko":"개들이 낯선 사람에게 큰 소리로 짖었다.","answer":["bay"],"hint":"동사 뜻: (개가) 짖다"}]},
-    {"id":"w00534","w":"be familiar with","pos":["v"],"ph":"/biː fəˈmɪliər wɪð/","cefr":"B1","kr":["~에 익숙하다","잘 알다"],"ex":[{"en":"Are you familiar with this software?","ko":"이 소프트웨어에 익숙하세요?"}],"mnemonic":{"soundHint":null,"story":"family(가족)처럼 '익숙한' 사이가 되는 것.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"know","ko":"알다","reason":"동의어"},{"w":"acquainted","ko":"아는 사이인","reason":"동의어"},{"w":"unfamiliar","ko":"낯선","reason":"반의어"}],"collocBest":[{"en":"familiar with the area","ko":"지역에 익숙한"},{"en":"get familiar with","ko":"익숙해지다"}]},"nuance":{"koSimple":"자주 봐서 눈감고도 다룰 수 있는 상태","whenToUse":"익숙한 프로그램·장소를 말할 때"},"krDetail":[{"ko":"익숙","explain":"낯설지 않고 편함"}],"usageExamples":null,"grammarNote":"be familiar with(사람이 ~에 익숙하다) vs be familiar to(사물이 ~에게 익숙하다)의 전치사 구별에 주의.","grammarQuiz":[{"sentence":"Are you familiar _____ this new program?","ko":"너는 이 새 프로그램에 익숙하니?","answer":["with"],"hint":"사람이 주어일 때 쓰는 전치사"}]},
-    {"id":"w00535","w":"be forced to","pos":["v"],"ph":"/biː fɔːrst tuː/","cefr":"B1","kr":["어쩔 수 없이 ~하다","강요받다"],"ex":[{"en":"I was forced to cancel plans.","ko":"나는 어쩔 수 없이 계획을 취소했다."}],"mnemonic":{"soundHint":null,"story":"force(힘)에 눌려 '어쩔 수 없이 ~하다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"compelled","ko":"강요된","reason":"동의어"},{"w":"obliged","ko":"의무를 진","reason":"동의어"},{"w":"choose","ko":"선택하다","reason":"반의어"}],"collocBest":[{"en":"be forced to leave","ko":"어쩔 수 없이 떠나다"},{"en":"be forced to accept","ko":"억지로 받아들이다"}]},"nuance":{"koSimple":"하기 싫은데 등 떠밀려 할 수밖에 없음","whenToUse":"상황상 어쩔 수 없이 무언가를 해야 할 때"},"krDetail":[{"ko":"강요","explain":"억지로 시킴"}],"usageExamples":null,"grammarNote":"수동태(be + p.p.) 뒤에 to부정사가 오는 구조. force A to do → A be forced to do로 전환된다.","grammarQuiz":[{"sentence":"He _____ _____ _____ leave the town.","ko":"그는 어쩔 수 없이 마을을 떠나야 했다.","answer":["was","forced","to"],"hint":"수동태 + to부정사"}]},
-    {"id":"w00538","w":"be in charge","pos":["v"],"ph":"/biː ɪn tʃɑːrdʒ/","cefr":"B1","kr":["담당하다","책임지다"],"ex":[{"en":"Who is in charge here?","ko":"여기 누가 책임자입니까?"}],"mnemonic":{"soundHint":null,"story":"charge(책임)를 안고 있다—'담당하다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"manage","ko":"관리하다","reason":"동의어"},{"w":"oversee","ko":"감독하다","reason":"동의어"},{"w":"leader","ko":"지도자","reason":"역할 짝"}],"collocBest":[{"en":"be in charge of","ko":"~을 담당하다"},{"en":"put in charge","ko":"담당으로 임명하다"}]},"nuance":{"koSimple":"이 일 책임자가 누구인지 딱 정해짐","whenToUse":"팀·프로젝트 담당자를 말할 때"},"krDetail":[{"ko":"담당","explain":"맡아서 함"},{"ko":"책임","explain":"맡아 해야 할 일"}],"usageExamples":null,"grammarNote":"be in charge of + 명사(무엇을 담당). in charge는 관사 없이 쓴다(*in the charge X).","grammarQuiz":[{"sentence":"She is _____ _____ of the whole project team.","ko":"그녀는 전체 프로젝트 팀을 담당하고 있다.","answer":["in","charge"],"hint":"관사 없이 쓰는 숙어"}]},
-    {"id":"w00542","w":"be meant to","pos":["v"],"ph":"/biː mɛnt tuː/","cefr":"B1","kr":["~하기로 되어있다","~을 위한 것이다"],"ex":[{"en":"This is meant to help you.","ko":"이것은 당신을 돕기 위한 것이다."}],"mnemonic":{"soundHint":null,"story":"mean(의도하다)의 과거분사—'~하기로 되어있다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"intended","ko":"의도된","reason":"동의어"},{"w":"supposed","ko":"~하기로 된","reason":"동의어"},{"w":"destined","ko":"운명지어진","reason":"관련어"}],"collocBest":[{"en":"be meant to last","ko":"오래 가기 위한 것이다"},{"en":"not meant to hurt","ko":"상처를 주려는 게 아니다"}]},"nuance":{"koSimple":"원래 그 목적으로 만들어진 것","whenToUse":"물건·행동의 원래 의도를 말할 때"},"krDetail":null,"usageExamples":null,"grammarNote":"be meant to + 동사원형. mean의 과거분사 meant(/mɛnt/) 발음·철자에 주의. 뜻은 '~하도록 되어있다/의도된 것이다'.","grammarQuiz":[{"sentence":"This book is _____ _____ _____ children.","ko":"이 책은 아이들을 위한 것이다.","answer":["meant","to","help"],"hint":"be meant to + 동사원형"}]},
-    {"id":"w00543","w":"be off","pos":["v"],"ph":"/biː ɒf/","cefr":"B1","kr":["자리를 비우다","떠나다"],"ex":[{"en":"She is off today, no work.","ko":"그녀는 오늘 쉬어서 일하지 않는다."}],"mnemonic":{"soundHint":null,"story":"'오프(off)'—전원이 꺼지듯 자리를 '비우다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"absent","ko":"결석한","reason":"동의어"},{"w":"leave","ko":"떠나다","reason":"동의어"},{"w":"present","ko":"출석한","reason":"반의어"}],"collocBest":[{"en":"be off work","ko":"일을 쉬다"},{"en":"be off duty","ko":"비번이다"}]},"nuance":{"koSimple":"출근 도장 안 찍는 쉬는 날 상태","whenToUse":"휴무, 비번, 자리 비운 상황을 말할 때"},"krDetail":null,"usageExamples":null,"grammarNote":"be off는 문맥에 따라 '떠나다/(불이) 꺼지다/(음식이) 상하다/쉬는 날이다' 등 뜻이 다양하다.","grammarQuiz":[{"sentence":"The teacher _____ _____ today for her holiday.","ko":"선생님은 오늘 휴가로 쉰다.","answer":["is","off"],"hint":"'쉬다/자리를 비우다'의 be동사 표현"}]},
-    {"id":"w00547","w":"be responsible for","pos":["v"],"ph":"/biː rɪˈspɒnsɪbl fɔːr/","cefr":"B1","kr":["~에 대해 책임이 있다","~을 담당하다"],"ex":[{"en":"Who is responsible for this mess?","ko":"이 혼란에 누가 책임이 있나요?"}],"mnemonic":{"soundHint":null,"story":"response(대답)할 수 있는—'책임이 있는'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"accountable","ko":"책임 있는","reason":"동의어"},{"w":"liable","ko":"책임이 있는","reason":"동의어"},{"w":"duty","ko":"의무","reason":"관련어"}],"collocBest":[{"en":"be responsible for actions","ko":"행동에 책임이 있다"},{"en":"be responsible for children","ko":"아이들을 책임지다"}]},"nuance":{"koSimple":"그 일에 대해 어깨에 짐을 지고 있는 상태","whenToUse":"어떤 일·사람을 책임지고 있다고 말할 때"},"krDetail":[{"ko":"책임","explain":"맡아서 해야 할 일"},{"ko":"담당","explain":"맡아서 함"}],"usageExamples":null,"grammarNote":"be responsible for + 명사/동명사. to부정사가 오지 않는 점에 주의(*responsible to do X).","grammarQuiz":[{"sentence":"Parents are responsible _____ _____ their children safely.","ko":"부모는 아이들을 안전하게 키울 책임이 있다.","answer":["for","raising"],"hint":"for 뒤에는 동명사(-ing)"}]},
-    {"id":"w00548","w":"be short of","pos":["v"],"ph":"/biː ʃɔːrt ɒv/","cefr":"B1","kr":["~가 부족하다","~이 모자라다"],"ex":[{"en":"We are short of volunteers now.","ko":"우리는 지금 자원봉사자가 부족하다."}],"mnemonic":{"soundHint":null,"story":"short(짧은)—양이 짧으니 '부족하다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"lack","ko":"부족하다","reason":"동의어"},{"w":"run out","ko":"다 떨어지다","reason":"동의어"},{"w":"abundant","ko":"풍부한","reason":"반의어"}],"collocBest":[{"en":"be short of money","ko":"돈이 부족하다"},{"en":"be short of time","ko":"시간이 부족하다"}]},"nuance":{"koSimple":"지갑 열어보니 살짝 모자란 느낌","whenToUse":"돈·시간·사람이 모자랄 때"},"krDetail":[{"ko":"부족","explain":"모자람"}],"usageExamples":null,"grammarNote":"be short of + 명사(~이 부족하다). fall short of(~에 못 미치다)와 뜻·형태가 비슷해 혼동 주의.","grammarQuiz":[{"sentence":"Our school is _____ _____ teachers this year.","ko":"우리 학교는 올해 선생님이 부족하다.","answer":["short","of"],"hint":"'부족하다'는 뜻의 be동사 표현"}]},
-    {"id":"w00551","w":"be up to","pos":["v"],"ph":"/biː ʌp tuː/","cefr":"B1","kr":["~에 달려있다","~하고 있다"],"ex":[{"en":"It's up to you to decide.","ko":"결정은 당신에게 달려있다."}],"mnemonic":{"soundHint":null,"story":"up(위)—결정권이 위에 달려있다—'~에 달려있다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"depend","ko":"달려있다","reason":"동의어"},{"w":"rely","ko":"의존하다","reason":"동의어"},{"w":"decide","ko":"결정하다","reason":"관련 행동"}],"collocBest":[{"en":"be up to the task","ko":"일을 감당하다"},{"en":"what are you up to","ko":"뭐하고 있어"}]},"nuance":{"koSimple":"결정권이 그 사람 손에 달려있음","whenToUse":"선택을 상대에게 맡기거나 뭐하는지 물을 때"},"krDetail":null,"usageExamples":null,"grammarNote":"be up to는 뜻이 여러 가지: ①~에 달려있다 ②~할 능력이 있다 ③~하고 있다(주로 나쁜 짓). 문맥으로 구별.","grammarQuiz":[{"sentence":"The final choice is _____ _____ _____.","ko":"최종 선택은 너에게 달려 있다.","answer":["up","to","you"],"hint":"'~에게 달려있다'"}]},
-    {"id":"w00552","w":"be worth it","pos":["v"],"ph":"/biː wɜːrθ ɪt/","cefr":"B1","kr":["그만한 가치가 있다","보람있다"],"ex":[{"en":"All the effort was worth it.","ko":"모든 노력이 그만한 가치가 있었다."}],"mnemonic":{"soundHint":null,"story":"worth(가치)—'그만한 가치가 있다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"worthwhile","ko":"가치 있는","reason":"동의어"},{"w":"valuable","ko":"귀중한","reason":"동의어"},{"w":"pointless","ko":"무의미한","reason":"반의어"}],"collocBest":[{"en":"it's worth it","ko":"그만한 가치가 있다"},{"en":"definitely worth it","ko":"확실히 그만한 가치가 있다"}]},"nuance":{"koSimple":"고생한 만큼 뿌듯한 보람이 남음","whenToUse":"노력·투자·기다림의 결과가 만족스러울 때"},"krDetail":[{"ko":"가치","explain":"값어치"},{"ko":"보람","explain":"한 일에 대한 좋은 결과"}],"usageExamples":null,"grammarNote":"worth 뒤에는 명사/동명사(-ing)가 오고 to부정사는 오지 않는다(*worth to do X, worth doing O).","grammarQuiz":[{"sentence":"The long trip was really _____ _____.","ko":"그 긴 여행은 정말로 그만한 가치가 있었다.","answer":["worth","it"],"hint":"'그만한 가치가 있다'"}]},
-    {"id":"w00554","w":"beam","pos":["n","v"],"ph":"/biːm/","cefr":"B1","kr":["빔","광선"],"ex":[{"en":"A beam of light entered.","ko":"한 줄기 빛이 들어왔다."}],"mnemonic":{"soundHint":"'빔 프로젝터'의 '빔'—빛의 '광선'.","story":null,"hintConfidence":3},"pairs":{"buddyWords":[{"w":"ray","ko":"광선","reason":"동의어"},{"w":"gleam","ko":"빛남","reason":"동의어"},{"w":"laser","ko":"레이저","reason":"콜로"}],"collocBest":[{"en":"beam of light","ko":"빛의 광선"},{"en":"laser beam","ko":"레이저 빔"}]},"nuance":{"koSimple":"쭉 뻗은 한 줄기 빛이나 굵은 기둥","whenToUse":"빛줄기·레이저·천장을 받치는 대들보를 말할 때"},"krDetail":[{"ko":"광선","explain":"빛줄기"}],"usageExamples":[{"en":"The lighthouse beamed light across the dark sea.","ko":"등대는 어두운 바다를 가로질러 빛을 비추었다."},{"en":"A beam of sunlight came through my window.","ko":"한 줄기 햇살이 내 창문을 통해 들어왔다."}],"grammarNote":null,"grammarQuiz":null},
-    {"id":"w00557","w":"bear in mind","pos":["v"],"ph":"/bɛr ɪn maɪnd/","cefr":"B1","kr":["명심하다","염두에 두다"],"ex":[{"en":"Bear in mind the deadline tomorrow.","ko":"내일 마감일을 명심해라."}],"mnemonic":{"soundHint":null,"story":"mind(마음) 속에 bear(품고 있다)—'명심하다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"remember","ko":"기억하다","reason":"동의어"},{"w":"consider","ko":"고려하다","reason":"동의어"},{"w":"forget","ko":"잊다","reason":"반의어"}],"collocBest":[{"en":"always bear in mind","ko":"항상 명심하다"},{"en":"bear in mind that","ko":"~라는 것을 명심하다"}]},"nuance":{"koSimple":"머릿속 서랍에 딱 넣어두고 잊지 않기","whenToUse":"중요한 사실이나 규칙을 잊지 말라고 할 때"},"krDetail":[{"ko":"명심","explain":"마음에 깊이 새김"},{"ko":"염두","explain":"마음속 생각"}],"usageExamples":null,"grammarNote":"bear-bore-borne 불규칙 변화 동사. bear in mind that + 절 구조로 자주 쓰인다.","grammarQuiz":[{"sentence":"Please _____ _____ _____ the meeting time.","ko":"회의 시간을 명심해 주세요.","answer":["bear","in","mind"],"hint":"'명심하다' 세 단어 숙어"}]},
-    {"id":"w00560","w":"beast","pos":["n"],"ph":"/biːst/","cefr":"B1","kr":["짐승","야수"],"ex":[{"en":"The beast roared loudly.","ko":"야수가 크게 으르렁댔다."}],"mnemonic":{"soundHint":null,"story":"'미녀와 야수(Beauty and the Beast)'의 그 '야수'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"animal","ko":"동물","reason":"동의어"},{"w":"creature","ko":"생물","reason":"동의어"},{"w":"monster","ko":"괴물","reason":"관련어"}],"collocBest":[{"en":"wild beast","ko":"야생 짐승"},{"en":"beast of burden","ko":"짐 나르는 짐승"}]},"nuance":{"koSimple":"크르릉 으르렁대는 큰 짐승","whenToUse":"동화 속 야수, 사나운 짐승을 말할 때"},"krDetail":[{"ko":"야수","explain":"사나운 짐승"}],"usageExamples":null,"grammarNote":null,"grammarQuiz":null},
-    {"id":"w00565","w":"beaten","pos":["adj"],"ph":"/ˈbiːtən/","cefr":"B1","kr":["패배한","두드려진"],"ex":[{"en":"The beaten team left quietly.","ko":"패배한 팀은 조용히 떠났다."}],"mnemonic":{"soundHint":null,"story":"beat(때리다)의 과거분사—'두드려 맞은, 패배한'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"defeated","ko":"패배한","reason":"동의어"},{"w":"crushed","ko":"짓밟힌","reason":"동의어"},{"w":"victorious","ko":"승리한","reason":"반의어"}],"collocBest":[{"en":"beaten path","ko":"다니던 길"},{"en":"beaten team","ko":"패배한 팀"}]},"nuance":{"koSimple":"경기에 져서 축 처진 상태","whenToUse":"패배한 팀, 두들겨 맞은 상태를 말할 때"},"krDetail":[{"ko":"패배","explain":"싸움에서 짐"}],"usageExamples":null,"grammarNote":"beat의 과거분사 형태(beat-beat-beaten). 형용사로 쓰일 때 '패배한/두드려서 만든'의 뜻.","grammarQuiz":[{"sentence":"The _____ team walked off the field slowly.","ko":"패배한 팀은 천천히 경기장을 떠났다.","answer":["beaten"],"hint":"beat의 과거분사, 형용사로 사용"}]},
-    {"id":"w00571","w":"become aware","pos":["v"],"ph":"/bɪˌkʌm əˈweər/","cefr":"B1","kr":["인식하게 되다","깨닫다"],"ex":[{"en":"She became aware of the danger.","ko":"그녀는 위험을 인식하게 되었다."}],"mnemonic":{"soundHint":null,"story":"aware(알아차린) 상태가 되다—'인식하게 되다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"realize","ko":"깨닫다","reason":"동의어"},{"w":"recognize","ko":"인식하다","reason":"동의어"},{"w":"ignore","ko":"무시하다","reason":"반의어"}],"collocBest":[{"en":"become aware gradually","ko":"점차 인식하게 되다"},{"en":"become aware of situation","ko":"상황을 깨닫다"}]},"nuance":{"koSimple":"안 보이던 게 문득 눈에 들어옴","whenToUse":"위험·문제·사실을 처음 알아차릴 때"},"krDetail":[{"ko":"인식","explain":"알아차림"}],"usageExamples":null,"grammarNote":"become aware of + 명사(~을 인식하다). aware는 형용사이므로 뒤에 전치사 of가 필수.","grammarQuiz":[{"sentence":"He became _____ _____ the serious problem.","ko":"그는 그 심각한 문제를 인식하게 되었다.","answer":["aware","of"],"hint":"aware 뒤 필수 전치사"}]},
-    {"id":"w00572","w":"become clear","pos":["v"],"ph":"/bɪˌkʌm ˈklɪər/","cefr":"B1","kr":["분명해지다","밝혀지다"],"ex":[{"en":"It became clear he was lying.","ko":"그가 거짓말하고 있다는 것이 분명해졌다."}],"mnemonic":{"soundHint":null,"story":"clear(맑은) 상태가 되다—'분명해지다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"emerge","ko":"드러나다","reason":"동의어"},{"w":"obvious","ko":"명백한","reason":"관련어"},{"w":"unclear","ko":"불분명한","reason":"반의어"}],"collocBest":[{"en":"become clear soon","ko":"곧 분명해지다"},{"en":"gradually become clear","ko":"점차 분명해지다"}]},"nuance":{"koSimple":"흐릿하던 안개가 걷혀 훤히 보임","whenToUse":"진실·상황·이유가 드러날 때"},"krDetail":[{"ko":"분명","explain":"뚜렷하고 확실함"}],"usageExamples":null,"grammarNote":"become + 형용사(2형식) 구조. It becomes clear that + 절 구문으로 자주 쓰인다.","grammarQuiz":[{"sentence":"It _____ _____ _____ he was hiding something.","ko":"그가 뭔가 숨기고 있다는 것이 분명해졌다.","answer":["became","clear","that"],"hint":"It becomes clear that + 절"}]},
-    {"id":"w00579","w":"before long","pos":["adv"],"ph":"/bɪˈfɔːr lɒŋ/","cefr":"B1","kr":["머지않아","곧"],"ex":[{"en":"Before long, spring will arrive.","ko":"머지않아 봄이 올 것이다."}],"mnemonic":{"soundHint":null,"story":"long(긴 시간) 이전에—시간이 길지 않아 '머지않아'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"soon","ko":"곧","reason":"동의어"},{"w":"shortly","ko":"곧","reason":"동의어"},{"w":"later","ko":"나중에","reason":"반의어"}],"collocBest":[{"en":"before long he'll return","ko":"머지않아 그가 돌아올 것이다"},{"en":"before long it changes","ko":"머지않아 바뀔 것이다"}]},"nuance":{"koSimple":"곧 다가올 미래, 얼마 안 있어","whenToUse":"가까운 미래의 변화를 예고할 때"},"krDetail":null,"usageExamples":null,"grammarNote":"before long(머지않아, 곧)과 long before(오래 전에)는 어순만 다를 뿐 뜻이 정반대이므로 혼동 주의.","grammarQuiz":[{"sentence":"_____ _____, the students finished their homework.","ko":"머지않아 학생들은 숙제를 끝냈다.","answer":["Before","long"],"hint":"'머지않아, 곧'"}]},
+    {"id":"w00523","w":"battle","pos":["n","v"],"ph":"/ˈbætl/","cefr":"B1","kr":["전투","싸우다"],"ex":[{"en":"They won the battle.","ko":"그들은 전투에서 이겼다."}],"mnemonic":{"soundHint":null,"story":"'배틀(battle) 로얄'—온라인 게임의 그 '전투'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"fight","ko":"싸움","reason":"동의어"},{"w":"conflict","ko":"충돌","reason":"동의어"},{"w":"peace","ko":"평화","reason":"반의어"}],"collocBest":[{"en":"battle against","ko":"~에 맞서 싸우다"},{"en":"uphill battle","ko":"힘든 싸움"}]},"nuance":{"koSimple":"칼과 창이 부딪치는 큰 규모 싸움","whenToUse":"전쟁·병·문제와의 큰 싸움을 말할 때"},"krDetail":[{"ko":"전투","explain":"서로 싸움"}],"usageExamples":[{"en":"The knights battled the enemy on the wide field.","ko":"그 기사들은 넓은 들판에서 적과 싸웠다."},{"en":"A long battle was fought near this old castle.","ko":"긴 전투가 이 오래된 성 근처에서 벌어졌다."}],"grammarNote":"명사와 동사로 모두 쓰인다. 동사로 '~와 싸우다'라고 할 때 battle against 또는 battle with 형태로 쓰거나 목적어를 바로 취할 수 있다.","grammarQuiz":null},
+    {"id":"w00526","w":"bay","pos":["n","v"],"ph":"/beɪ/","cefr":"B1","kr":["만","짖다"],"ex":[{"en":"The ship sailed into the bay.","ko":"배가 만으로 들어왔다."}],"mnemonic":{"soundHint":null,"story":"샌프란시스코 '베이(bay)'—바다가 육지로 들어온 '만'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"inlet","ko":"후미","reason":"동의어"},{"w":"cove","ko":"작은 만","reason":"동의어"},{"w":"gulf","ko":"큰 만","reason":"관련어"}],"collocBest":[{"en":"keep at bay","ko":"접근을 막다"},{"en":"bay window","ko":"출창"}]},"nuance":{"koSimple":"바다가 육지 안쪽으로 쏙 들어온 만","whenToUse":"지도상 만이나 지명을 말할 때"},"krDetail":[{"ko":"만","explain":"육지로 둘러싸인 바다 부분"},{"ko":"짖다","explain":"개가 길게 우는 소리를 내다"}],"usageExamples":[{"en":"We swam in the calm bay.","ko":"우리는 잔잔한 만에서 수영했다."},{"en":"The hound bayed at the moon.","ko":"그 사냥개가 달을 보고 짖었다."}],"grammarNote":"명사 '만(bay)'과 동사 '(개가)짖다' 뜻이 전혀 다르다. 문맥으로 구별해야 한다.","grammarQuiz":[{"sentence":"The dogs _____ loudly at the stranger.","ko":"개들이 낯선 사람에게 큰 소리로 짖었다.","answer":["bay"],"hint":"동사 뜻: (개가) 짖다"}]},
+    {"id":"w00534","w":"be familiar with","pos":["v"],"ph":"/biː fəˈmɪliər wɪð/","cefr":"B1","kr":["~에 익숙하다","잘 알다"],"ex":[{"en":"Are you familiar with this software?","ko":"이 소프트웨어에 익숙하세요?"}],"mnemonic":{"soundHint":null,"story":"family(가족)처럼 '익숙한' 사이가 되는 것.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"know","ko":"알다","reason":"동의어"},{"w":"acquainted","ko":"아는 사이인","reason":"동의어"},{"w":"unfamiliar","ko":"낯선","reason":"반의어"}],"collocBest":[{"en":"familiar with the area","ko":"지역에 익숙한"},{"en":"get familiar with","ko":"익숙해지다"}]},"nuance":{"koSimple":"자주 봐서 눈감고도 다룰 수 있는 상태","whenToUse":"익숙한 프로그램·장소를 말할 때"},"krDetail":[{"ko":"익숙","explain":"낯설지 않고 편함"}],"usageExamples":[{"en":"I am familiar with this area.","ko":"나는 이 지역에 익숙하다."},{"en":"Are you familiar with his music?","ko":"너는 그의 음악을 잘 아니?"}],"grammarNote":"be familiar with(사람이 ~에 익숙하다) vs be familiar to(사물이 ~에게 익숙하다)의 전치사 구별에 주의.","grammarQuiz":[{"sentence":"Are you familiar _____ this new program?","ko":"너는 이 새 프로그램에 익숙하니?","answer":["with"],"hint":"사람이 주어일 때 쓰는 전치사"}]},
+    {"id":"w00535","w":"be forced to","pos":["v"],"ph":"/biː fɔːrst tuː/","cefr":"B1","kr":["어쩔 수 없이 ~하다","강요받다"],"ex":[{"en":"I was forced to cancel plans.","ko":"나는 어쩔 수 없이 계획을 취소했다."}],"mnemonic":{"soundHint":null,"story":"force(힘)에 눌려 '어쩔 수 없이 ~하다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"compelled","ko":"강요된","reason":"동의어"},{"w":"obliged","ko":"의무를 진","reason":"동의어"},{"w":"choose","ko":"선택하다","reason":"반의어"}],"collocBest":[{"en":"be forced to leave","ko":"어쩔 수 없이 떠나다"},{"en":"be forced to accept","ko":"억지로 받아들이다"}]},"nuance":{"koSimple":"하기 싫은데 등 떠밀려 할 수밖에 없음","whenToUse":"상황상 어쩔 수 없이 무언가를 해야 할 때"},"krDetail":[{"ko":"강요","explain":"억지로 시킴"}],"usageExamples":[{"en":"They were forced to leave home.","ko":"그들은 어쩔 수 없이 집을 떠나야 했다."},{"en":"He is forced to work overtime.","ko":"그는 어쩔 수 없이 초과 근무를 한다."}],"grammarNote":"수동태(be + p.p.) 뒤에 to부정사가 오는 구조. force A to do → A be forced to do로 전환된다.","grammarQuiz":[{"sentence":"He _____ _____ _____ leave the town.","ko":"그는 어쩔 수 없이 마을을 떠나야 했다.","answer":["was","forced","to"],"hint":"수동태 + to부정사"}]},
+    {"id":"w00538","w":"be in charge","pos":["v"],"ph":"/biː ɪn tʃɑːrdʒ/","cefr":"B1","kr":["담당하다","책임지다"],"ex":[{"en":"Who is in charge here?","ko":"여기 누가 책임자입니까?"}],"mnemonic":{"soundHint":null,"story":"charge(책임)를 안고 있다—'담당하다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"manage","ko":"관리하다","reason":"동의어"},{"w":"oversee","ko":"감독하다","reason":"동의어"},{"w":"leader","ko":"지도자","reason":"역할 짝"}],"collocBest":[{"en":"be in charge of","ko":"~을 담당하다"},{"en":"put in charge","ko":"담당으로 임명하다"}]},"nuance":{"koSimple":"이 일 책임자가 누구인지 딱 정해짐","whenToUse":"팀·프로젝트 담당자를 말할 때"},"krDetail":[{"ko":"담당","explain":"맡아서 함"},{"ko":"책임","explain":"맡아 해야 할 일"}],"usageExamples":[{"en":"She is in charge of sales.","ko":"그녀는 영업을 담당하고 있다."},{"en":"Who is in charge of this project?","ko":"누가 이 프로젝트를 책임지고 있나요?"}],"grammarNote":"be in charge of + 명사(무엇을 담당). in charge는 관사 없이 쓴다(*in the charge X).","grammarQuiz":[{"sentence":"She is _____ _____ of the whole project team.","ko":"그녀는 전체 프로젝트 팀을 담당하고 있다.","answer":["in","charge"],"hint":"관사 없이 쓰는 숙어"}]},
+    {"id":"w00542","w":"be meant to","pos":["v"],"ph":"/biː mɛnt tuː/","cefr":"B1","kr":["~하기로 되어있다","~을 위한 것이다"],"ex":[{"en":"This is meant to help you.","ko":"이것은 당신을 돕기 위한 것이다."}],"mnemonic":{"soundHint":null,"story":"mean(의도하다)의 과거분사—'~하기로 되어있다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"intended","ko":"의도된","reason":"동의어"},{"w":"supposed","ko":"~하기로 된","reason":"동의어"},{"w":"destined","ko":"운명지어진","reason":"관련어"}],"collocBest":[{"en":"be meant to last","ko":"오래 가기 위한 것이다"},{"en":"not meant to hurt","ko":"상처를 주려는 게 아니다"}]},"nuance":{"koSimple":"원래 그 목적으로 만들어진 것","whenToUse":"물건·행동의 원래 의도를 말할 때"},"krDetail":[{"ko":"~하기로 되어있다","explain":"그렇게 예정·규정되어 있다"},{"ko":"~을 위한 것이다","explain":"그 목적으로 만들어진 것이다"}],"usageExamples":[{"en":"You are meant to wait here.","ko":"너는 여기서 기다리기로 되어 있다."},{"en":"This tool is meant to save time.","ko":"이 도구는 시간을 아끼기 위한 것이다."}],"grammarNote":"be meant to + 동사원형. mean의 과거분사 meant(/mɛnt/) 발음·철자에 주의. 뜻은 '~하도록 되어있다/의도된 것이다'.","grammarQuiz":[{"sentence":"This book is _____ _____ _____ children.","ko":"이 책은 아이들을 위한 것이다.","answer":["meant","to","help"],"hint":"be meant to + 동사원형"}]},
+    {"id":"w00543","w":"be off","pos":["v"],"ph":"/biː ɒf/","cefr":"B1","kr":["자리를 비우다","떠나다"],"ex":[{"en":"She is off today, no work.","ko":"그녀는 오늘 쉬어서 일하지 않는다."}],"mnemonic":{"soundHint":null,"story":"'오프(off)'—전원이 꺼지듯 자리를 '비우다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"absent","ko":"결석한","reason":"동의어"},{"w":"leave","ko":"떠나다","reason":"동의어"},{"w":"present","ko":"출석한","reason":"반의어"}],"collocBest":[{"en":"be off work","ko":"일을 쉬다"},{"en":"be off duty","ko":"비번이다"}]},"nuance":{"koSimple":"출근 도장 안 찍는 쉬는 날 상태","whenToUse":"휴무, 비번, 자리 비운 상황을 말할 때"},"krDetail":[{"ko":"자리를 비우다","explain":"일이나 학교에 없다"},{"ko":"떠나다","explain":"어딘가로 출발하다"}],"usageExamples":[{"en":"I am off tomorrow, so let's meet.","ko":"나는 내일 쉬니까 만나자."},{"en":"We are off to the airport now.","ko":"우리는 지금 공항으로 떠난다."}],"grammarNote":"be off는 문맥에 따라 '떠나다/(불이) 꺼지다/(음식이) 상하다/쉬는 날이다' 등 뜻이 다양하다.","grammarQuiz":[{"sentence":"The teacher _____ _____ today for her holiday.","ko":"선생님은 오늘 휴가로 쉰다.","answer":["is","off"],"hint":"'쉬다/자리를 비우다'의 be동사 표현"}]},
+    {"id":"w00547","w":"be responsible for","pos":["v"],"ph":"/biː rɪˈspɒnsɪbl fɔːr/","cefr":"B1","kr":["~에 대해 책임이 있다","~을 담당하다"],"ex":[{"en":"Who is responsible for this mess?","ko":"이 혼란에 누가 책임이 있나요?"}],"mnemonic":{"soundHint":null,"story":"response(대답)할 수 있는—'책임이 있는'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"accountable","ko":"책임 있는","reason":"동의어"},{"w":"liable","ko":"책임이 있는","reason":"동의어"},{"w":"duty","ko":"의무","reason":"관련어"}],"collocBest":[{"en":"be responsible for actions","ko":"행동에 책임이 있다"},{"en":"be responsible for children","ko":"아이들을 책임지다"}]},"nuance":{"koSimple":"그 일에 대해 어깨에 짐을 지고 있는 상태","whenToUse":"어떤 일·사람을 책임지고 있다고 말할 때"},"krDetail":[{"ko":"책임","explain":"맡아서 해야 할 일"},{"ko":"담당","explain":"맡아서 함"}],"usageExamples":[{"en":"Parents are responsible for their kids.","ko":"부모는 자녀에 대해 책임이 있다."},{"en":"He is responsible for the schedule.","ko":"그가 일정을 담당하고 있다."}],"grammarNote":"be responsible for + 명사/동명사. to부정사가 오지 않는 점에 주의(*responsible to do X).","grammarQuiz":[{"sentence":"Parents are responsible _____ _____ their children safely.","ko":"부모는 아이들을 안전하게 키울 책임이 있다.","answer":["for","raising"],"hint":"for 뒤에는 동명사(-ing)"}]},
+    {"id":"w00548","w":"be short of","pos":["v"],"ph":"/biː ʃɔːrt ɒv/","cefr":"B1","kr":["~가 부족하다","~이 모자라다"],"ex":[{"en":"We are short of volunteers now.","ko":"우리는 지금 자원봉사자가 부족하다."}],"mnemonic":{"soundHint":null,"story":"short(짧은)—양이 짧으니 '부족하다'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"lack","ko":"부족하다","reason":"동의어"},{"w":"run out","ko":"다 떨어지다","reason":"동의어"},{"w":"abundant","ko":"풍부한","reason":"반의어"}],"collocBest":[{"en":"be short of money","ko":"돈이 부족하다"},{"en":"be short of time","ko":"시간이 부족하다"}]},"nuance":{"koSimple":"지갑 열어보니 살짝 모자란 느낌","whenToUse":"돈·시간·사람이 모자랄 때"},"krDetail":[{"ko":"부족","explain":"모자람"}],"usageExamples":[{"en":"We are short of time today.","ko":"우리는 오늘 시간이 부족하다."},{"en":"The team is short of players.","ko":"그 팀은 선수가 모자란다."}],"grammarNote":"be short of + 명사(~이 부족하다). fall short of(~에 못 미치다)와 뜻·형태가 비슷해 혼동 주의.","grammarQuiz":[{"sentence":"Our school is _____ _____ teachers this year.","ko":"우리 학교는 올해 선생님이 부족하다.","answer":["short","of"],"hint":"'부족하다'는 뜻의 be동사 표현"}]},
+    {"id":"w00551","w":"be up to","pos":["v"],"ph":"/biː ʌp tuː/","cefr":"B1","kr":["~에 달려있다","~하고 있다"],"ex":[{"en":"It's up to you to decide.","ko":"결정은 당신에게 달려있다."}],"mnemonic":{"soundHint":null,"story":"up(위)—결정권이 위에 달려있다—'~에 달려있다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"depend","ko":"달려있다","reason":"동의어"},{"w":"rely","ko":"의존하다","reason":"동의어"},{"w":"decide","ko":"결정하다","reason":"관련 행동"}],"collocBest":[{"en":"be up to the task","ko":"일을 감당하다"},{"en":"what are you up to","ko":"뭐하고 있어"}]},"nuance":{"koSimple":"결정권이 그 사람 손에 달려있음","whenToUse":"선택을 상대에게 맡기거나 뭐하는지 물을 때"},"krDetail":[{"ko":"~에 달려있다","explain":"그 사람이 정할 일이다"},{"ko":"~하고 있다","explain":"어떤 일을 하는 중이다"}],"usageExamples":[{"en":"The final choice is up to you.","ko":"최종 선택은 너에게 달려 있다."},{"en":"What are you up to this weekend?","ko":"너 이번 주말에 뭐 할 거니?"}],"grammarNote":"be up to는 뜻이 여러 가지: ①~에 달려있다 ②~할 능력이 있다 ③~하고 있다(주로 나쁜 짓). 문맥으로 구별.","grammarQuiz":[{"sentence":"The final choice is _____ _____ _____.","ko":"최종 선택은 너에게 달려 있다.","answer":["up","to","you"],"hint":"'~에게 달려있다'"}]},
+    {"id":"w00552","w":"be worth it","pos":["v"],"ph":"/biː wɜːrθ ɪt/","cefr":"B1","kr":["그만한 가치가 있다","보람있다"],"ex":[{"en":"All the effort was worth it.","ko":"모든 노력이 그만한 가치가 있었다."}],"mnemonic":{"soundHint":null,"story":"worth(가치)—'그만한 가치가 있다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"worthwhile","ko":"가치 있는","reason":"동의어"},{"w":"valuable","ko":"귀중한","reason":"동의어"},{"w":"pointless","ko":"무의미한","reason":"반의어"}],"collocBest":[{"en":"it's worth it","ko":"그만한 가치가 있다"},{"en":"definitely worth it","ko":"확실히 그만한 가치가 있다"}]},"nuance":{"koSimple":"고생한 만큼 뿌듯한 보람이 남음","whenToUse":"노력·투자·기다림의 결과가 만족스러울 때"},"krDetail":[{"ko":"가치","explain":"값어치"},{"ko":"보람","explain":"한 일에 대한 좋은 결과"}],"usageExamples":[{"en":"The long trip was worth it.","ko":"그 긴 여행은 그만한 가치가 있었다."},{"en":"Studying hard is worth it in the end.","ko":"열심히 공부하는 것은 결국 보람이 있다."}],"grammarNote":"worth 뒤에는 명사/동명사(-ing)가 오고 to부정사는 오지 않는다(*worth to do X, worth doing O).","grammarQuiz":[{"sentence":"The long trip was really _____ _____.","ko":"그 긴 여행은 정말로 그만한 가치가 있었다.","answer":["worth","it"],"hint":"'그만한 가치가 있다'"}]},
+    {"id":"w00554","w":"beam","pos":["n","v"],"ph":"/biːm/","cefr":"B1","kr":["빔","광선"],"ex":[{"en":"A beam of light entered.","ko":"한 줄기 빛이 들어왔다."}],"mnemonic":{"soundHint":"'빔 프로젝터'의 '빔'—빛의 '광선'.","story":null,"hintConfidence":3},"pairs":{"buddyWords":[{"w":"ray","ko":"광선","reason":"동의어"},{"w":"gleam","ko":"빛남","reason":"동의어"},{"w":"laser","ko":"레이저","reason":"콜로"}],"collocBest":[{"en":"beam of light","ko":"빛의 광선"},{"en":"laser beam","ko":"레이저 빔"}]},"nuance":{"koSimple":"쭉 뻗은 한 줄기 빛이나 굵은 기둥","whenToUse":"빛줄기·레이저·천장을 받치는 대들보를 말할 때"},"krDetail":[{"ko":"광선","explain":"빛줄기"}],"usageExamples":[{"en":"The lighthouse beamed light across the dark sea.","ko":"등대는 어두운 바다를 가로질러 빛을 비추었다."},{"en":"A beam of sunlight came through my window.","ko":"한 줄기 햇살이 내 창문을 통해 들어왔다."}],"grammarNote":"명사로 '빛줄기'나 '들보' 뜻이 흔하고, 동사로 쓰면 '환하게 웃다' 또는 '빛을 내보내다'라는 뜻이 된다.","grammarQuiz":null},
+    {"id":"w00557","w":"bear in mind","pos":["v"],"ph":"/bɛr ɪn maɪnd/","cefr":"B1","kr":["명심하다","염두에 두다"],"ex":[{"en":"Bear in mind the deadline tomorrow.","ko":"내일 마감일을 명심해라."}],"mnemonic":{"soundHint":null,"story":"mind(마음) 속에 bear(품고 있다)—'명심하다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"remember","ko":"기억하다","reason":"동의어"},{"w":"consider","ko":"고려하다","reason":"동의어"},{"w":"forget","ko":"잊다","reason":"반의어"}],"collocBest":[{"en":"always bear in mind","ko":"항상 명심하다"},{"en":"bear in mind that","ko":"~라는 것을 명심하다"}]},"nuance":{"koSimple":"머릿속 서랍에 딱 넣어두고 잊지 않기","whenToUse":"중요한 사실이나 규칙을 잊지 말라고 할 때"},"krDetail":[{"ko":"명심","explain":"마음에 깊이 새김"},{"ko":"염두","explain":"마음속 생각"}],"usageExamples":[{"en":"Bear in mind that prices may change.","ko":"가격이 바뀔 수 있음을 명심해라."},{"en":"Please bear my advice in mind.","ko":"제 조언을 염두에 두세요."}],"grammarNote":"bear-bore-borne 불규칙 변화 동사. bear in mind that + 절 구조로 자주 쓰인다.","grammarQuiz":[{"sentence":"Please _____ _____ _____ the meeting time.","ko":"회의 시간을 명심해 주세요.","answer":["bear","in","mind"],"hint":"'명심하다' 세 단어 숙어"}]},
+    {"id":"w00560","w":"beast","pos":["n"],"ph":"/biːst/","cefr":"B1","kr":["짐승","야수"],"ex":[{"en":"The beast roared loudly.","ko":"야수가 크게 으르렁댔다."}],"mnemonic":{"soundHint":null,"story":"'미녀와 야수(Beauty and the Beast)'의 그 '야수'.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"animal","ko":"동물","reason":"동의어"},{"w":"creature","ko":"생물","reason":"동의어"},{"w":"monster","ko":"괴물","reason":"관련어"}],"collocBest":[{"en":"wild beast","ko":"야생 짐승"},{"en":"beast of burden","ko":"짐 나르는 짐승"}]},"nuance":{"koSimple":"크르릉 으르렁대는 큰 짐승","whenToUse":"동화 속 야수, 사나운 짐승을 말할 때"},"krDetail":[{"ko":"야수","explain":"사나운 짐승"}],"usageExamples":[{"en":"A wild beast lived in the cave.","ko":"사나운 짐승이 그 동굴에 살았다."},{"en":"The beast in the story was gentle.","ko":"그 이야기 속 야수는 온순했다."}],"grammarNote":"animal보다 크고 사납다는 느낌을 주는 다소 문학적인 단어다. 사람에게 쓰면 '난폭한 사람'이라는 비유적 의미가 된다.","grammarQuiz":null},
+    {"id":"w00565","w":"beaten","pos":["adj"],"ph":"/ˈbiːtən/","cefr":"B1","kr":["패배한","두드려진"],"ex":[{"en":"The beaten team left quietly.","ko":"패배한 팀은 조용히 떠났다."}],"mnemonic":{"soundHint":null,"story":"beat(때리다)의 과거분사—'두드려 맞은, 패배한'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"defeated","ko":"패배한","reason":"동의어"},{"w":"crushed","ko":"짓밟힌","reason":"동의어"},{"w":"victorious","ko":"승리한","reason":"반의어"}],"collocBest":[{"en":"beaten path","ko":"다니던 길"},{"en":"beaten team","ko":"패배한 팀"}]},"nuance":{"koSimple":"경기에 져서 축 처진 상태","whenToUse":"패배한 팀, 두들겨 맞은 상태를 말할 때"},"krDetail":[{"ko":"패배","explain":"싸움에서 짐"}],"usageExamples":[{"en":"The beaten runner still smiled.","ko":"패배한 주자는 그래도 웃었다."},{"en":"We walked along a beaten path.","ko":"우리는 다져진 길을 따라 걸었다."}],"grammarNote":"beat의 과거분사 형태(beat-beat-beaten). 형용사로 쓰일 때 '패배한/두드려서 만든'의 뜻.","grammarQuiz":[{"sentence":"The _____ team walked off the field slowly.","ko":"패배한 팀은 천천히 경기장을 떠났다.","answer":["beaten"],"hint":"beat의 과거분사, 형용사로 사용"}]},
+    {"id":"w00571","w":"become aware","pos":["v"],"ph":"/bɪˌkʌm əˈweər/","cefr":"B1","kr":["인식하게 되다","깨닫다"],"ex":[{"en":"She became aware of the danger.","ko":"그녀는 위험을 인식하게 되었다."}],"mnemonic":{"soundHint":null,"story":"aware(알아차린) 상태가 되다—'인식하게 되다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"realize","ko":"깨닫다","reason":"동의어"},{"w":"recognize","ko":"인식하다","reason":"동의어"},{"w":"ignore","ko":"무시하다","reason":"반의어"}],"collocBest":[{"en":"become aware gradually","ko":"점차 인식하게 되다"},{"en":"become aware of situation","ko":"상황을 깨닫다"}]},"nuance":{"koSimple":"안 보이던 게 문득 눈에 들어옴","whenToUse":"위험·문제·사실을 처음 알아차릴 때"},"krDetail":[{"ko":"인식","explain":"알아차림"}],"usageExamples":[{"en":"I became aware of my mistake.","ko":"나는 내 실수를 깨닫게 되었다."},{"en":"People became aware of the problem.","ko":"사람들이 그 문제를 인식하게 되었다."}],"grammarNote":"become aware of + 명사(~을 인식하다). aware는 형용사이므로 뒤에 전치사 of가 필수.","grammarQuiz":[{"sentence":"He became _____ _____ the serious problem.","ko":"그는 그 심각한 문제를 인식하게 되었다.","answer":["aware","of"],"hint":"aware 뒤 필수 전치사"}]},
+    {"id":"w00572","w":"become clear","pos":["v"],"ph":"/bɪˌkʌm ˈklɪər/","cefr":"B1","kr":["분명해지다","밝혀지다"],"ex":[{"en":"It became clear he was lying.","ko":"그가 거짓말하고 있다는 것이 분명해졌다."}],"mnemonic":{"soundHint":null,"story":"clear(맑은) 상태가 되다—'분명해지다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"emerge","ko":"드러나다","reason":"동의어"},{"w":"obvious","ko":"명백한","reason":"관련어"},{"w":"unclear","ko":"불분명한","reason":"반의어"}],"collocBest":[{"en":"become clear soon","ko":"곧 분명해지다"},{"en":"gradually become clear","ko":"점차 분명해지다"}]},"nuance":{"koSimple":"흐릿하던 안개가 걷혀 훤히 보임","whenToUse":"진실·상황·이유가 드러날 때"},"krDetail":[{"ko":"분명","explain":"뚜렷하고 확실함"}],"usageExamples":[{"en":"The reason became clear later.","ko":"그 이유는 나중에 분명해졌다."},{"en":"It became clear that she was right.","ko":"그녀가 옳았다는 것이 밝혀졌다."}],"grammarNote":"become + 형용사(2형식) 구조. It becomes clear that + 절 구문으로 자주 쓰인다.","grammarQuiz":[{"sentence":"It _____ _____ _____ he was hiding something.","ko":"그가 뭔가 숨기고 있다는 것이 분명해졌다.","answer":["became","clear","that"],"hint":"It becomes clear that + 절"}]},
+    {"id":"w00579","w":"before long","pos":["adv"],"ph":"/bɪˈfɔːr lɒŋ/","cefr":"B1","kr":["머지않아","곧"],"ex":[{"en":"Before long, spring will arrive.","ko":"머지않아 봄이 올 것이다."}],"mnemonic":{"soundHint":null,"story":"long(긴 시간) 이전에—시간이 길지 않아 '머지않아'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"soon","ko":"곧","reason":"동의어"},{"w":"shortly","ko":"곧","reason":"동의어"},{"w":"later","ko":"나중에","reason":"반의어"}],"collocBest":[{"en":"before long he'll return","ko":"머지않아 그가 돌아올 것이다"},{"en":"before long it changes","ko":"머지않아 바뀔 것이다"}]},"nuance":{"koSimple":"곧 다가올 미래, 얼마 안 있어","whenToUse":"가까운 미래의 변화를 예고할 때"},"krDetail":[{"ko":"머지않아","explain":"그리 오래지 않아"},{"ko":"곧","explain":"얼마 지나지 않아서"}],"usageExamples":[{"en":"Before long, the rain stopped.","ko":"머지않아 비가 그쳤다."},{"en":"He will arrive before long.","ko":"그는 곧 도착할 것이다."}],"grammarNote":"before long(머지않아, 곧)과 long before(오래 전에)는 어순만 다를 뿐 뜻이 정반대이므로 혼동 주의.","grammarQuiz":[{"sentence":"_____ _____, the students finished their homework.","ko":"머지않아 학생들은 숙제를 끝냈다.","answer":["Before","long"],"hint":"'머지않아, 곧'"}]},
     {"id":"w00586","w":"behave","pos":["v"],"ph":"/bɪˈheɪv/","cefr":"B1","kr":["행동하다","예의 바르게 굴다"],"ex":[{"en":"Behave yourself in class.","ko":"수업 중 예의 바르게 굴어라."}],"mnemonic":{"soundHint":null,"story":"behavior(행동)의 동사형—'행동하다'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"act","ko":"행동하다","reason":"동의어"},{"w":"conduct","ko":"처신하다","reason":"동의어"},{"w":"misbehave","ko":"버릇없이 굴다","reason":"반의어"}],"collocBest":[{"en":"behave well","ko":"잘 행동하다"},{"en":"behave properly","ko":"적절히 행동하다"}]},"nuance":{"koSimple":"누가 보든 안 보든 하는 모든 몸짓","whenToUse":"예의범절, 아이 태도를 말할 때"},"krDetail":[{"ko":"행동","explain":"몸을 움직여 하는 짓"},{"ko":"예의","explain":"지켜야 할 바른 태도"}],"usageExamples":[{"en":"The kind teacher behaved the noisy students well.","ko":"친절한 선생님은 시끄러운 학생들이 잘 행동하게 하셨다."},{"en":"You should behave politely in front of guests.","ko":"너는 손님들 앞에서 예의 바르게 행동해야 한다."}],"grammarNote":"재귀대명사와 함께 behave oneself로 쓰면 '예의 바르게 행동하다'라는 뜻이 된다.","grammarQuiz":[{"sentence":"Please _____ _____ during the school ceremony.","ko":"학교 행사 중에 예의 바르게 행동해 주세요.","answer":["behave","yourself"],"hint":"behave + 재귀대명사"}]},
-    {"id":"w00587","w":"behavior","pos":["n"],"ph":"/bɪˈheɪvjər/","cefr":"B1","kr":["행동","행위"],"ex":[{"en":"His behavior was odd.","ko":"그의 행동은 이상했다."}],"mnemonic":{"soundHint":null,"story":"behave(행동하다) + -ior—'행동'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"conduct","ko":"행실","reason":"동의어"},{"w":"manner","ko":"태도","reason":"동의어"},{"w":"action","ko":"행동","reason":"관련어"}],"collocBest":[{"en":"good behavior","ko":"올바른 행동"},{"en":"human behavior","ko":"인간 행동"}]},"nuance":{"koSimple":"겉으로 드러나는 행동 패턴","whenToUse":"사람·동물의 행동 방식이나 습관을 말할 때"},"krDetail":[{"ko":"행동","explain":"몸을 움직여 하는 짓"},{"ko":"행위","explain":"사람이 하는 짓"}],"usageExamples":null,"grammarNote":"미국은 behavior, 영국은 behaviour로 철자가 다르다. 불가산명사로 취급하므로 복수형·부정관사 사용에 주의.","grammarQuiz":[{"sentence":"In Britain, people spell it as _____.","ko":"영국에서는 그것을 behaviour로 표기한다.","answer":["behaviour"],"hint":"'행동'의 영국식 철자"}]},
-    {"id":"w00593","w":"beige","pos":["adj","n"],"ph":"/beɪʒ/","cefr":"B1","kr":["베이지색의","베이지색"],"ex":[{"en":"She wore a beige coat.","ko":"그녀는 베이지색 코트를 입었다."}],"mnemonic":{"soundHint":"'베이지색'—패션에서 쓰는 그 부드러운 살구빛.","story":null,"hintConfidence":3},"pairs":{"buddyWords":[{"w":"cream","ko":"크림색","reason":"동의어"},{"w":"tan","ko":"황갈색","reason":"동의어"},{"w":"ivory","ko":"아이보리","reason":"유사 색상"}],"collocBest":[{"en":"beige color","ko":"베이지색"},{"en":"beige wall","ko":"베이지색 벽"}]},"nuance":{"koSimple":"우유에 커피 한 방울 탄 듯한 부드러운 갈색","whenToUse":"옷·벽·인테리어의 은은한 색을 말할 때"},"krDetail":null,"usageExamples":null,"grammarNote":null,"grammarQuiz":null},
-    {"id":"w00594","w":"being aware","pos":["v"],"ph":"/ˌbiːɪŋ əˈweər/","cefr":"B1","kr":["인식하는 것","알고 있는 상태"],"ex":[{"en":"Being aware is very important.","ko":"인식하는 것이 매우 중요하다."}],"mnemonic":{"soundHint":null,"story":"be aware(인식하다)의 -ing 형태—'인식하는 것'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"conscious","ko":"의식하는","reason":"동의어"},{"w":"knowing","ko":"알고 있는","reason":"동의어"},{"w":"unaware","ko":"모르는","reason":"반의어"}],"collocBest":[{"en":"being aware of risks","ko":"위험을 인식하는 것"},{"en":"being aware of surroundings","ko":"주변 상황을 파악하는 것"}]},"nuance":{"koSimple":"레이더처럼 주변을 계속 감지하는 상태","whenToUse":"위험·상황을 알아차리고 있음을 강조할 때"},"krDetail":[{"ko":"인식","explain":"알아차림"}],"usageExamples":null,"grammarNote":"being은 be동사의 -ing형(동명사/분사). 문장 주어로 쓰이면 '~인 것', 분사구문으로 쓰이면 '~이므로'의 뜻.","grammarQuiz":[{"sentence":"_____ _____ of the danger, she ran away fast.","ko":"위험을 알고 있었기에 그녀는 재빨리 도망갔다.","answer":["Being","aware"],"hint":"분사구문: '~이므로'"}]},
-    {"id":"w00596","w":"belief","pos":["n"],"ph":"/bɪˈliːf/","cefr":"B1","kr":["믿음","신념"],"ex":[{"en":"It's my firm belief.","ko":"그것은 나의 굳은 믿음이다."}],"mnemonic":{"soundHint":null,"story":"believe(믿다)의 명사형—'믿음'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"faith","ko":"신앙","reason":"동의어"},{"w":"conviction","ko":"확신","reason":"동의어"},{"w":"doubt","ko":"의심","reason":"반의어"}],"collocBest":[{"en":"strong belief","ko":"강한 믿음"},{"en":"belief system","ko":"신념 체계"}]},"nuance":{"koSimple":"마음속에 굳게 자리잡은 확신","whenToUse":"신념·종교적 믿음을 말할 때"},"krDetail":[{"ko":"믿음","explain":"굳게 그렇다고 여김"},{"ko":"신념","explain":"굳게 믿는 생각"}],"usageExamples":null,"grammarNote":"명사는 belief, 동사는 believe로 철자가 다르다(f↔v). 복수형은 beliefs(*believes는 동사).","grammarQuiz":[{"sentence":"People have different _____ about life and death.","ko":"사람들은 삶과 죽음에 대해 다른 믿음들을 가진다.","answer":["beliefs"],"hint":"belief의 복수형(f→s)"}]},
-    {"id":"w00606","w":"below average","pos":["adj"],"ph":"/bɪˌloʊ ˈævərɪdʒ/","cefr":"B1","kr":["평균 이하의","부진한"],"ex":[{"en":"His scores were below average.","ko":"그의 점수는 평균 이하였다."}],"mnemonic":{"soundHint":null,"story":"average(평균) 아래(below)—'평균 이하의'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"subpar","ko":"기준 이하의","reason":"동의어"},{"w":"mediocre","ko":"보통 이하의","reason":"동의어"},{"w":"excellent","ko":"훌륭한","reason":"반의어"}],"collocBest":[{"en":"below average performance","ko":"평균 이하 성과"},{"en":"below average score","ko":"평균 이하 점수"}]},"nuance":{"koSimple":"평균선 밑으로 살짝 처진 성적","whenToUse":"점수·성과가 기대에 못 미칠 때"},"krDetail":[{"ko":"평균","explain":"여럿의 중간 값"},{"ko":"부진","explain":"잘 되지 않음"}],"usageExamples":null,"grammarNote":null,"grammarQuiz":null},
-    {"id":"w00615","w":"beneath","pos":["prep","adv"],"ph":"/bɪˈniːθ/","cefr":"B1","kr":["~아래에","~에 못 미치는"],"ex":[{"en":"He sat beneath the tree.","ko":"그는 나무 아래 앉았다."}],"mnemonic":{"soundHint":null,"story":"be + neath(아래)—'~아래에'. under와 유사.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"under","ko":"아래에","reason":"동의어"},{"w":"below","ko":"아래에","reason":"동의어"},{"w":"above","ko":"위에","reason":"반의어"}],"collocBest":[{"en":"beneath the surface","ko":"표면 아래"},{"en":"beneath dignity","ko":"체면에 어긋나는"}]},"nuance":{"koSimple":"'그 아래로 쏙' 숨어 들어간 위치","whenToUse":"표면·나무·문서 아래를 말할 때"},"krDetail":null,"usageExamples":null,"grammarNote":"beneath, below, under 모두 '~아래'지만, beneath는 문어체·비유적 표현(beneath dignity 등)에 자주 쓰인다.","grammarQuiz":[{"sentence":"Such rude words are _____ his dignity.","ko":"그런 무례한 말은 그의 품위에 못 미친다.","answer":["beneath"],"hint":"'~에 못 미치는' 문어체 전치사"}]},
+    {"id":"w00587","w":"behavior","pos":["n"],"ph":"/bɪˈheɪvjər/","cefr":"B1","kr":["행동","행위"],"ex":[{"en":"His behavior was odd.","ko":"그의 행동은 이상했다."}],"mnemonic":{"soundHint":null,"story":"behave(행동하다) + -ior—'행동'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"conduct","ko":"행실","reason":"동의어"},{"w":"manner","ko":"태도","reason":"동의어"},{"w":"action","ko":"행동","reason":"관련어"}],"collocBest":[{"en":"good behavior","ko":"올바른 행동"},{"en":"human behavior","ko":"인간 행동"}]},"nuance":{"koSimple":"겉으로 드러나는 행동 패턴","whenToUse":"사람·동물의 행동 방식이나 습관을 말할 때"},"krDetail":[{"ko":"행동","explain":"몸을 움직여 하는 짓"},{"ko":"행위","explain":"사람이 하는 짓"}],"usageExamples":[{"en":"His behavior improved a lot.","ko":"그의 행동이 많이 좋아졌다."},{"en":"The teacher praised her good behavior.","ko":"선생님은 그녀의 바른 행동을 칭찬했다."}],"grammarNote":"미국은 behavior, 영국은 behaviour로 철자가 다르다. 불가산명사로 취급하므로 복수형·부정관사 사용에 주의.","grammarQuiz":[{"sentence":"In Britain, people spell it as _____.","ko":"영국에서는 그것을 behaviour로 표기한다.","answer":["behaviour"],"hint":"'행동'의 영국식 철자"}]},
+    {"id":"w00593","w":"beige","pos":["adj","n"],"ph":"/beɪʒ/","cefr":"B1","kr":["베이지색의","베이지색"],"ex":[{"en":"She wore a beige coat.","ko":"그녀는 베이지색 코트를 입었다."}],"mnemonic":{"soundHint":"'베이지색'—패션에서 쓰는 그 부드러운 살구빛.","story":null,"hintConfidence":3},"pairs":{"buddyWords":[{"w":"cream","ko":"크림색","reason":"동의어"},{"w":"tan","ko":"황갈색","reason":"동의어"},{"w":"ivory","ko":"아이보리","reason":"유사 색상"}],"collocBest":[{"en":"beige color","ko":"베이지색"},{"en":"beige wall","ko":"베이지색 벽"}]},"nuance":{"koSimple":"우유에 커피 한 방울 탄 듯한 부드러운 갈색","whenToUse":"옷·벽·인테리어의 은은한 색을 말할 때"},"krDetail":[{"ko":"베이지색의","explain":"연한 황갈색을 띤"},{"ko":"베이지색","explain":"은은한 황갈색"}],"usageExamples":[{"en":"The walls are painted beige.","ko":"그 벽은 베이지색으로 칠해져 있다."},{"en":"Beige goes well with many colors.","ko":"베이지색은 많은 색과 잘 어울린다."}],"grammarNote":"형용사(베이지색의)와 명사(베이지색) 모두로 쓰인다. 발음은 [베이지]이며 프랑스어에서 온 단어다.","grammarQuiz":null},
+    {"id":"w00594","w":"being aware","pos":["v"],"ph":"/ˌbiːɪŋ əˈweər/","cefr":"B1","kr":["인식하는 것","알고 있는 상태"],"ex":[{"en":"Being aware is very important.","ko":"인식하는 것이 매우 중요하다."}],"mnemonic":{"soundHint":null,"story":"be aware(인식하다)의 -ing 형태—'인식하는 것'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"conscious","ko":"의식하는","reason":"동의어"},{"w":"knowing","ko":"알고 있는","reason":"동의어"},{"w":"unaware","ko":"모르는","reason":"반의어"}],"collocBest":[{"en":"being aware of risks","ko":"위험을 인식하는 것"},{"en":"being aware of surroundings","ko":"주변 상황을 파악하는 것"}]},"nuance":{"koSimple":"레이더처럼 주변을 계속 감지하는 상태","whenToUse":"위험·상황을 알아차리고 있음을 강조할 때"},"krDetail":[{"ko":"인식","explain":"알아차림"}],"usageExamples":[{"en":"Being aware of risks keeps us safe.","ko":"위험을 인식하는 것이 우리를 안전하게 한다."},{"en":"Being aware of others is kind.","ko":"다른 사람을 의식하는 것은 다정한 일이다."}],"grammarNote":"being은 be동사의 -ing형(동명사/분사). 문장 주어로 쓰이면 '~인 것', 분사구문으로 쓰이면 '~이므로'의 뜻.","grammarQuiz":[{"sentence":"_____ _____ of the danger, she ran away fast.","ko":"위험을 알고 있었기에 그녀는 재빨리 도망갔다.","answer":["Being","aware"],"hint":"분사구문: '~이므로'"}]},
+    {"id":"w00596","w":"belief","pos":["n"],"ph":"/bɪˈliːf/","cefr":"B1","kr":["믿음","신념"],"ex":[{"en":"It's my firm belief.","ko":"그것은 나의 굳은 믿음이다."}],"mnemonic":{"soundHint":null,"story":"believe(믿다)의 명사형—'믿음'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"faith","ko":"신앙","reason":"동의어"},{"w":"conviction","ko":"확신","reason":"동의어"},{"w":"doubt","ko":"의심","reason":"반의어"}],"collocBest":[{"en":"strong belief","ko":"강한 믿음"},{"en":"belief system","ko":"신념 체계"}]},"nuance":{"koSimple":"마음속에 굳게 자리잡은 확신","whenToUse":"신념·종교적 믿음을 말할 때"},"krDetail":[{"ko":"믿음","explain":"굳게 그렇다고 여김"},{"ko":"신념","explain":"굳게 믿는 생각"}],"usageExamples":[{"en":"She has a strong belief in herself.","ko":"그녀는 자신에 대한 강한 믿음이 있다."},{"en":"It is a common belief among students.","ko":"그것은 학생들 사이의 흔한 믿음이다."}],"grammarNote":"명사는 belief, 동사는 believe로 철자가 다르다(f↔v). 복수형은 beliefs(*believes는 동사).","grammarQuiz":[{"sentence":"People have different _____ about life and death.","ko":"사람들은 삶과 죽음에 대해 다른 믿음들을 가진다.","answer":["beliefs"],"hint":"belief의 복수형(f→s)"}]},
+    {"id":"w00606","w":"below average","pos":["adj"],"ph":"/bɪˌloʊ ˈævərɪdʒ/","cefr":"B1","kr":["평균 이하의","부진한"],"ex":[{"en":"His scores were below average.","ko":"그의 점수는 평균 이하였다."}],"mnemonic":{"soundHint":null,"story":"average(평균) 아래(below)—'평균 이하의'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"subpar","ko":"기준 이하의","reason":"동의어"},{"w":"mediocre","ko":"보통 이하의","reason":"동의어"},{"w":"excellent","ko":"훌륭한","reason":"반의어"}],"collocBest":[{"en":"below average performance","ko":"평균 이하 성과"},{"en":"below average score","ko":"평균 이하 점수"}]},"nuance":{"koSimple":"평균선 밑으로 살짝 처진 성적","whenToUse":"점수·성과가 기대에 못 미칠 때"},"krDetail":[{"ko":"평균","explain":"여럿의 중간 값"},{"ko":"부진","explain":"잘 되지 않음"}],"usageExamples":[{"en":"This month's sales were below average.","ko":"이번 달 매출은 평균 이하였다."},{"en":"The temperature is below average today.","ko":"오늘 기온은 평균보다 낮다."}],"grammarNote":"전치사 below(~아래로)와 명사 average(평균)가 합쳐진 표현이다. 반대말은 above average(평균 이상의)이다.","grammarQuiz":null},
+    {"id":"w00615","w":"beneath","pos":["prep","adv"],"ph":"/bɪˈniːθ/","cefr":"B1","kr":["~아래에","~에 못 미치는"],"ex":[{"en":"He sat beneath the tree.","ko":"그는 나무 아래 앉았다."}],"mnemonic":{"soundHint":null,"story":"be + neath(아래)—'~아래에'. under와 유사.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"under","ko":"아래에","reason":"동의어"},{"w":"below","ko":"아래에","reason":"동의어"},{"w":"above","ko":"위에","reason":"반의어"}],"collocBest":[{"en":"beneath the surface","ko":"표면 아래"},{"en":"beneath dignity","ko":"체면에 어긋나는"}]},"nuance":{"koSimple":"'그 아래로 쏙' 숨어 들어간 위치","whenToUse":"표면·나무·문서 아래를 말할 때"},"krDetail":[{"ko":"~아래에","explain":"무언가의 바로 밑에"},{"ko":"~에 못 미치는","explain":"수준이나 격에 안 맞는"}],"usageExamples":[{"en":"The cat hid beneath the bed.","ko":"그 고양이는 침대 아래에 숨었다."},{"en":"Such rudeness is beneath him.","ko":"그런 무례함은 그에게 어울리지 않는다."}],"grammarNote":"beneath, below, under 모두 '~아래'지만, beneath는 문어체·비유적 표현(beneath dignity 등)에 자주 쓰인다.","grammarQuiz":[{"sentence":"Such rude words are _____ his dignity.","ko":"그런 무례한 말은 그의 품위에 못 미친다.","answer":["beneath"],"hint":"'~에 못 미치는' 문어체 전치사"}]},
     {"id":"w00617","w":"benefit","pos":["n","v"],"ph":"/ˈbɛnɪfɪt/","cefr":"B1","kr":["이점","혜택"],"ex":[{"en":"Exercise has many benefits.","ko":"운동은 많은 이점이 있다."}],"mnemonic":{"soundHint":null,"story":"bene-(좋은) + fit(맞다)—좋게 맞으니 '이점'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"advantage","ko":"이점","reason":"동의어"},{"w":"gain","ko":"이익","reason":"동의어"},{"w":"disadvantage","ko":"불리한 점","reason":"반의어"}],"collocBest":[{"en":"for the benefit of","ko":"~을 위하여"},{"en":"benefit from","ko":"~에서 이익을 얻다"}]},"nuance":{"koSimple":"이거 하면 나한테 좋은 점이 딱","whenToUse":"운동·제도·투자로 얻는 이득을 말할 때"},"krDetail":[{"ko":"이점","explain":"좋은 점"},{"ko":"혜택","explain":"고맙게 받는 도움"}],"usageExamples":[{"en":"Daily exercise benefits both our body and mind.","ko":"매일 하는 운동은 우리의 몸과 마음 모두에 이롭다."},{"en":"Many students were benefited by the free program.","ko":"많은 학생들이 그 무료 프로그램으로 혜택을 받았다."}],"grammarNote":"동사 활용은 benefit-benefited-benefited(영국: benefitted도 가능). benefit from(~에서 이익을 얻다) 전치사 주의.","grammarQuiz":[{"sentence":"Many students _____ _____ this program every year.","ko":"많은 학생들이 매년 이 프로그램에서 이익을 얻는다.","answer":["benefit","from"],"hint":"'~에서 이익을 얻다' 전치사"}]},
-    {"id":"w00626","w":"berry","pos":["n"],"ph":"/ˈbɛri/","cefr":"B1","kr":["베리","열매"],"ex":[{"en":"Wild berries grow in abundance in the forest.","ko":"야생 베리는 숲에 풍부하게 자란다."}],"mnemonic":{"soundHint":"'블루베리, 스트로베리'의 그 '베리'—작은 열매.","story":null,"hintConfidence":3},"pairs":{"buddyWords":[{"w":"fruit","ko":"과일","reason":"상위어"},{"w":"blueberry","ko":"블루베리","reason":"복합어"},{"w":"strawberry","ko":"딸기","reason":"복합어"}],"collocBest":[{"en":"wild berry","ko":"야생 베리"},{"en":"ripe berry","ko":"잘 익은 열매"}]},"nuance":{"koSimple":"작고 동글동글 톡톡 터지는 열매","whenToUse":"블루베리·라즈베리·딸기류 열매를 말할 때"},"krDetail":null,"usageExamples":null,"grammarNote":null,"grammarQuiz":null},
-    {"id":"w00629","w":"besides","pos":["prep","adv"],"ph":"/bɪˈsaɪdz/","cefr":"B1","kr":["게다가","~외에도"],"ex":[{"en":"Besides that, he lied.","ko":"게다가 그는 거짓말을 했다."}],"mnemonic":{"soundHint":null,"story":"beside(옆에)의 확장—'옆에도, 게다가'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"moreover","ko":"더욱이","reason":"동의어"},{"w":"furthermore","ko":"게다가","reason":"동의어"},{"w":"also","ko":"또한","reason":"동의어"}],"collocBest":[{"en":"besides that","ko":"그 외에도"},{"en":"nothing besides","ko":"그 외엔 아무것도"}]},"nuance":{"koSimple":"이미 있는 것에 하나 더 얹는 느낌","whenToUse":"이유나 사실을 하나 더 덧붙일 때"},"krDetail":null,"usageExamples":null,"grammarNote":"besides(~외에도, 게다가)와 beside(~옆에)는 s 하나 차이로 뜻이 완전히 다르다. 시험 단골 함정.","grammarQuiz":[{"sentence":"_____ math, she also teaches science well.","ko":"수학 외에도 그녀는 과학도 잘 가르친다.","answer":["Besides"],"hint":"'~외에도' (beside와 s 하나 차이)"}]},
-    {"id":"w00247","w":"amplifier","pos":["n"],"ph":"/ˈæmplɪfaɪər/","cefr":"B1","kr":["증폭기","앰프","확성기"],"ex":[{"en":"The guitarist plugged his guitar into the amplifier.","ko":"기타리스트는 기타를 앰프에 연결했다."}],"mnemonic":{"soundHint":"'앰플리파이어' - 앰프(amp)! 소리 크게!","story":"'앰플리파이어' 앰프(amp)로 기타 소리를 앰~! 확 키운다!","hintConfidence":3},"pairs":{"buddyWords":[{"w":"guitar","ko":"기타","reason":"guitar amplifier(기타 앰프) 콜로케이션 핵심"},{"w":"speaker","ko":"스피커","reason":"amplifier의 관련어, 음향 계열"},{"w":"volume","ko":"음량","reason":"amplifier의 핵심 기능, 시나리오 자연"}],"collocBest":[{"en":"guitar amplifier","ko":"기타 앰프"},{"en":"turn up the amplifier","ko":"앰프 볼륨을 높이다"}]},"nuance":{"koSimple":"작은 소리를 크게 키우는 기계","whenToUse":"기타, 마이크, 공연 음향 장비를 말할 때"},"krDetail":[{"ko":"증폭기","explain":"소리나 신호를 더 크게 키워 주는 기계"},{"ko":"확성기","explain":"소리를 크게 하여 멀리 들리게 하는 기구"}],"usageExamples":null,"grammarNote":null,"grammarQuiz":null},
-    {"id":"w00503","w":"barley","pos":["n"],"ph":"/ˈbɑːrli/","cefr":"B1","kr":["보리"],"ex":[{"en":"Barley is commonly used in soups and bread.","ko":"보리는 수프와 빵에 흔히 사용된다."}],"mnemonic":{"soundHint":null,"story":"할머니는 여름이면 시원한 보리차를 큰 주전자에 우려 주셨다.","hintConfidence":1},"pairs":{"buddyWords":[{"w":"grain","ko":"곡물","reason":"barley는 grain의 한 종류"},{"w":"soup","ko":"수프","reason":"barley soup 콜로케이션의 짝"},{"w":"field","ko":"밭","reason":"barley field도 자주 등장"}],"collocBest":[{"en":"barley soup","ko":"보리 수프"}]},"nuance":{"koSimple":"수염 달린 낟알, 보리차의 그 곡물","whenToUse":"보리차, 보리밥, 보리 수프 이야기할 때"},"krDetail":null,"usageExamples":null,"grammarNote":null,"grammarQuiz":null},
-    {"id":"w00013","w":"abnormal","pos":["adj"],"ph":"/æbˈnɔːrməl/","cefr":"B1","kr":["비정상적인","이상한"],"ex":[{"en":"The test results were abnormal.","ko":"검사 결과가 비정상적이었다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"behavior","ko":"행동","reason":"abnormal behavior(비정상적 행동) 대표 콜로케이션"},{"w":"unusual","ko":"이상한","reason":"abnormal의 대표 동의어, 함께 외우기 자연"},{"w":"normal","ko":"정상적인","reason":"ab-접두사 반의어, 정상↔비정상 대비"}],"collocBest":[{"en":"abnormal behavior","ko":"비정상적인 행동"},{"en":"abnormal weather","ko":"이상 기후"}]},"nuance":{"koSimple":"평소랑 달라서 좀 이상한 상태","whenToUse":"정상 범위를 벗어난 검사 결과나 행동을 말할 때"},"krDetail":[{"ko":"비정상적인","explain":"보통과 다르게 어긋난"},{"ko":"이상한","explain":"평소와 달라 낯설고 별난"}],"usageExamples":null,"grammarNote":null,"grammarQuiz":null},
-    {"id":"w00439","w":"back and forth","pos":["adv","adj"],"ph":"/ˌbæk ən ˈfɔːrθ/","cefr":"B1","kr":["왔다 갔다","앞뒤로"],"ex":[{"en":"The pendulum swings back and forth.","ko":"진자가 앞뒤로 흔들린다."}],"mnemonic":{"soundHint":null,"story":"고민이 많을 때 나는 방 안을 왔다 갔다 하며 생각을 정리한다.","hintConfidence":1},"pairs":{"buddyWords":[{"w":"debate","ko":"논쟁","reason":"back-and-forth debate가 자연스러운 조합"},{"w":"pace","ko":"서성이다","reason":"back and forth 움직임의 대표 동사"},{"w":"repeatedly","ko":"반복적으로","reason":"back and forth의 대표 동의어"}],"collocBest":[{"en":"go back and forth","ko":"왔다 갔다 하다"},{"en":"back-and-forth debate","ko":"앞뒤로 오가는 토론"}]},"nuance":{"koSimple":"시계추처럼 앞뒤로 왔다 갔다","whenToUse":"진자, 대화, 이동이 반복될 때"},"krDetail":null,"usageExamples":null,"grammarNote":null,"grammarQuiz":null},
-    {"id":"w00387","w":"atmosphere","pos":["n"],"ph":"/ˈætməsfɪər/","cefr":"B1","kr":["대기","분위기"],"ex":[{"en":"The restaurant had a warm atmosphere.","ko":"그 식당은 따뜻한 분위기를 가지고 있었다."}],"mnemonic":{"soundHint":null,"story":"카페의 은은한 조명이 편안한 atmosphere를 만들어 냈다.","hintConfidence":0},"pairs":{"buddyWords":[{"w":"ambiance","ko":"분위기","reason":"atmosphere의 '분위기' 뜻과 완전히 겹치는 동의어"},{"w":"Earth","ko":"지구","reason":"Earth's atmosphere 콜로케이션의 짝 명사"},{"w":"mood","ko":"기분, 분위기","reason":"create an atmosphere 시나리오에서 자주 대체된다"}],"collocBest":[{"en":"create an atmosphere","ko":"분위기를 만들다"},{"en":"Earth's atmosphere","ko":"지구의 대기"}]},"nuance":{"koSimple":"지구를 감싼 공기 또는 그 자리의 기운","whenToUse":"과학적 대기, 카페의 분위기를 말할 때"},"krDetail":[{"ko":"대기","explain":"지구를 둘러싼 공기"},{"ko":"분위기","explain":"어떤 자리에서 느껴지는 기분"}],"usageExamples":null,"grammarNote":null,"grammarQuiz":null},
-    {"id":"w00440","w":"back away","pos":["v"],"ph":"/bæk əˈweɪ/","cefr":"B1","kr":["물러나다","뒤로 물러서다"],"ex":[{"en":"She backed away from the danger.","ko":"그녀는 위험에서 물러났다."}],"mnemonic":{"soundHint":null,"story":"길에서 낯선 개를 보자 나는 조심스럽게 뒤로 물러섰다.","hintConfidence":1},"pairs":{"buddyWords":[{"w":"retreat","ko":"후퇴하다","reason":"back away의 정확한 동의어"},{"w":"conflict","ko":"갈등","reason":"back away from conflict가 대표 조합"},{"w":"approach","ko":"다가가다","reason":"back away의 정확한 반의어"}],"collocBest":[{"en":"back away slowly","ko":"천천히 물러나다"},{"en":"back away from conflict","ko":"갈등을 피해 물러나다"}]},"nuance":{"koSimple":"놀라서 뒷걸음질로 슬금슬금 물러섬","whenToUse":"위험한 동물이나 무서운 상황에서 뒤로 뺄 때"},"krDetail":null,"usageExamples":null,"grammarNote":"back away는 자동사구로 목적어를 직접 취하지 않습니다. 대상은 from 뒤에 씁니다. 예: He backed away from the dog.","grammarQuiz":[{"sentence":"The little boy slowly _____ _____ _____ the barking dog.","ko":"그 어린 소년은 짖는 개로부터 천천히 물러났다.","answer":["backed","away","from"],"hint":"back away는 자동사구, 대상은 from"}]},
-    {"id":"w00461","w":"badge","pos":["n","v"],"ph":"/bædʒ/","cefr":"B1","kr":["배지","표시"],"ex":[{"en":"She wore her badge proudly.","ko":"그녀는 배지를 자랑스럽게 달았다."}],"mnemonic":{"soundHint":"배지","story":"학교 축제날 도우미들은 가슴에 이름 배지를 달고 안내를 도왔다.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"name","ko":"이름","reason":"name badge가 대표 콜로케이션"},{"w":"emblem","ko":"휘장","reason":"badge의 대표 동의어"},{"w":"police","ko":"경찰","reason":"police badge는 대표 조합"}],"collocBest":[{"en":"name badge","ko":"이름표"},{"en":"wear a badge","ko":"배지를 달다"}]},"nuance":{"koSimple":"가슴에 다는 이름표나 상징 마크","whenToUse":"경찰 신분증, 이름표, 게임 뱃지를 말할 때"},"krDetail":[{"ko":"표시","explain":"겉(表)에 보이는 것(示) → 눈에 띄게 나타내 보이는 것"}],"usageExamples":null,"grammarNote":null,"grammarQuiz":null},
-    {"id":"w00478","w":"ban","pos":["v","n"],"ph":"/bæn/","cefr":"B1","kr":["금지하다","금지"],"ex":[{"en":"The city banned smoking.","ko":"시는 흡연을 금지했다."}],"mnemonic":{"soundHint":null,"story":"정부는 실내 흡연을 강력하게 금지하는 새 법을 시행했다.","hintConfidence":1},"pairs":{"buddyWords":[{"w":"prohibit","ko":"금하다","reason":"ban의 대표 동의어"},{"w":"smoking","ko":"흡연","reason":"smoking ban은 대표 조합"},{"w":"permit","ko":"허용하다","reason":"ban의 정확한 반의어"}],"collocBest":[{"en":"ban on","ko":"~에 대한 금지"},{"en":"impose a ban","ko":"금지령을 내리다"}]},"nuance":{"koSimple":"'하지 마' 도장을 쾅 찍어 못하게 함","whenToUse":"흡연, 무기, 규정 위반을 금지할 때"},"krDetail":[{"ko":"금지","explain":"금(禁)하여 그치게(止) 함 → 하지 못하게 막음"}],"usageExamples":null,"grammarNote":"ban은 타동사로 목적어를 바로 취하거나, ban A from -ing 형태로 씁니다. 예: The school banned students from using phones. p.p.형은 자음 반복 → banned.","grammarQuiz":[{"sentence":"Our school has _____ students _____ _____ mobile phones during class.","ko":"우리 학교는 학생들이 수업 중에 휴대전화를 사용하는 것을 금지했다.","answer":["banned","from","using"],"hint":"ban A from -ing (n반복 주의)"}]}
+    {"id":"w00626","w":"berry","pos":["n"],"ph":"/ˈbɛri/","cefr":"B1","kr":["베리","열매"],"ex":[{"en":"Wild berries grow in abundance in the forest.","ko":"야생 베리는 숲에 풍부하게 자란다."}],"mnemonic":{"soundHint":"'블루베리, 스트로베리'의 그 '베리'—작은 열매.","story":null,"hintConfidence":3},"pairs":{"buddyWords":[{"w":"fruit","ko":"과일","reason":"상위어"},{"w":"blueberry","ko":"블루베리","reason":"복합어"},{"w":"strawberry","ko":"딸기","reason":"복합어"}],"collocBest":[{"en":"wild berry","ko":"야생 베리"},{"en":"ripe berry","ko":"잘 익은 열매"}]},"nuance":{"koSimple":"작고 동글동글 톡톡 터지는 열매","whenToUse":"블루베리·라즈베리·딸기류 열매를 말할 때"},"krDetail":[{"ko":"베리","explain":"즙 많은 작은 과일"},{"ko":"열매","explain":"작고 둥근 씨 있는 과실"}],"usageExamples":[{"en":"Birds love to eat red berries.","ko":"새들은 빨간 열매 먹기를 좋아한다."},{"en":"She picked berries in the garden.","ko":"그녀는 정원에서 베리를 땄다."}],"grammarNote":"복수형은 y를 i로 바꾸고 -es를 붙여 berries가 된다. strawberry, blueberry처럼 합성어의 끝에 자주 붙는다.","grammarQuiz":null},
+    {"id":"w00629","w":"besides","pos":["prep","adv"],"ph":"/bɪˈsaɪdz/","cefr":"B1","kr":["게다가","~외에도"],"ex":[{"en":"Besides that, he lied.","ko":"게다가 그는 거짓말을 했다."}],"mnemonic":{"soundHint":null,"story":"beside(옆에)의 확장—'옆에도, 게다가'.","hintConfidence":2},"pairs":{"buddyWords":[{"w":"moreover","ko":"더욱이","reason":"동의어"},{"w":"furthermore","ko":"게다가","reason":"동의어"},{"w":"also","ko":"또한","reason":"동의어"}],"collocBest":[{"en":"besides that","ko":"그 외에도"},{"en":"nothing besides","ko":"그 외엔 아무것도"}]},"nuance":{"koSimple":"이미 있는 것에 하나 더 얹는 느낌","whenToUse":"이유나 사실을 하나 더 덧붙일 때"},"krDetail":[{"ko":"게다가","explain":"그에 더해서 말하면"},{"ko":"~외에도","explain":"그것 말고 또"}],"usageExamples":[{"en":"It's late. Besides, I'm tired.","ko":"늦었어. 게다가 나는 피곤해."},{"en":"Besides English, she speaks French.","ko":"영어 외에도 그녀는 프랑스어를 한다."}],"grammarNote":"besides(~외에도, 게다가)와 beside(~옆에)는 s 하나 차이로 뜻이 완전히 다르다. 시험 단골 함정.","grammarQuiz":[{"sentence":"_____ math, she also teaches science well.","ko":"수학 외에도 그녀는 과학도 잘 가르친다.","answer":["Besides"],"hint":"'~외에도' (beside와 s 하나 차이)"}]},
+    {"id":"w00247","w":"amplifier","pos":["n"],"ph":"/ˈæmplɪfaɪər/","cefr":"B1","kr":["증폭기","앰프","확성기"],"ex":[{"en":"The guitarist plugged his guitar into the amplifier.","ko":"기타리스트는 기타를 앰프에 연결했다."}],"mnemonic":{"soundHint":"'앰플리파이어' - 앰프(amp)! 소리 크게!","story":"'앰플리파이어' 앰프(amp)로 기타 소리를 앰~! 확 키운다!","hintConfidence":3},"pairs":{"buddyWords":[{"w":"guitar","ko":"기타","reason":"guitar amplifier(기타 앰프) 콜로케이션 핵심"},{"w":"speaker","ko":"스피커","reason":"amplifier의 관련어, 음향 계열"},{"w":"volume","ko":"음량","reason":"amplifier의 핵심 기능, 시나리오 자연"}],"collocBest":[{"en":"guitar amplifier","ko":"기타 앰프"},{"en":"turn up the amplifier","ko":"앰프 볼륨을 높이다"}]},"nuance":{"koSimple":"작은 소리를 크게 키우는 기계","whenToUse":"기타, 마이크, 공연 음향 장비를 말할 때"},"krDetail":[{"ko":"증폭기","explain":"소리나 신호를 더 크게 키워 주는 기계"},{"ko":"확성기","explain":"소리를 크게 하여 멀리 들리게 하는 기구"}],"usageExamples":[{"en":"He turned up the amplifier to play louder.","ko":"그는 더 크게 연주하려고 증폭기를 키웠다."},{"en":"The singer needs a good amplifier on stage.","ko":"그 가수는 무대에서 좋은 앰프가 필요하다."}],"grammarNote":"동사 amplify(증폭하다)에 기계를 뜻하는 -er이 붙은 명사이다. 셀 수 있는 명사이다.","grammarQuiz":null},
+    {"id":"w00503","w":"barley","pos":["n"],"ph":"/ˈbɑːrli/","cefr":"B1","kr":["보리"],"ex":[{"en":"Barley is commonly used in soups and bread.","ko":"보리는 수프와 빵에 흔히 사용된다."}],"mnemonic":{"soundHint":null,"story":"할머니는 여름이면 시원한 보리차를 큰 주전자에 우려 주셨다.","hintConfidence":1},"pairs":{"buddyWords":[{"w":"grain","ko":"곡물","reason":"barley는 grain의 한 종류"},{"w":"soup","ko":"수프","reason":"barley soup 콜로케이션의 짝"},{"w":"field","ko":"밭","reason":"barley field도 자주 등장"}],"collocBest":[{"en":"barley soup","ko":"보리 수프"}]},"nuance":{"koSimple":"수염 달린 낟알, 보리차의 그 곡물","whenToUse":"보리차, 보리밥, 보리 수프 이야기할 때"},"krDetail":[{"ko":"보리","explain":"곡식의 한 종류"}],"usageExamples":[{"en":"Farmers grow barley in this region.","ko":"농부들은 이 지역에서 보리를 재배한다."},{"en":"This tea is made from roasted barley.","ko":"이 차는 볶은 보리로 만든다."}],"grammarNote":"barley는 셀 수 없는 명사로 발음이 비슷한 barely(간신히)와 혼동하지 않도록 주의한다.","grammarQuiz":null},
+    {"id":"w00013","w":"abnormal","pos":["adj"],"ph":"/æbˈnɔːrməl/","cefr":"B1","kr":["비정상적인","이상한"],"ex":[{"en":"The test results were abnormal.","ko":"검사 결과가 비정상적이었다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"behavior","ko":"행동","reason":"abnormal behavior(비정상적 행동) 대표 콜로케이션"},{"w":"unusual","ko":"이상한","reason":"abnormal의 대표 동의어, 함께 외우기 자연"},{"w":"normal","ko":"정상적인","reason":"ab-접두사 반의어, 정상↔비정상 대비"}],"collocBest":[{"en":"abnormal behavior","ko":"비정상적인 행동"},{"en":"abnormal weather","ko":"이상 기후"}]},"nuance":{"koSimple":"평소랑 달라서 좀 이상한 상태","whenToUse":"정상 범위를 벗어난 검사 결과나 행동을 말할 때"},"krDetail":[{"ko":"비정상적인","explain":"보통과 다르게 어긋난"},{"ko":"이상한","explain":"평소와 달라 낯설고 별난"}],"usageExamples":[{"en":"The doctor found an abnormal spot on the X-ray.","ko":"의사는 엑스레이에서 비정상적인 부위를 발견했다."},{"en":"It is abnormal for him to be this quiet.","ko":"그가 이렇게 조용한 것은 이상한 일이다."}],"grammarNote":"형용사로 명사 앞에 쓰거나 be동사 뒤에서 상태를 설명한다. 반대말은 normal(정상적인)이다.","grammarQuiz":null},
+    {"id":"w00439","w":"back and forth","pos":["adv","adj"],"ph":"/ˌbæk ən ˈfɔːrθ/","cefr":"B1","kr":["왔다 갔다","앞뒤로"],"ex":[{"en":"The pendulum swings back and forth.","ko":"진자가 앞뒤로 흔들린다."}],"mnemonic":{"soundHint":null,"story":"고민이 많을 때 나는 방 안을 왔다 갔다 하며 생각을 정리한다.","hintConfidence":1},"pairs":{"buddyWords":[{"w":"debate","ko":"논쟁","reason":"back-and-forth debate가 자연스러운 조합"},{"w":"pace","ko":"서성이다","reason":"back and forth 움직임의 대표 동사"},{"w":"repeatedly","ko":"반복적으로","reason":"back and forth의 대표 동의어"}],"collocBest":[{"en":"go back and forth","ko":"왔다 갔다 하다"},{"en":"back-and-forth debate","ko":"앞뒤로 오가는 토론"}]},"nuance":{"koSimple":"시계추처럼 앞뒤로 왔다 갔다","whenToUse":"진자, 대화, 이동이 반복될 때"},"krDetail":[{"ko":"왔다 갔다","explain":"오고 가고 반복"},{"ko":"앞뒤로","explain":"앞뒤를 오가는"}],"usageExamples":[{"en":"He paced back and forth in the room.","ko":"그는 방 안을 왔다 갔다 서성였다."},{"en":"They emailed back and forth all week.","ko":"그들은 일주일 내내 이메일을 주고받았다."}],"grammarNote":"back and forth는 하나의 부사구로 주로 동사 뒤에 붙어 반복 이동을 나타낸다.","grammarQuiz":null},
+    {"id":"w00387","w":"atmosphere","pos":["n"],"ph":"/ˈætməsfɪər/","cefr":"B1","kr":["대기","분위기"],"ex":[{"en":"The restaurant had a warm atmosphere.","ko":"그 식당은 따뜻한 분위기를 가지고 있었다."}],"mnemonic":{"soundHint":null,"story":"카페의 은은한 조명이 편안한 atmosphere를 만들어 냈다.","hintConfidence":0},"pairs":{"buddyWords":[{"w":"ambiance","ko":"분위기","reason":"atmosphere의 '분위기' 뜻과 완전히 겹치는 동의어"},{"w":"Earth","ko":"지구","reason":"Earth's atmosphere 콜로케이션의 짝 명사"},{"w":"mood","ko":"기분, 분위기","reason":"create an atmosphere 시나리오에서 자주 대체된다"}],"collocBest":[{"en":"create an atmosphere","ko":"분위기를 만들다"},{"en":"Earth's atmosphere","ko":"지구의 대기"}]},"nuance":{"koSimple":"지구를 감싼 공기 또는 그 자리의 기운","whenToUse":"과학적 대기, 카페의 분위기를 말할 때"},"krDetail":[{"ko":"대기","explain":"지구를 둘러싼 공기"},{"ko":"분위기","explain":"어떤 자리에서 느껴지는 기분"}],"usageExamples":[{"en":"The Earth's atmosphere protects us from the sun.","ko":"지구의 대기는 우리를 태양으로부터 보호한다."},{"en":"The café had a relaxing atmosphere.","ko":"그 카페는 편안한 분위기였다."}],"grammarNote":"'대기(공기층)' 뜻은 the atmosphere, '분위기' 뜻은 a warm atmosphere처럼 관사를 다르게 쓴다.","grammarQuiz":null},
+    {"id":"w00440","w":"back away","pos":["v"],"ph":"/bæk əˈweɪ/","cefr":"B1","kr":["물러나다","뒤로 물러서다"],"ex":[{"en":"She backed away from the danger.","ko":"그녀는 위험에서 물러났다."}],"mnemonic":{"soundHint":null,"story":"길에서 낯선 개를 보자 나는 조심스럽게 뒤로 물러섰다.","hintConfidence":1},"pairs":{"buddyWords":[{"w":"retreat","ko":"후퇴하다","reason":"back away의 정확한 동의어"},{"w":"conflict","ko":"갈등","reason":"back away from conflict가 대표 조합"},{"w":"approach","ko":"다가가다","reason":"back away의 정확한 반의어"}],"collocBest":[{"en":"back away slowly","ko":"천천히 물러나다"},{"en":"back away from conflict","ko":"갈등을 피해 물러나다"}]},"nuance":{"koSimple":"놀라서 뒷걸음질로 슬금슬금 물러섬","whenToUse":"위험한 동물이나 무서운 상황에서 뒤로 뺄 때"},"krDetail":[{"ko":"물러나다","explain":"뒤로 비켜나다"},{"ko":"뒤로 물러서다","explain":"천천히 뒷걸음치다"}],"usageExamples":[{"en":"He backed away from the barking dog.","ko":"그는 짖는 개에게서 물러났다."},{"en":"Slowly, she backed away from the edge.","ko":"천천히 그녀는 가장자리에서 뒤로 물러섰다."}],"grammarNote":"back away는 자동사구로 목적어를 직접 취하지 않습니다. 대상은 from 뒤에 씁니다. 예: He backed away from the dog.","grammarQuiz":[{"sentence":"The little boy slowly _____ _____ _____ the barking dog.","ko":"그 어린 소년은 짖는 개로부터 천천히 물러났다.","answer":["backed","away","from"],"hint":"back away는 자동사구, 대상은 from"}]},
+    {"id":"w00461","w":"badge","pos":["n","v"],"ph":"/bædʒ/","cefr":"B1","kr":["배지","표시"],"ex":[{"en":"She wore her badge proudly.","ko":"그녀는 배지를 자랑스럽게 달았다."}],"mnemonic":{"soundHint":"배지","story":"학교 축제날 도우미들은 가슴에 이름 배지를 달고 안내를 도왔다.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"name","ko":"이름","reason":"name badge가 대표 콜로케이션"},{"w":"emblem","ko":"휘장","reason":"badge의 대표 동의어"},{"w":"police","ko":"경찰","reason":"police badge는 대표 조합"}],"collocBest":[{"en":"name badge","ko":"이름표"},{"en":"wear a badge","ko":"배지를 달다"}]},"nuance":{"koSimple":"가슴에 다는 이름표나 상징 마크","whenToUse":"경찰 신분증, 이름표, 게임 뱃지를 말할 때"},"krDetail":[{"ko":"표시","explain":"겉(表)에 보이는 것(示) → 눈에 띄게 나타내 보이는 것"}],"usageExamples":[{"en":"The officer showed his police badge.","ko":"그 경찰관은 경찰 배지를 보여 주었다."},{"en":"Scouts earn a badge for each skill.","ko":"스카우트는 기술마다 배지를 받는다."}],"grammarNote":"badge는 셀 수 있는 명사로 신분·소속·성취를 나타내는 표식을 뜻한다.","grammarQuiz":null},
+    {"id":"w00478","w":"ban","pos":["v","n"],"ph":"/bæn/","cefr":"B1","kr":["금지하다","금지"],"ex":[{"en":"The city banned smoking.","ko":"시는 흡연을 금지했다."}],"mnemonic":{"soundHint":null,"story":"정부는 실내 흡연을 강력하게 금지하는 새 법을 시행했다.","hintConfidence":1},"pairs":{"buddyWords":[{"w":"prohibit","ko":"금하다","reason":"ban의 대표 동의어"},{"w":"smoking","ko":"흡연","reason":"smoking ban은 대표 조합"},{"w":"permit","ko":"허용하다","reason":"ban의 정확한 반의어"}],"collocBest":[{"en":"ban on","ko":"~에 대한 금지"},{"en":"impose a ban","ko":"금지령을 내리다"}]},"nuance":{"koSimple":"'하지 마' 도장을 쾅 찍어 못하게 함","whenToUse":"흡연, 무기, 규정 위반을 금지할 때"},"krDetail":[{"ko":"금지","explain":"금(禁)하여 그치게(止) 함 → 하지 못하게 막음"}],"usageExamples":[{"en":"The school banned mobile phones in class.","ko":"학교는 수업 중 휴대폰을 금지했다."},{"en":"There is a ban on smoking here.","ko":"이곳에는 흡연 금지가 있다."}],"grammarNote":"ban은 타동사로 목적어를 바로 취하거나, ban A from -ing 형태로 씁니다. 예: The school banned students from using phones. p.p.형은 자음 반복 → banned.","grammarQuiz":[{"sentence":"Our school has _____ students _____ _____ mobile phones during class.","ko":"우리 학교는 학생들이 수업 중에 휴대전화를 사용하는 것을 금지했다.","answer":["banned","from","using"],"hint":"ban A from -ing (n반복 주의)"}]}
   ],
   reviewPolicy:{ leitnerBoxes:5 },
   xpTable:{ correct:10, streakBonus:5, perfectChapter:200, firstClear:100 },
@@ -1831,56 +1945,51 @@ function renderQuiz(){
   } else if(mode === "spelling"){
     promptHTML = `
       <div class="quiz-prompt">
-        <div class="label">뜻을 보고 영어 단어를 입력하세요</div>
+        <div class="label">뜻을 보고 영어 단어를 입력하세요 <span class="prefill-hint">(첫 글자는 잠겨 있음)</span></div>
         <div class="qkr">${escape(word.kr.join(" · "))}</div>
         <div class="qph">${escape(word.ph||"")}</div>
       </div>`;
     answerHTML = `
       <div class="input-box">
-        <input type="text" id="ansInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="영어로 입력...">
+        <div class="word-answer" id="wordAnswer" data-answer="${escape(word.w)}"></div>
         <button class="submit-btn" id="submitBtn">제출</button>
       </div>`;
   } else if(mode === "listening"){
     promptHTML = `
       <div class="quiz-prompt">
-        <div class="label">발음을 듣고 단어를 입력하세요</div>
+        <div class="label">발음을 듣고 단어를 입력하세요 <span class="prefill-hint">(첫 글자는 잠겨 있음)</span></div>
         <button class="lis-btn" id="lisBtn">🔊 다시 듣기</button>
         <div class="qph">${escape(word.ph||"")}</div>
       </div>`;
     answerHTML = `
       <div class="input-box">
-        <input type="text" id="ansInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="영어로 입력...">
+        <div class="word-answer" id="wordAnswer" data-answer="${escape(word.w)}"></div>
         <button class="submit-btn" id="submitBtn">제출</button>
       </div>`;
   } else if(mode === "colloc-write"){
     const c = state.quizCurrent.colloc;
-    const hint = firstCharsHint(c.en);
     promptHTML = `
       <div class="quiz-prompt">
-        <div class="label">뜻에 맞는 <b>콜로케이션</b>을 영어로 쓰세요</div>
+        <div class="label">뜻에 맞는 <b>콜로케이션</b>을 영어로 쓰세요 <span class="prefill-hint">(각 단어 첫 글자 잠금)</span></div>
         <div class="qkr">${escape(c.ko)}</div>
       </div>`;
     answerHTML = `
       <div class="input-box">
-        <input type="text" id="ansInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${escape(hint)}">
+        <div class="word-answer" id="wordAnswer" data-answer="${escape(c.en)}"></div>
         <button class="submit-btn" id="submitBtn">제출</button>
       </div>`;
   } else if(mode === "cloze"){
     const { tokens, blankIdxs, sentence } = state.quizCurrent;
-    // 문장 렌더 — 빈칸 위치에 인풋 (정답의 첫 글자 placeholder 힌트)
     const sentHTML = tokens.map((t, i) => {
       const bIdx = blankIdxs.indexOf(i);
       if(bIdx >= 0){
-        const ans = t.text;
-        const size = Math.max(4, Math.min(14, ans.length + 2));
-        const hint = firstCharsHint(ans);
-        return `<input type="text" class="cloze-input" data-blank-idx="${bIdx}" data-ans="${escape(ans)}" size="${size}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${escape(hint)}">`;
+        return `<span class="word-answer inline cloze-wa" data-blank-idx="${bIdx}" data-answer="${escape(t.text)}"></span>`;
       }
       return escape(t.text);
     }).join("");
     promptHTML = `
       <div class="quiz-prompt cloze-prompt">
-        <div class="label">해석에 맞게 <b>${blankIdxs.length}개 빈칸</b>을 채우세요</div>
+        <div class="label">해석에 맞게 <b>${blankIdxs.length}개 빈칸</b>을 채우세요 <span class="prefill-hint">(각 단어 첫 글자 잠금)</span></div>
         <div class="qkr">${escape(sentence.ko)}</div>
         <div class="cloze-sentence">${sentHTML}</div>
       </div>`;
@@ -1890,19 +1999,16 @@ function renderQuiz(){
       </div>`;
   } else if(mode === "grammar-fill"){
     const { quiz } = state.quizCurrent;
-    // sentence 안의 _____ (밑줄 3개 이상)을 인풋으로 대체 · 각 빈칸에 정답의 첫 글자만 placeholder 로 힌트
     const ansList = Array.isArray(quiz.answer) ? quiz.answer : [quiz.answer];
     let blankSeq = 0;
     const sentHTML = escape(quiz.sentence).replace(/_{3,}/g, () => {
       const ans = ansList[blankSeq] ?? ansList[0];
-      const size = Math.max(5, Math.min(20, (ans||'').length + 2));
       const idx = blankSeq++;
-      const hint = firstCharsHint(ans);
-      return `<input type="text" class="cloze-input grammar-input" data-blank-idx="${idx}" data-ans="${escape(ans)}" size="${size}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${escape(hint)}">`;
+      return `<span class="word-answer inline cloze-wa" data-blank-idx="${idx}" data-answer="${escape(ans)}"></span>`;
     });
     promptHTML = `
       <div class="quiz-prompt cloze-prompt grammar-prompt">
-        <div class="label">📌 <b>문법 포인트</b> — 해석에 맞게 빈칸을 채우세요</div>
+        <div class="label">📌 <b>문법 포인트</b> — 해석에 맞게 빈칸을 채우세요 <span class="prefill-hint">(각 단어 첫 글자 잠금)</span></div>
         <div class="qkr">${escape(quiz.ko)}</div>
         <div class="cloze-sentence">${sentHTML}</div>
       </div>`;
@@ -1932,25 +2038,17 @@ function renderQuiz(){
       btn.addEventListener("click", ()=> handleChoice(btn));
     });
   } else if(mode === "cloze" || mode === "grammar-fill"){
-    const inputs = document.querySelectorAll(".cloze-input");
-    inputs.forEach((inp, i)=>{
-      inp.addEventListener("keydown", e=>{
-        if(e.key === "Enter"){
-          const next = inputs[i+1];
-          if(next) next.focus();
-          else handleSubmit();
-        }
-      });
-    });
+    const containers = Array.from(document.querySelectorAll(".cloze-wa"));
+    containers.forEach(c => renderWordAnswer(c, c.dataset.answer));
     document.getElementById("submitBtn").addEventListener("click", handleSubmit);
-    if(inputs[0]) setTimeout(()=>inputs[0].focus(), 100);
+    const first = document.querySelector(".cloze-wa .rest-input");
+    if(first) setTimeout(()=>first.focus(), 100);
   } else {
-    const inp = document.getElementById("ansInput");
-    inp.addEventListener("keydown", e=>{
-      if(e.key === "Enter") handleSubmit();
-    });
+    const container = document.getElementById("wordAnswer");
+    renderWordAnswer(container, container.dataset.answer);
     document.getElementById("submitBtn").addEventListener("click", handleSubmit);
-    setTimeout(()=>inp.focus(), 100);
+    const first = container.querySelector(".rest-input");
+    if(first) setTimeout(()=>first.focus(), 100);
     if(mode === "listening"){
       setTimeout(()=>speak(word.w), 250);
       document.getElementById("lisBtn").addEventListener("click", ()=>speak(word.w));
@@ -1996,58 +2094,50 @@ function handleSubmit(){
   if(state.quizAnswered) return;
   const { word, mode } = state.quizCurrent;
 
-  // ── 심화: 콜로케이션 영작 ──────────────────────────────
-  if(mode === "colloc-write"){
-    const inp = document.getElementById("ansInput");
-    const val = normalizeAnswer(inp.value);
-    if(!val) return;
-    state.quizAnswered = true;
-    const correct = normalizeAnswer(state.quizCurrent.colloc.en);
-    const isCorrect = val === correct;
-    inp.classList.add(isCorrect ? "correct" : "wrong");
-    inp.disabled = true;
-    document.getElementById("submitBtn").disabled = true;
-    if(!isCorrect){
-      document.getElementById("feedback").innerHTML = `정답: <b style="color:var(--grade)">${escape(state.quizCurrent.colloc.en)}</b>`;
-    }
-    finishQuestion(isCorrect);
-    return;
-  }
-
-  // ── 심화: 예문 빈칸 채우기 · 문법 빈칸 채우기 ────────────
+  // ── 심화: 예문 빈칸 · 문법 빈칸 ────────────────────────
   if(mode === "cloze" || mode === "grammar-fill"){
-    const inputs = Array.from(document.querySelectorAll(".cloze-input"));
-    if(inputs.some(i => !i.value.trim())) return;
+    const containers = Array.from(document.querySelectorAll(".cloze-wa"));
+    if(containers.some(anyWordEmpty)) return;
     state.quizAnswered = true;
     let allOk = true;
-    inputs.forEach(i => {
-      const guess = normalizeAnswer(i.value);
-      const ans = normalizeAnswer(i.dataset.ans);
-      const ok = guess === ans;
-      i.classList.add(ok ? "correct" : "wrong");
-      i.disabled = true;
-      if(!ok) allOk = false;
+    containers.forEach(function(c){
+      const guess = normalizeAnswer(collectWordAnswer(c));
+      const ans = normalizeAnswer(c.dataset.answer);
+      const okAll = guess === ans;
+      const perGroup = Array.from(c.querySelectorAll('.word-group')).map(function(g, i){
+        const w = (c.dataset.answer || '').split(/\s+/)[i] || '';
+        const combined = (g.dataset.first || '') + (g.querySelector('.rest-input') ? g.querySelector('.rest-input').value : '');
+        return normalizeAnswer(combined) === normalizeAnswer(w);
+      });
+      markWordAnswer(c, perGroup);
+      if(!okAll) allOk = false;
     });
     document.getElementById("submitBtn").disabled = true;
     if(!allOk){
-      const answers = inputs.map(i => `<b style="color:var(--grade)">${escape(i.dataset.ans)}</b>`).join(" , ");
+      const answers = containers.map(function(c){ return `<b style="color:var(--grade)">${escape(c.dataset.answer)}</b>`; }).join(" , ");
       document.getElementById("feedback").innerHTML = `정답: ${answers}`;
     }
     finishQuestion(allOk);
     return;
   }
 
-  // ── 기본: 철자·리스닝 ────────────────────────────────
-  const inp = document.getElementById("ansInput");
-  const val = (inp.value||"").trim().toLowerCase();
-  if(!val) return;
+  // ── 기본/심화 단일 컨테이너: spelling / listening / colloc-write
+  const container = document.getElementById("wordAnswer");
+  if(!container) return;
+  if(anyWordEmpty(container)) return;
   state.quizAnswered = true;
-  const isCorrect = val === word.w.toLowerCase();
-  inp.classList.add(isCorrect ? "correct" : "wrong");
-  inp.disabled = true;
+  const correctAns = container.dataset.answer;
+  const guess = normalizeAnswer(collectWordAnswer(container));
+  const isCorrect = guess === normalizeAnswer(correctAns);
+  const perGroup = Array.from(container.querySelectorAll('.word-group')).map(function(g, i){
+    const w = (correctAns || '').split(/\s+/)[i] || '';
+    const combined = (g.dataset.first || '') + (g.querySelector('.rest-input') ? g.querySelector('.rest-input').value : '');
+    return normalizeAnswer(combined) === normalizeAnswer(w);
+  });
+  markWordAnswer(container, perGroup);
   document.getElementById("submitBtn").disabled = true;
   if(!isCorrect){
-    document.getElementById("feedback").innerHTML = `정답: <b style="color:var(--grade)">${escape(word.w)}</b>`;
+    document.getElementById("feedback").innerHTML = `정답: <b style="color:var(--grade)">${escape(correctAns)}</b>`;
   }
   finishQuestion(isCorrect);
 }
@@ -2139,9 +2229,14 @@ function finishSession(){
   const main = document.getElementById("main");
   const stageLbl = isAdv ? "심화단계" : "기본단계";
   const passedM3 = (pct >= 60) && (DATA.grade === '중3');
-  const title = passedM3
-    ? `💰 방금 당신의 미래 연봉이 10만원 더 올라갔슴돠!!`
-    : (isPerfect ? `🎊 ${stageLbl} 무결점 클리어!` : (pct >= 80 ? `🎉 ${stageLbl} 잘했어요!` : pct >= 60 ? `👍 ${stageLbl} 통과!` : "💪 다시 도전!"));
+  const isHighGrade = ['고1','고2','수능'].includes(DATA.grade);
+  const highGradePerfect = isHighGrade && isAdv && isPerfect;
+  const highGradeMsg = highGradePerfect ? pickHGMessage() : null;
+  const title = highGradeMsg
+    ? `🏆 ${escape(highGradeMsg)}`
+    : passedM3
+      ? `💰 방금 당신의 미래 연봉이 10만원 더 올라갔슴돠!!`
+      : (isPerfect ? `🎊 ${stageLbl} 무결점 클리어!` : (pct >= 80 ? `🎉 ${stageLbl} 잘했어요!` : pct >= 60 ? `👍 ${stageLbl} 통과!` : "💪 다시 도전!"));
 
   // 심화면 [🎯 심화 다시] + [🏠 홈으로]. 기본이면 [🔁 다시 보기] + (심화 해금 시) [🎯 심화 도전]
   const canGoAdvanced = !isAdv && state.basicThresholdPassed;
@@ -2167,8 +2262,7 @@ function finishSession(){
        <button class="start-btn alt" id="homeBtn">🏠 Home</button>`
     : `<button class="start-btn" id="retryBtn">🔁 다시 보기</button>
        ${hasWrong ? `<button class="start-btn wrong-only" id="retryWrongBtn">🔴 틀린문제만 (${state.quizWrongItems.length})</button>` : ""}
-       ${canGoAdvanced ? `<button class="start-btn adv" id="goAdvBtn">🎯 심화단계 도전</button>`
-                       : `<button class="start-btn alt" id="nextBtn">▶ 다음 챕터</button>`}`;
+       ${canGoAdvanced ? `<button class="start-btn adv" id="goAdvBtn">🎯 심화단계 도전</button>` : ""}`;
 
   main.innerHTML = `
     <div class="result">
@@ -2206,6 +2300,20 @@ function finishSession(){
 
   // celebration
   setTimeout(()=>{
+    if(highGradeMsg){
+      // 고등학교 심화 100% — 화면 오버레이 + 랜덤 메시지 + TTS + 폭죽 다량
+      showHighGradeCelebration(highGradeMsg);
+      SFX.grandFanfare();
+      fx.spawn("rainbow-burst");
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.fireworks(); }, 350);
+      setTimeout(()=>{ fx.spawn("jackpot-full"); SFX.coinDrop(); }, 800);
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.bigWin(); }, 1400);
+      setTimeout(()=>{ fx.spawn("rainbow-burst"); SFX.streak(); }, 2100);
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.fireworks(); }, 2900);
+      setTimeout(()=>{ fx.spawn("jackpot-full"); SFX.coinDrop(); }, 3700);
+      setTimeout(()=>{ SFX.grandFanfare(); }, 4500);
+      return;
+    }
     if(advGrand){
       // 심화 90%+ — 화려·명랑 팡파레 + 축포 다량 (배곧 쵝오!)
       fx.spawn("rainbow-burst");
@@ -2259,10 +2367,159 @@ function finishSession(){
 /* ============================================================
    UTILS
    ============================================================ */
+/* 고등학교 심화 100% — 랜덤 축하 메시지 + 화면 오버레이 + TTS */
+const HG_MESSAGES = [
+  "당신의 노력에 경의를 표합니다!!",
+  "배곧 쵝오를 넘어서!!",
+  "이러다 연세대 가는거 아냐??",
+  "자꾸 이러면 서울대 들어간다.",
+  "왜 이렇게 잘 해?",
+  "커서 훌륭한 사람 되겠어!!",
+  "미래의 당신 집이 한 평 커졌어!!"
+];
+function pickHGMessage(){
+  return HG_MESSAGES[Math.floor(Math.random() * HG_MESSAGES.length)];
+}
+function showHighGradeCelebration(msg){
+  const old = document.querySelector('.hg-celebration');
+  if(old) old.remove();
+  const overlay = document.createElement('div');
+  overlay.className = 'hg-celebration';
+  const sparkles = ['✨','🎉','🎊','⭐','💫','🌟','🎆','🎇','💥']
+    .map((e,i)=>{
+      const x = 8 + Math.random()*84, y = 8 + Math.random()*84;
+      const d = (Math.random()*1.6).toFixed(2);
+      return `<span class="hg-sparkle" style="left:${x}%;top:${y}%;animation-delay:${d}s">${e}</span>`;
+    }).join('');
+  overlay.innerHTML = `<div class="hg-halo"></div>${sparkles}<div class="hg-msg">${escape(msg)}</div>`;
+  document.body.appendChild(overlay);
+  setTimeout(()=>overlay.remove(), 6100);
+  try{
+    if('speechSynthesis' in window){
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(msg);
+      u.lang = 'ko-KR'; u.rate = 0.98; u.pitch = 1.12; u.volume = 1;
+      const voices = speechSynthesis.getVoices();
+      const ko = voices.find(v => /^ko/i.test(v.lang));
+      if(ko) u.voice = ko;
+      setTimeout(()=>speechSynthesis.speak(u), 400);
+    }
+  }catch(e){}
+}
+
 /* 빈칸 힌트: 정답 문자열의 각 단어 첫 글자를 "a… b…" 형태로 반환
    예: "appeared" → "a…"  ·  "in the absence of" → "i… t… a… o…"  ·  "feel bad" → "f… b…"  */
 function firstCharsHint(s){
   return (s||'').trim().split(/\s+/).filter(Boolean).map(w => (w.charAt(0)||'') + '…').join(' ');
+}
+/* 빈칸 프리필: 정답 각 단어의 첫 글자를 공백으로 이어붙여 반환 (인풋 value 로 채워둠)
+   예: "appeared" → "a"  ·  "in the absence of" → "i t a o"  ·  "feel bad" → "f b"  */
+function firstCharsPrefill(s){
+  return (s||'').trim().split(/\s+/).filter(Boolean).map(w => (w.charAt(0)||'')).join(' ');
+}
+/* 인풋에 프리필된 첫 글자 잠금 + 커서 이동 훅 부착 */
+function attachPrefillGuard(inp){
+  const prefill = inp.dataset.prefill || '';
+  if(!prefill) return;
+  const moveCursorEnd = () => { try{ inp.setSelectionRange(inp.value.length, inp.value.length); }catch(e){} };
+  inp.addEventListener('focus', () => setTimeout(moveCursorEnd, 0));
+  inp.addEventListener('click', () => {
+    if(inp.selectionStart < prefill.length) moveCursorEnd();
+  });
+  inp.addEventListener('keydown', e => {
+    // 프리필 영역 보호: 첫 글자들을 지우거나 그 앞으로 이동하는 키 방지
+    const s = inp.selectionStart, e2 = inp.selectionEnd;
+    if(e.key === 'Backspace' && s <= prefill.length && s === e2){ e.preventDefault(); moveCursorEnd(); return; }
+    if(e.key === 'Delete'    && s <  prefill.length){ e.preventDefault(); moveCursorEnd(); return; }
+    if((e.key === 'ArrowLeft' || e.key === 'Home') && s <= prefill.length){ e.preventDefault(); moveCursorEnd(); return; }
+  });
+  inp.addEventListener('input', () => {
+    // 사용자 값이 프리필로 시작하지 않으면 프리필을 앞에 다시 붙임 (드래그·잘라내기 등 방지)
+    if(!inp.value.startsWith(prefill)){
+      inp.value = prefill + inp.value.replace(new RegExp('^' + prefill.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').slice(0,0)),'');
+      moveCursorEnd();
+    }
+  });
+}
+/* 프리필 인풋에서 사용자가 실제로 추가 입력한 부분이 있는지 (첫 글자만 남은 상태는 미제출) */
+function hasUserInput(inp){
+  const prefill = inp.dataset.prefill || '';
+  return (inp.value||'').trim().length > prefill.trim().length;
+}
+/* ============================================================
+   낱말박스 (자동완성 방어) — 각 단어당 [잠금 첫글자] + [빈 인풋]
+   ============================================================ */
+function renderWordAnswer(container, answer){
+  container.innerHTML = '';
+  const words = String(answer || '').trim().split(/\s+/).filter(Boolean);
+  words.forEach((word, wi) => {
+    const group = document.createElement('span');
+    const isSingle = word.length <= 1;
+    group.className = 'word-group' + (isSingle ? ' single-letter' : '');
+    group.dataset.first = isSingle ? '' : (word[0] || '');
+    group.dataset.full = word;
+    if(!isSingle){
+      const first = document.createElement('span');
+      first.className = 'first-letter';
+      first.textContent = word[0] || '';
+      group.appendChild(first);
+    }
+    const inp = document.createElement('input');
+    inp.className = 'rest-input';
+    inp.type = 'text';
+    inp.autocomplete = 'off';
+    inp.autocorrect = 'off';
+    inp.setAttribute('autocapitalize','off');
+    inp.spellcheck = false;
+    inp.inputMode = 'text';
+    inp.name = 'wa-' + Math.random().toString(36).slice(2,8);
+    inp.dataset.wi = wi;
+    inp.setAttribute('aria-label', (wi+1) + '번째 단어의 나머지 스펠링');
+    group.appendChild(inp);
+    container.appendChild(group);
+  });
+  wireWordInputs(container);
+}
+function wireWordInputs(container){
+  const inputs = Array.from(container.querySelectorAll('.rest-input'));
+  inputs.forEach((inp, i) => {
+    inp.addEventListener('input', () => {
+      inp.value = (inp.value || '').toLowerCase().replace(/[^a-z'\-]/g,'');
+    });
+    inp.addEventListener('keydown', e => {
+      if(e.key === 'Enter'){
+        const next = inputs[i+1];
+        if(next){ e.preventDefault(); next.focus(); }
+        else { e.preventDefault(); handleSubmit(); }
+      } else if(e.key === 'Tab' && !e.shiftKey){
+        const next = inputs[i+1];
+        if(next){ e.preventDefault(); next.focus(); }
+      } else if(e.key === 'Backspace' && !inp.value && i > 0){
+        e.preventDefault();
+        const prev = inputs[i-1];
+        prev.focus();
+        try{ prev.setSelectionRange(prev.value.length, prev.value.length); }catch(_e){}
+      }
+    });
+  });
+}
+function collectWordAnswer(container){
+  const groups = Array.from(container.querySelectorAll('.word-group'));
+  return groups.map(function(g){
+    var inp = g.querySelector('.rest-input');
+    return (g.dataset.first || '') + (inp ? inp.value : '');
+  }).join(' ');
+}
+function anyWordEmpty(container){
+  return Array.from(container.querySelectorAll('.rest-input')).some(function(i){ return !i.value.trim(); });
+}
+function markWordAnswer(container, perGroupOk){
+  const groups = Array.from(container.querySelectorAll('.word-group'));
+  groups.forEach(function(g, i){
+    g.classList.add(perGroupOk[i] ? 'correct' : 'wrong');
+    var inp = g.querySelector('.rest-input');
+    if(inp) inp.disabled = true;
+  });
 }
 function shuffle(arr){
   for(let i=arr.length-1;i>0;i--){

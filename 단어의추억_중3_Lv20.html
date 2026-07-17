@@ -257,6 +257,60 @@
   .cloze-input.correct{border-color:var(--grade);background:rgba(16,185,129,.15);color:#a7f3d0;}
   .cloze-input.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
   .input-box.only-btn{justify-content:center;}
+  /* 첫글자 프리필 인풋 — 미리 채워진 첫 글자를 시각적으로 강조 */
+  .prefill-input{caret-color:#fef3c7;font-family:'Courier New',ui-monospace,monospace;letter-spacing:.05em;font-weight:700;}
+  .prefill-hint{color:#c4b5fd;font-size:.82rem;font-weight:500;margin-left:6px;letter-spacing:0;}
+  /* ---------- 낱말박스 (자동완성 방어) ---------- */
+  .word-answer{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:center;margin:6px 0;}
+  .word-answer.inline{display:inline-flex;gap:8px;vertical-align:middle;margin:0 4px;}
+  .word-group{
+    display:inline-flex;align-items:center;gap:0;
+    background:rgba(11,18,32,.7);border:1.5px solid #334155;border-radius:8px;
+    padding:0;transition:all .15s;overflow:hidden;flex-shrink:0;
+  }
+  .word-group:focus-within{border-color:#a78bfa;box-shadow:0 0 0 3px rgba(168,139,250,.22);}
+  .word-group.correct{border-color:var(--grade);background:rgba(16,185,129,.10);}
+  .word-group.wrong{border-color:var(--danger);background:rgba(239,68,68,.10);}
+  /* 폰트: body 상속 sans-serif (이전 .input-box input과 동일한 스타일) */
+  .first-letter{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:26px;padding:0 8px;height:44px;line-height:44px;
+    background:linear-gradient(180deg,#3b2966 0%,#2a1e4d 100%);
+    color:#fef3c7;
+    font-family:inherit;
+    font-size:1.15rem;font-weight:600;letter-spacing:.5px;
+    text-transform:lowercase;
+    border-right:1px solid #8b5cf6;user-select:none;
+  }
+  .rest-input{
+    border:0;background:transparent;color:var(--text);outline:none;
+    font-family:inherit;
+    font-size:1.15rem;font-weight:600;letter-spacing:.5px;
+    padding:0 10px;height:44px;line-height:44px;width:120px;min-width:90px;
+    text-transform:lowercase;
+  }
+  .rest-input::placeholder{color:#475569;font-weight:400;}
+  .word-group.correct .rest-input{color:#a7f3d0;}
+  .word-group.wrong .rest-input{color:#fca5a5;}
+  .cloze-sentence .word-answer{display:inline-flex;flex-wrap:wrap;gap:6px 8px;margin:0 4px;vertical-align:middle;}
+  .cloze-sentence .word-group{border-radius:6px;}
+  .cloze-sentence .first-letter{height:38px;line-height:38px;font-size:1.05rem;min-width:22px;padding:0 7px;}
+  .cloze-sentence .rest-input{height:38px;line-height:38px;font-size:1.05rem;width:100px;min-width:70px;padding:0 9px;}
+  /* .input-box input 스타일이 .rest-input을 override 하는 문제 해결 */
+  .input-box .word-answer input.rest-input{
+    background:transparent;border:0;padding:0 10px;
+    min-height:44px;height:44px;line-height:44px;text-align:left;
+    font-family:inherit;
+    font-size:1.15rem;font-weight:600;letter-spacing:.5px;
+    text-transform:lowercase;
+    width:120px;min-width:90px;box-shadow:none;
+  }
+  .input-box .word-answer input.rest-input:focus{border:0;box-shadow:none;}
+  /* single-letter 그룹 */
+  .word-group.single-letter{background:rgba(11,18,32,.5);}
+  .word-group.single-letter input.rest-input{width:80px;min-width:60px;}
+  .hint-line{margin-top:12px;padding:10px 14px;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.35);border-radius:10px;color:#c4b5fd;font-size:.95rem;line-height:1.55;text-align:center;letter-spacing:.03em;}
+  .hint-line b{color:#fef3c7;font-weight:800;font-family:'Courier New',ui-monospace,monospace;font-size:1.05rem;letter-spacing:.15em;margin:0 2px;}
 
   /* ---------- CARD STUDY ---------- */
   .stage{position:relative;padding:14px 2px;perspective:1200px;flex:1;display:flex;flex-direction:column;}
@@ -649,6 +703,66 @@
     from{box-shadow:0 12px 40px rgba(168,85,247,.45),0 0 0 1px rgba(255,255,255,.15) inset;}
     to  {box-shadow:0 20px 60px rgba(245,158,11,.65),0 0 0 1px rgba(255,255,255,.35) inset;}
   }
+  /* 고등학교 심화 100% — 화면 전체 랜덤 축하 오버레이 */
+  .hg-celebration{
+    position:fixed;inset:0;z-index:9999;pointer-events:none;
+    background:radial-gradient(ellipse at center, rgba(15,23,42,.55) 0%, rgba(2,6,23,.90) 60%, rgba(0,0,0,.98) 100%);
+    display:flex;align-items:center;justify-content:center;padding:24px;
+    animation:hgFadeIn .35s ease-out both, hgFadeOut .8s ease-in 5.2s forwards;
+  }
+  .hg-celebration::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(251,191,36,.30), transparent 20%),
+      radial-gradient(circle at 80% 25%, rgba(236,72,153,.28), transparent 22%),
+      radial-gradient(circle at 30% 75%, rgba(59,130,246,.28), transparent 24%),
+      radial-gradient(circle at 75% 80%, rgba(16,185,129,.28), transparent 22%);
+    animation:hgSwirl 6s ease-in-out infinite alternate;
+    pointer-events:none;
+  }
+  .hg-halo{
+    position:absolute;inset:0;pointer-events:none;
+    background:conic-gradient(from 0deg,#fbbf24,#ef4444,#a855f7,#3b82f6,#10b981,#fbbf24);
+    mix-blend-mode:screen;opacity:.28;
+    animation:hgRotate 12s linear infinite;
+  }
+  .hg-msg{
+    position:relative;font-family:inherit;
+    font-size:clamp(28px, 6vw, 68px);font-weight:900;line-height:1.25;text-align:center;
+    padding:32px 40px;max-width:92vw;letter-spacing:-.01em;
+    background:linear-gradient(90deg,#fbbf24,#ef4444,#ec4899,#a855f7,#3b82f6,#10b981,#fbbf24);
+    background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 24px rgba(251,191,36,.75)) drop-shadow(0 0 40px rgba(236,72,153,.45));
+    animation:hgRainbow 3.5s linear infinite, hgPop 1.6s cubic-bezier(.2,.7,.1,1.4) both, hgFloat 4s ease-in-out infinite alternate 1.6s;
+  }
+  .hg-sparkle{
+    position:absolute;pointer-events:none;font-size:clamp(24px,3vw,36px);
+    animation:hgSparkle 1.8s ease-in-out infinite;
+  }
+  @keyframes hgFadeIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes hgFadeOut{to{opacity:0;visibility:hidden;}}
+  @keyframes hgRainbow{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+  @keyframes hgPop{
+    0%{transform:scale(.15) rotate(-25deg);opacity:0;}
+    35%{transform:scale(1.28) rotate(6deg);opacity:1;}
+    55%{transform:scale(.94) rotate(-3deg);}
+    75%{transform:scale(1.08) rotate(1.5deg);}
+    100%{transform:scale(1) rotate(0);opacity:1;}
+  }
+  @keyframes hgFloat{
+    from{transform:translateY(-6px) scale(1);}
+    to{transform:translateY(6px) scale(1.02);}
+  }
+  @keyframes hgSwirl{
+    0%{transform:scale(1) rotate(0);}
+    100%{transform:scale(1.15) rotate(8deg);}
+  }
+  @keyframes hgRotate{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+  @keyframes hgSparkle{
+    0%,100%{opacity:0;transform:scale(.4) rotate(0deg);}
+    50%{opacity:1;transform:scale(1.2) rotate(180deg);}
+  }
   .result-stats{
     display:grid;grid-template-columns:1fr 1fr;gap:10px;
     margin:22px 0;
@@ -792,46 +906,46 @@ const DATA = {
   chapter: { id:"중3-L20", title:"중3 Lv.20", index:20, totalCount:40 },
   gradeColor: "#8b5cf6",
   newWords: [
-    {"id":"w05070","w":"probably","pos":["adv"],"ph":"/ˈprɒbəbli/","cefr":"A2","kr":["아마","아마도"],"ex":[{"en":"She will probably arrive by noon.","ko":"그녀는 아마 정오까지 도착할 것이다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"likely","ko":"~할 가능성이 있는","reason":"probably와 동의어"},{"w":"perhaps","ko":"아마도","reason":"불확실 추측 동의어"},{"w":"certainly","ko":"확실히","reason":"probably의 반의어"}],"collocBest":[{"en":"probably not","ko":"아마 아닐 것이다"},{"en":"most probably","ko":"아마도"}]},"nuance":{"koSimple":"확신은 아니지만 70~80% 그럴 것 같은 느낌","whenToUse":"거의 그럴 것 같다고 추측할 때"},"krDetail":[{"ko":"아마","explain":"'아마'는 순우리말로, 어떤 일이 그럴 것 같다고 짐작하는 뜻이야."},{"ko":"아마도","explain":"'아마도'는 '아마'를 조금 더 강조한 순우리말이야."}],"usageExamples":null,"grammarNote":"probably는 부사라서 be동사 뒤, 일반동사 앞에 와야 하는데, 학생들이 문장 맨 뒤에 붙이는 실수를 자주 해.","grammarQuiz":[{"sentence":"He _____ _____ come to the party tonight.","ko":"그는 아마 오늘 밤 파티에 올 것이다.","answer":["will","probably"],"hint":"조동사 뒤에 부사"},{"sentence":"She is _____ waiting for us at the station now.","ko":"그녀는 아마 지금 역에서 우리를 기다리고 있을 것이다.","answer":["probably"],"hint":"be동사 뒤"}]},
+    {"id":"w05070","w":"probably","pos":["adv"],"ph":"/ˈprɒbəbli/","cefr":"A2","kr":["아마","아마도"],"ex":[{"en":"She will probably arrive by noon.","ko":"그녀는 아마 정오까지 도착할 것이다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"likely","ko":"~할 가능성이 있는","reason":"probably와 동의어"},{"w":"perhaps","ko":"아마도","reason":"불확실 추측 동의어"},{"w":"certainly","ko":"확실히","reason":"probably의 반의어"}],"collocBest":[{"en":"probably not","ko":"아마 아닐 것이다"},{"en":"most probably","ko":"아마도"}]},"nuance":{"koSimple":"확신은 아니지만 70~80% 그럴 것 같은 느낌","whenToUse":"거의 그럴 것 같다고 추측할 때"},"krDetail":[{"ko":"아마","explain":"'아마'는 순우리말로, 어떤 일이 그럴 것 같다고 짐작하는 뜻이야."},{"ko":"아마도","explain":"'아마도'는 '아마'를 조금 더 강조한 순우리말이야."}],"usageExamples":[{"en":"It will probably rain tomorrow.","ko":"내일은 아마 비가 올 것이다."},{"en":"He is probably at home now.","ko":"그는 아마 지금 집에 있을 것이다."}],"grammarNote":"probably는 부사라서 be동사 뒤, 일반동사 앞에 와야 하는데, 학생들이 문장 맨 뒤에 붙이는 실수를 자주 해.","grammarQuiz":[{"sentence":"He _____ _____ come to the party tonight.","ko":"그는 아마 오늘 밤 파티에 올 것이다.","answer":["will","probably"],"hint":"조동사 뒤에 부사"},{"sentence":"She is _____ waiting for us at the station now.","ko":"그녀는 아마 지금 역에서 우리를 기다리고 있을 것이다.","answer":["probably"],"hint":"be동사 뒤"}]},
     {"id":"w05079","w":"produce","pos":["v","n"],"ph":"/prəˈdjuːs/","cefr":"A2","kr":["생산하다","농산물"],"ex":[{"en":"The factory produces thousands of cars a day.","ko":"그 공장은 하루에 수천 대의 차를 생산한다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"make","ko":"만들다","reason":"produce의 동의어"},{"w":"create","ko":"창조하다","reason":"생산·창조 동의어"},{"w":"consume","ko":"소비하다","reason":"produce의 반의어"}],"collocBest":[{"en":"produce results","ko":"결과를 만들어내다"},{"en":"fresh produce","ko":"신선 농산물"}]},"nuance":{"koSimple":"공장에서 뚝딱 만들어내는 그림","whenToUse":"만들어내거나 결과를 낼 때"},"krDetail":[{"ko":"생산하다","explain":"'생산(生産)하다'는 한자어이고, 순우리말로는 '만들어 내다'라고 풀 수 있어."},{"ko":"농산물","explain":"'농산물(農産物)'은 한자어이고, 순우리말로는 '땅에서 난 것'이라는 뜻이야."}],"usageExamples":[{"en":"The small factory produces about a thousand toys every day.","ko":"그 작은 공장은 매일 약 천 개의 장난감을 생산한다."},{"en":"Fresh produce is sold at the market every Friday morning.","ko":"신선한 농산물이 매주 금요일 아침 그 시장에서 팔린다."}],"grammarNote":"produce는 동사(prəˈdjuːs)와 명사(ˈprɒdjuːs)의 강세가 달라. 학생들이 명사일 때도 뒤 강세로 발음하는 실수를 해.","grammarQuiz":[{"sentence":"The farm _____ a lot of fresh vegetables every year.","ko":"그 농장은 매년 많은 신선한 채소를 생산한다.","answer":["produces"],"hint":"3인칭 단수 현재"},{"sentence":"Many kinds of _____ are sold at the farmer's market.","ko":"많은 종류의 농산물이 농산물 시장에서 팔린다.","answer":["produce"],"hint":"명사"}]},
-    {"id":"w05081","w":"product","pos":["n"],"ph":"/ˈprɒdʌkt/","cefr":"A2","kr":["제품","산물"],"ex":[{"en":"This product is made in Korea.","ko":"이 제품은 한국에서 만들어진다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"item","ko":"물품","reason":"product의 동의어"},{"w":"goods","ko":"상품","reason":"제품 동의어"},{"w":"produce","ko":"생산하다","reason":"product의 어원 동사"}],"collocBest":[{"en":"consumer product","ko":"소비재"},{"en":"launch a product","ko":"제품을 출시하다"}]},"nuance":{"koSimple":"진열대에 놓인 완성된 상품 하나","whenToUse":"만들어진 상품·결과물을 가리킬 때"},"krDetail":[{"ko":"제품","explain":"'제품(製品)'은 한자어이고, 순우리말로는 '만든 물건'이라는 뜻이야."},{"ko":"산물","explain":"'산물(産物)'은 한자어이고, 순우리말로는 '나온 것' 또는 '얻어진 것'이라는 뜻이야."}],"usageExamples":null,"grammarNote":"produce(동사)와 product(명사)의 스펠링을 헷갈려서 'product a car'처럼 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"This company sells many new _____ every year.","ko":"이 회사는 매년 많은 새 제품들을 판다.","answer":["products"],"hint":"복수 명사"},{"sentence":"Success is often the _____ of years of hard work.","ko":"성공은 종종 수년간의 노력의 산물이다.","answer":["product"],"hint":"단수 명사"}]},
-    {"id":"w05087","w":"professor","pos":["n"],"ph":"/prəˈfesə/","cefr":"A2","kr":["교수"],"ex":[{"en":"The professor gave a lecture on history.","ko":"교수는 역사에 대한 강의를 했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"lecturer","ko":"강사","reason":"professor와 동의어"},{"w":"student","ko":"학생","reason":"교수-학생 관계 반의어"},{"w":"university","ko":"대학교","reason":"professor의 주요 근무지"}],"collocBest":[{"en":"university professor","ko":"대학 교수"},{"en":"full professor","ko":"정교수"}]},"nuance":{"koSimple":"대학 강단에서 강의하는 선생님","whenToUse":"대학 강의하는 선생님을 부를 때"},"krDetail":[{"ko":"교수","explain":"'교수(敎授)'는 한자어이고, 순우리말로는 '대학에서 가르치는 사람'이라는 뜻이야."}],"usageExamples":null,"grammarNote":"professor는 사람 이름 앞에서는 대문자 Professor로 쓰고 the를 붙이지 않아. 학생들이 'the Professor Kim'처럼 쓰는 실수를 해.","grammarQuiz":[{"sentence":"_____ Kim teaches English at Seoul University now.","ko":"김 교수는 지금 서울대학교에서 영어를 가르친다.","answer":["Professor"],"hint":"대문자 시작"},{"sentence":"My father is a _____ of history at that college.","ko":"우리 아버지는 저 대학의 역사학 교수이다.","answer":["professor"],"hint":"관사 뒤 소문자"}]},
+    {"id":"w05081","w":"product","pos":["n"],"ph":"/ˈprɒdʌkt/","cefr":"A2","kr":["제품","산물"],"ex":[{"en":"This product is made in Korea.","ko":"이 제품은 한국에서 만들어진다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"item","ko":"물품","reason":"product의 동의어"},{"w":"goods","ko":"상품","reason":"제품 동의어"},{"w":"produce","ko":"생산하다","reason":"product의 어원 동사"}],"collocBest":[{"en":"consumer product","ko":"소비재"},{"en":"launch a product","ko":"제품을 출시하다"}]},"nuance":{"koSimple":"진열대에 놓인 완성된 상품 하나","whenToUse":"만들어진 상품·결과물을 가리킬 때"},"krDetail":[{"ko":"제품","explain":"'제품(製品)'은 한자어이고, 순우리말로는 '만든 물건'이라는 뜻이야."},{"ko":"산물","explain":"'산물(産物)'은 한자어이고, 순우리말로는 '나온 것' 또는 '얻어진 것'이라는 뜻이야."}],"usageExamples":[{"en":"The company sells cleaning products.","ko":"그 회사는 청소 제품을 판다."},{"en":"Rice is an important farm product.","ko":"쌀은 중요한 농산물이다."}],"grammarNote":"produce(동사)와 product(명사)의 스펠링을 헷갈려서 'product a car'처럼 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"This company sells many new _____ every year.","ko":"이 회사는 매년 많은 새 제품들을 판다.","answer":["products"],"hint":"복수 명사"},{"sentence":"Success is often the _____ of years of hard work.","ko":"성공은 종종 수년간의 노력의 산물이다.","answer":["product"],"hint":"단수 명사"}]},
+    {"id":"w05087","w":"professor","pos":["n"],"ph":"/prəˈfesə/","cefr":"A2","kr":["교수"],"ex":[{"en":"The professor gave a lecture on history.","ko":"교수는 역사에 대한 강의를 했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"lecturer","ko":"강사","reason":"professor와 동의어"},{"w":"student","ko":"학생","reason":"교수-학생 관계 반의어"},{"w":"university","ko":"대학교","reason":"professor의 주요 근무지"}],"collocBest":[{"en":"university professor","ko":"대학 교수"},{"en":"full professor","ko":"정교수"}]},"nuance":{"koSimple":"대학 강단에서 강의하는 선생님","whenToUse":"대학 강의하는 선생님을 부를 때"},"krDetail":[{"ko":"교수","explain":"'교수(敎授)'는 한자어이고, 순우리말로는 '대학에서 가르치는 사람'이라는 뜻이야."}],"usageExamples":[{"en":"The professor teaches biology.","ko":"그 교수는 생물학을 가르친다."},{"en":"I asked the professor a question after class.","ko":"나는 수업 후에 교수님께 질문을 했다."}],"grammarNote":"professor는 사람 이름 앞에서는 대문자 Professor로 쓰고 the를 붙이지 않아. 학생들이 'the Professor Kim'처럼 쓰는 실수를 해.","grammarQuiz":[{"sentence":"_____ Kim teaches English at Seoul University now.","ko":"김 교수는 지금 서울대학교에서 영어를 가르친다.","answer":["Professor"],"hint":"대문자 시작"},{"sentence":"My father is a _____ of history at that college.","ko":"우리 아버지는 저 대학의 역사학 교수이다.","answer":["professor"],"hint":"관사 뒤 소문자"}]},
     {"id":"w05094","w":"progress","pos":["n","v"],"ph":"/ˈprəʊɡres/","cefr":"A2","kr":["발전","진보하다"],"ex":[{"en":"She made rapid progress in English.","ko":"그녀는 영어에서 빠른 발전을 이루었다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"advancement","ko":"발전","reason":"progress의 동의어"},{"w":"improvement","ko":"개선","reason":"발전 동의어"},{"w":"decline","ko":"쇠퇴","reason":"progress의 반의어"}],"collocBest":[{"en":"make progress","ko":"진전을 이루다"},{"en":"in progress","ko":"진행 중인"}]},"nuance":{"koSimple":"조금씩 앞으로 나아가는 발걸음","whenToUse":"실력이나 일이 나아지고 있을 때"},"krDetail":[{"ko":"발전","explain":"'발전(發展)'은 한자어이고, 순우리말로는 '앞으로 나아감'이라는 뜻이야."},{"ko":"진보하다","explain":"'진보(進步)하다'는 한자어이고, 순우리말로는 '앞으로 나아가다'라는 뜻이야."}],"usageExamples":[{"en":"The teacher progressed the class to the next grammar unit.","ko":"선생님은 반을 다음 문법 단원으로 진행시켰다."},{"en":"Slow but steady progress is better than no progress at all.","ko":"느리더라도 꾸준한 발전이 아예 없는 것보다 낫다."}],"grammarNote":"progress는 명사(ˈprəʊɡres)와 동사(prəˈɡres)의 강세가 달라. 학생들이 발음 구분을 자주 놓쳐.","grammarQuiz":[{"sentence":"She is making steady _____ in her English studies.","ko":"그녀는 영어 공부에서 꾸준한 발전을 이루고 있다.","answer":["progress"],"hint":"명사, 불가산"},{"sentence":"Our project is still _____ in the right direction.","ko":"우리 프로젝트는 여전히 옳은 방향으로 진행되고 있다.","answer":["progressing"],"hint":"진행형 동사"}]},
     {"id":"w05098","w":"project","pos":["n","v"],"ph":"/ˈprɒdʒekt/","cefr":"A2","kr":["프로젝트","예측하다"],"ex":[{"en":"We are working on a science project.","ko":"우리는 과학 프로젝트를 진행하고 있다."}],"mnemonic":{"soundHint":"프로젝트","story":"외래어 '프로젝트'가 그대로 project.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"plan","ko":"계획","reason":"project의 동의어"},{"w":"scheme","ko":"계획","reason":"계획·기획 동의어"},{"w":"research","ko":"연구","reason":"project와 자주 결합"}],"collocBest":[{"en":"research project","ko":"연구 프로젝트"},{"en":"group project","ko":"그룹 프로젝트"}]},"nuance":{"koSimple":"계획표 붙여 놓고 진행하는 큰 과제","whenToUse":"목표 있는 큰 과제를 말할 때"},"krDetail":[{"ko":"프로젝트","explain":"'프로젝트'는 외래어이고, 순우리말로는 '함께 하는 일거리'라는 뜻으로 풀 수 있어."},{"ko":"예측하다","explain":"'예측(豫測)하다'는 한자어이고, 순우리말로는 '미리 헤아리다'라는 뜻이야."}],"usageExamples":[{"en":"The company projected next year's sales to be much higher.","ko":"그 회사는 내년 매출이 훨씬 더 높을 것으로 예상했다."},{"en":"Our science project was chosen as the best in the school.","ko":"우리 과학 프로젝트는 학교에서 최고로 뽑혔다."}],"grammarNote":"project는 명사(ˈprɒdʒekt)와 동사(prəˈdʒekt)의 강세가 달라. 학생들이 동사로 쓸 때도 앞 강세로 읽는 실수를 해.","grammarQuiz":[{"sentence":"We are working on a group _____ for our science class.","ko":"우리는 과학 수업 그룹 프로젝트를 하고 있다.","answer":["project"],"hint":"명사"},{"sentence":"Analysts _____ that the economy will grow slowly next year.","ko":"분석가들은 내년에 경제가 천천히 성장할 것이라고 예측한다.","answer":["project"],"hint":"동사 원형"}]},
-    {"id":"w05104","w":"promise","pos":["n","v"],"ph":"/ˈprɒmɪs/","cefr":"A2","kr":["약속","약속하다"],"ex":[{"en":"He kept his promise to help her.","ko":"그는 그녀를 돕겠다는 약속을 지켰다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"pledge","ko":"맹세하다","reason":"promise의 동의어"},{"w":"commitment","ko":"약속·헌신","reason":"약속 동의어"},{"w":"break","ko":"깨다","reason":"promise와 결합, 약속을 깨다"}],"collocBest":[{"en":"keep a promise","ko":"약속을 지키다"},{"en":"break a promise","ko":"약속을 어기다"}]},"nuance":{"koSimple":"새끼손가락 걸고 하는 약속","whenToUse":"꼭 지키겠다고 다짐할 때"},"krDetail":[{"ko":"약속","explain":"'약속(約束)'은 한자어이고, 순우리말로는 '서로 다짐하는 말'이라는 뜻이야."},{"ko":"약속하다","explain":"'약속하다'는 한자어이고, 순우리말로는 '다짐하다'라는 뜻이야."}],"usageExamples":null,"grammarNote":"promise는 to부정사만 목적어로 취해. 학생들이 'promise doing'처럼 동명사를 붙이는 실수를 자주 해.","grammarQuiz":[{"sentence":"He promised _____ come home before ten o'clock.","ko":"그는 10시 전에 집에 오겠다고 약속했다.","answer":["to"],"hint":"to부정사"},{"sentence":"She made a _____ to help her friend with homework.","ko":"그녀는 친구의 숙제를 도와주겠다고 약속했다.","answer":["promise"],"hint":"명사, make와 함께"}]},
-    {"id":"w05131","w":"protect","pos":["v"],"ph":"/prəˈtekt/","cefr":"A2","kr":["보호하다","지키다"],"ex":[{"en":"Wear sunscreen to protect your skin.","ko":"피부를 보호하기 위해 자외선 차단제를 발라라."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"guard","ko":"지키다","reason":"protect의 동의어"},{"w":"shield","ko":"보호하다","reason":"보호 동의어"},{"w":"harm","ko":"해치다","reason":"protect의 반의어"}],"collocBest":[{"en":"protect the environment","ko":"환경을 보호하다"},{"en":"protect from harm","ko":"해로부터 보호하다"}]},"nuance":{"koSimple":"방패로 소중한 것을 가려주는 그림","whenToUse":"위험에서 지키고 감쌀 때"},"krDetail":[{"ko":"보호하다","explain":"'보호(保護)하다'는 한자어이고, 순우리말로는 '지켜 주다'라는 뜻이야."},{"ko":"지키다","explain":"'지키다'는 순우리말로, 다치거나 없어지지 않게 돌본다는 뜻이야."}],"usageExamples":null,"grammarNote":"protect A from B 구조가 기본이야. 학생들이 protect A of B, protect A against로 쓰는 실수를 자주 해.","grammarQuiz":[{"sentence":"Sunscreen protects your skin _____ strong sunlight.","ko":"자외선 차단제는 당신의 피부를 강한 햇빛으로부터 보호한다.","answer":["from"],"hint":"전치사"},{"sentence":"We must _____ endangered animals for future generations.","ko":"우리는 미래 세대를 위해 멸종 위기 동물을 보호해야 한다.","answer":["protect"],"hint":"조동사 뒤 동사원형"}]},
-    {"id":"w05137","w":"proud","pos":["adj"],"ph":"/praʊd/","cefr":"A2","kr":["자랑스러운","거만한"],"ex":[{"en":"I am proud of my daughter's success.","ko":"나는 딸의 성공이 자랑스럽다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"confident","ko":"자신감 있는","reason":"proud의 동의어"},{"w":"ashamed","ko":"부끄러운","reason":"proud의 반의어"},{"w":"humble","ko":"겸손한","reason":"거만함의 반의어"}],"collocBest":[{"en":"be proud of","ko":"~을 자랑스럽게 여기다"},{"en":"proud moment","ko":"자랑스러운 순간"}]},"nuance":{"koSimple":"고개 들고 어깨 쫙 펴는 표정","whenToUse":"뿌듯하고 자랑하고 싶을 때"},"krDetail":[{"ko":"자랑스러운","explain":"'자랑스러운'은 순우리말로, 남에게 뽐낼 만하다는 뜻이야."},{"ko":"거만한","explain":"'거만(倨慢)한'은 한자어이고, 순우리말로는 '뽐내며 남을 낮추어 보는'이라는 뜻이야."}],"usageExamples":null,"grammarNote":"be proud of + 명사/동명사 구조야. 학생들이 be proud to do와 헷갈려 'proud of to do'처럼 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"I am very proud _____ my little sister's achievement.","ko":"나는 내 여동생의 성취가 매우 자랑스럽다.","answer":["of"],"hint":"전치사"},{"sentence":"My parents are proud _____ having me as their son.","ko":"우리 부모님은 나를 아들로 둔 것을 자랑스러워하신다.","answer":["of"],"hint":"동명사 앞 전치사"}]},
+    {"id":"w05104","w":"promise","pos":["n","v"],"ph":"/ˈprɒmɪs/","cefr":"A2","kr":["약속","약속하다"],"ex":[{"en":"He kept his promise to help her.","ko":"그는 그녀를 돕겠다는 약속을 지켰다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"pledge","ko":"맹세하다","reason":"promise의 동의어"},{"w":"commitment","ko":"약속·헌신","reason":"약속 동의어"},{"w":"break","ko":"깨다","reason":"promise와 결합, 약속을 깨다"}],"collocBest":[{"en":"keep a promise","ko":"약속을 지키다"},{"en":"break a promise","ko":"약속을 어기다"}]},"nuance":{"koSimple":"새끼손가락 걸고 하는 약속","whenToUse":"꼭 지키겠다고 다짐할 때"},"krDetail":[{"ko":"약속","explain":"'약속(約束)'은 한자어이고, 순우리말로는 '서로 다짐하는 말'이라는 뜻이야."},{"ko":"약속하다","explain":"'약속하다'는 한자어이고, 순우리말로는 '다짐하다'라는 뜻이야."}],"usageExamples":[{"en":"You should always keep your promise.","ko":"너는 항상 약속을 지켜야 한다."},{"en":"I promise to call you tonight.","ko":"오늘 밤 너에게 전화할 것을 약속할게."}],"grammarNote":"promise는 to부정사만 목적어로 취해. 학생들이 'promise doing'처럼 동명사를 붙이는 실수를 자주 해.","grammarQuiz":[{"sentence":"He promised _____ come home before ten o'clock.","ko":"그는 10시 전에 집에 오겠다고 약속했다.","answer":["to"],"hint":"to부정사"},{"sentence":"She made a _____ to help her friend with homework.","ko":"그녀는 친구의 숙제를 도와주겠다고 약속했다.","answer":["promise"],"hint":"명사, make와 함께"}]},
+    {"id":"w05131","w":"protect","pos":["v"],"ph":"/prəˈtekt/","cefr":"A2","kr":["보호하다","지키다"],"ex":[{"en":"Wear sunscreen to protect your skin.","ko":"피부를 보호하기 위해 자외선 차단제를 발라라."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"guard","ko":"지키다","reason":"protect의 동의어"},{"w":"shield","ko":"보호하다","reason":"보호 동의어"},{"w":"harm","ko":"해치다","reason":"protect의 반의어"}],"collocBest":[{"en":"protect the environment","ko":"환경을 보호하다"},{"en":"protect from harm","ko":"해로부터 보호하다"}]},"nuance":{"koSimple":"방패로 소중한 것을 가려주는 그림","whenToUse":"위험에서 지키고 감쌀 때"},"krDetail":[{"ko":"보호하다","explain":"'보호(保護)하다'는 한자어이고, 순우리말로는 '지켜 주다'라는 뜻이야."},{"ko":"지키다","explain":"'지키다'는 순우리말로, 다치거나 없어지지 않게 돌본다는 뜻이야."}],"usageExamples":[{"en":"A helmet protects your head.","ko":"헬멧은 머리를 보호한다."},{"en":"We must protect the environment.","ko":"우리는 환경을 지켜야 한다."}],"grammarNote":"protect A from B 구조가 기본이야. 학생들이 protect A of B, protect A against로 쓰는 실수를 자주 해.","grammarQuiz":[{"sentence":"Sunscreen protects your skin _____ strong sunlight.","ko":"자외선 차단제는 당신의 피부를 강한 햇빛으로부터 보호한다.","answer":["from"],"hint":"전치사"},{"sentence":"We must _____ endangered animals for future generations.","ko":"우리는 미래 세대를 위해 멸종 위기 동물을 보호해야 한다.","answer":["protect"],"hint":"조동사 뒤 동사원형"}]},
+    {"id":"w05137","w":"proud","pos":["adj"],"ph":"/praʊd/","cefr":"A2","kr":["자랑스러운","거만한"],"ex":[{"en":"I am proud of my daughter's success.","ko":"나는 딸의 성공이 자랑스럽다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"confident","ko":"자신감 있는","reason":"proud의 동의어"},{"w":"ashamed","ko":"부끄러운","reason":"proud의 반의어"},{"w":"humble","ko":"겸손한","reason":"거만함의 반의어"}],"collocBest":[{"en":"be proud of","ko":"~을 자랑스럽게 여기다"},{"en":"proud moment","ko":"자랑스러운 순간"}]},"nuance":{"koSimple":"고개 들고 어깨 쫙 펴는 표정","whenToUse":"뿌듯하고 자랑하고 싶을 때"},"krDetail":[{"ko":"자랑스러운","explain":"'자랑스러운'은 순우리말로, 남에게 뽐낼 만하다는 뜻이야."},{"ko":"거만한","explain":"'거만(倨慢)한'은 한자어이고, 순우리말로는 '뽐내며 남을 낮추어 보는'이라는 뜻이야."}],"usageExamples":[{"en":"They are proud of their team.","ko":"그들은 자기 팀을 자랑스러워한다."},{"en":"He was too proud to say sorry.","ko":"그는 너무 거만해서 미안하다고 말하지 못했다."}],"grammarNote":"be proud of + 명사/동명사 구조야. 학생들이 be proud to do와 헷갈려 'proud of to do'처럼 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"I am very proud _____ my little sister's achievement.","ko":"나는 내 여동생의 성취가 매우 자랑스럽다.","answer":["of"],"hint":"전치사"},{"sentence":"My parents are proud _____ having me as their son.","ko":"우리 부모님은 나를 아들로 둔 것을 자랑스러워하신다.","answer":["of"],"hint":"동명사 앞 전치사"}]},
     {"id":"w05138","w":"prove","pos":["v"],"ph":"/pruːv/","cefr":"A2","kr":["증명하다","입증되다"],"ex":[{"en":"She proved that she was right.","ko":"그녀는 자신이 옳다는 것을 증명했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"demonstrate","ko":"증명하다","reason":"prove의 동의어"},{"w":"show","ko":"보여주다","reason":"증명 동의어"},{"w":"disprove","ko":"반증하다","reason":"prove의 반의어"}],"collocBest":[{"en":"prove a point","ko":"주장을 증명하다"},{"en":"prove wrong","ko":"틀렸음을 증명하다"}]},"nuance":{"koSimple":"'봐, 내 말 맞지?' 하고 보여주기","whenToUse":"사실임을 밝혀 보여줄 때"},"krDetail":[{"ko":"증명하다","explain":"'증명(證明)하다'는 한자어이고, 순우리말로는 '옳음을 밝혀 보이다'라는 뜻이야."},{"ko":"입증되다","explain":"'입증(立證)되다'는 한자어이고, 순우리말로는 '옳다고 밝혀지다'라는 뜻이야."}],"usageExamples":[{"en":"The detective finally proved that the man was innocent.","ko":"그 형사는 마침내 그 남자가 무죄임을 증명했다."},{"en":"His plan was proved wrong after only one week.","ko":"그의 계획은 단 일주일 만에 틀린 것으로 입증되었다."}],"grammarNote":"자동사 prove는 뒤에 형용사 보어를 취해 '~로 판명되다'가 돼. 학생들이 be동사를 넣어 'prove to be' 외에 쓸 줄 몰라.","grammarQuiz":[{"sentence":"This method _____ very useful for our project.","ko":"이 방법은 우리 프로젝트에 매우 유용한 것으로 판명되었다.","answer":["proved"],"hint":"자동사 과거"},{"sentence":"You need to _____ that your answer is really correct.","ko":"너는 너의 답이 정말로 옳다는 것을 증명해야 한다.","answer":["prove"],"hint":"타동사 원형"}]},
-    {"id":"w05140","w":"provide","pos":["v"],"ph":"/prəˈvaɪd/","cefr":"A2","kr":["제공하다","주다"],"ex":[{"en":"The hotel provides free breakfast.","ko":"그 호텔은 무료 조식을 제공한다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"supply","ko":"공급하다","reason":"provide의 동의어"},{"w":"offer","ko":"제공하다","reason":"제공 동의어"},{"w":"withhold","ko":"보류하다","reason":"provide의 반의어"}],"collocBest":[{"en":"provide support","ko":"지원을 제공하다"},{"en":"provide information","ko":"정보를 제공하다"}]},"nuance":{"koSimple":"필요한 것을 손에 쥐어 주는 그림","whenToUse":"필요한 걸 마련해 줄 때"},"krDetail":[{"ko":"제공하다","explain":"'제공(提供)하다'는 한자어이고, 순우리말로는 '내어주다'라는 뜻이야."},{"ko":"주다","explain":"'주다'는 순우리말로, 무엇을 남에게 건네는 행동을 말해."}],"usageExamples":null,"grammarNote":"provide A with B 또는 provide B for A 구조가 기본이야. 학생들이 provide A B처럼 4형식으로 쓰는 실수를 해.","grammarQuiz":[{"sentence":"The school provides students _____ free lunch every day.","ko":"그 학교는 학생들에게 매일 무료 점심을 제공한다.","answer":["with"],"hint":"provide A ___ B"},{"sentence":"The library provides books _____ all local residents.","ko":"그 도서관은 모든 지역 주민들에게 책을 제공한다.","answer":["for"],"hint":"provide B ___ A"}]},
-    {"id":"w05164","w":"punish","pos":["v"],"ph":"/ˈpʌnɪʃ/","cefr":"A2","kr":["처벌하다","벌주다"],"ex":[{"en":"The teacher punished the students for being late.","ko":"선생님은 지각한 학생들을 벌주었다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"penalize","ko":"처벌하다","reason":"punish의 동의어"},{"w":"discipline","ko":"훈육하다","reason":"처벌 동의어"},{"w":"reward","ko":"보상하다","reason":"punish의 반의어"}],"collocBest":[{"en":"punish wrongdoing","ko":"잘못을 처벌하다"},{"en":"punish severely","ko":"엄하게 처벌하다"}]},"nuance":{"koSimple":"잘못한 사람에게 벌을 딱 내리는 모습","whenToUse":"잘못에 벌을 줄 때"},"krDetail":[{"ko":"처벌하다","explain":"'처벌(處罰)하다'는 한자어이고, 순우리말로는 '벌을 주다'라는 뜻이야."},{"ko":"벌주다","explain":"'벌주다'는 순우리말 표현으로, 잘못에 대해 아픈 대가를 치르게 한다는 뜻이야."}],"usageExamples":null,"grammarNote":"punish는 사람을 목적어로 쓰고, 이유는 for로 연결해. 학생들이 punish about, punish of로 쓰는 실수를 해.","grammarQuiz":[{"sentence":"The teacher punished him _____ cheating on the test.","ko":"선생님은 시험에서 부정행위를 했다는 이유로 그를 처벌했다.","answer":["for"],"hint":"이유 전치사"},{"sentence":"Parents should not _____ children too harshly for mistakes.","ko":"부모는 실수에 대해 아이들을 너무 심하게 처벌해서는 안 된다.","answer":["punish"],"hint":"조동사 뒤 원형"}]},
-    {"id":"w05165","w":"punishment","pos":["n"],"ph":"/ˈpʌnɪʃmənt/","cefr":"A2","kr":["처벌","형벌"],"ex":[{"en":"The punishment must fit the crime.","ko":"처벌은 범죄에 합당해야 한다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"penalty","ko":"벌","reason":"punishment의 동의어"},{"w":"reward","ko":"보상","reason":"punishment의 반의어"},{"w":"harsh","ko":"가혹한","reason":"punishment와 자주 결합"}],"collocBest":[{"en":"face punishment","ko":"처벌을 받다"},{"en":"harsh punishment","ko":"가혹한 처벌"}]},"nuance":{"koSimple":"잘못에 대해 받는 벌 그 자체","whenToUse":"벌·처벌 자체를 가리킬 때"},"krDetail":[{"ko":"처벌","explain":"'처벌(處罰)'은 한자어이고, 순우리말로는 '벌'이라는 뜻이야."},{"ko":"형벌","explain":"'형벌(刑罰)'은 한자어이고, 순우리말로는 '법에 따라 주는 벌'이라는 뜻이야."}],"usageExamples":null,"grammarNote":"punishment는 불가산 명사로 자주 쓰이지만, 구체적 종류를 셀 때는 가산으로 쓰여. 학생들이 항상 punishments로 쓰는 실수를 해.","grammarQuiz":[{"sentence":"The criminal received severe _____ for his terrible crime.","ko":"그 범죄자는 자신의 끔찍한 범죄에 대해 엄중한 처벌을 받았다.","answer":["punishment"],"hint":"불가산 명사"},{"sentence":"There are different _____ for different types of wrongdoing.","ko":"다양한 잘못에 대해 다양한 형벌이 있다.","answer":["punishments"],"hint":"가산 복수"}]},
-    {"id":"w05166","w":"pupil","pos":["n"],"ph":"/ˈpjuːpəl/","cefr":"A2","kr":["학생","동공"],"ex":[{"en":"The pupil asked a great question.","ko":"그 학생은 훌륭한 질문을 했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"student","ko":"학생","reason":"pupil의 동의어"},{"w":"learner","ko":"학습자","reason":"학생 동의어"},{"w":"teacher","ko":"교사","reason":"pupil의 반의어"}],"collocBest":[{"en":"school pupil","ko":"학교 학생"},{"en":"pupil of the eye","ko":"눈동자"}]},"nuance":{"koSimple":"학교에서 배우는 어린 학생","whenToUse":"영국식 초등 학생 말할 때"},"krDetail":[{"ko":"학생","explain":"'학생(學生)'은 한자어이고, 순우리말로는 '배우는 사람'이라는 뜻이야."},{"ko":"동공","explain":"'동공(瞳孔)'은 한자어이고, 순우리말로는 '눈동자'라는 뜻이야."}],"usageExamples":null,"grammarNote":"pupil은 주로 영국식 영어에서 초·중등 학생을 뜻해. 학생들이 미국에서도 아무 학교에나 쓸 수 있다고 착각하는 경우가 많아.","grammarQuiz":[{"sentence":"There are thirty _____ in her elementary school class.","ko":"그녀의 초등학교 교실에는 서른 명의 학생이 있다.","answer":["pupils"],"hint":"복수형"},{"sentence":"The doctor checked the size of my _____ carefully.","ko":"의사는 내 눈동자의 크기를 조심스럽게 확인했다.","answer":["pupils"],"hint":"복수, 눈"}]},
-    {"id":"w05167","w":"puppy","pos":["n"],"ph":"/ˈpʌpi/","cefr":"A2","kr":["강아지"],"ex":[{"en":"The puppy wagged its tail excitedly.","ko":"강아지는 신나게 꼬리를 흔들었다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"pup","ko":"새끼","reason":"puppy의 축약형 동의어"},{"w":"dog","ko":"개","reason":"puppy는 어린 dog"},{"w":"adopt","ko":"입양하다","reason":"puppy와 자주 결합"}],"collocBest":[{"en":"newborn puppy","ko":"갓 태어난 강아지"},{"en":"adopt a puppy","ko":"강아지를 입양하다"}]},"nuance":{"koSimple":"꼬리 살랑살랑 흔드는 새끼 강아지","whenToUse":"어린 강아지를 귀엽게 부를 때"},"krDetail":[{"ko":"강아지","explain":"'강아지'는 순우리말로, 어린 개를 뜻해."}],"usageExamples":null,"grammarNote":"puppy의 복수형은 puppies로 y를 i로 바꿔 -es를 붙여. 학생들이 puppys로 쓰는 실수를 자주 해.","grammarQuiz":[{"sentence":"Our dog gave birth to five cute _____ last night.","ko":"우리 개는 어젯밤에 다섯 마리의 귀여운 강아지를 낳았다.","answer":["puppies"],"hint":"y→i+es"},{"sentence":"The little _____ is playing in the garden right now.","ko":"그 작은 강아지는 지금 정원에서 놀고 있다.","answer":["puppy"],"hint":"단수"}]},
-    {"id":"w05173","w":"purpose","pos":["n"],"ph":"/ˈpɜːpəs/","cefr":"A2","kr":["목적","용도"],"ex":[{"en":"The purpose of this exercise is to build strength.","ko":"이 운동의 목적은 체력을 키우는 것이다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"aim","ko":"목표","reason":"purpose의 동의어"},{"w":"goal","ko":"목표","reason":"목적 동의어"},{"w":"intention","ko":"의도","reason":"목적 시나리오 동의어"}],"collocBest":[{"en":"on purpose","ko":"의도적으로"},{"en":"serve a purpose","ko":"목적을 달성하다"}]},"nuance":{"koSimple":"'왜 그거 해?'의 그 이유·목적","whenToUse":"무엇을 위해 하는지 말할 때"},"krDetail":[{"ko":"목적","explain":"'목적(目的)'은 한자어이고, 순우리말로는 '이루려 하는 것'이라는 뜻이야."},{"ko":"용도","explain":"'용도(用途)'는 한자어이고, 순우리말로는 '쓰임새'라는 뜻이야."}],"usageExamples":null,"grammarNote":"on purpose(고의로) vs by accident(우연히)를 헷갈려. 학생들이 in purpose, with purpose로 잘못 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"He broke the window _____ purpose to get inside.","ko":"그는 안에 들어가려고 고의로 창문을 깼다.","answer":["on"],"hint":"전치사"},{"sentence":"What is the main _____ of this new machine?","ko":"이 새 기계의 주된 용도는 무엇인가?","answer":["purpose"],"hint":"단수 명사"}]},
+    {"id":"w05140","w":"provide","pos":["v"],"ph":"/prəˈvaɪd/","cefr":"A2","kr":["제공하다","주다"],"ex":[{"en":"The hotel provides free breakfast.","ko":"그 호텔은 무료 조식을 제공한다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"supply","ko":"공급하다","reason":"provide의 동의어"},{"w":"offer","ko":"제공하다","reason":"제공 동의어"},{"w":"withhold","ko":"보류하다","reason":"provide의 반의어"}],"collocBest":[{"en":"provide support","ko":"지원을 제공하다"},{"en":"provide information","ko":"정보를 제공하다"}]},"nuance":{"koSimple":"필요한 것을 손에 쥐어 주는 그림","whenToUse":"필요한 걸 마련해 줄 때"},"krDetail":[{"ko":"제공하다","explain":"'제공(提供)하다'는 한자어이고, 순우리말로는 '내어주다'라는 뜻이야."},{"ko":"주다","explain":"'주다'는 순우리말로, 무엇을 남에게 건네는 행동을 말해."}],"usageExamples":[{"en":"The school provides free lunch.","ko":"그 학교는 무료 점심을 제공한다."},{"en":"They provided us with useful information.","ko":"그들은 우리에게 유용한 정보를 제공했다."}],"grammarNote":"provide A with B 또는 provide B for A 구조가 기본이야. 학생들이 provide A B처럼 4형식으로 쓰는 실수를 해.","grammarQuiz":[{"sentence":"The school provides students _____ free lunch every day.","ko":"그 학교는 학생들에게 매일 무료 점심을 제공한다.","answer":["with"],"hint":"provide A ___ B"},{"sentence":"The library provides books _____ all local residents.","ko":"그 도서관은 모든 지역 주민들에게 책을 제공한다.","answer":["for"],"hint":"provide B ___ A"}]},
+    {"id":"w05164","w":"punish","pos":["v"],"ph":"/ˈpʌnɪʃ/","cefr":"A2","kr":["처벌하다","벌주다"],"ex":[{"en":"The teacher punished the students for being late.","ko":"선생님은 지각한 학생들을 벌주었다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"penalize","ko":"처벌하다","reason":"punish의 동의어"},{"w":"discipline","ko":"훈육하다","reason":"처벌 동의어"},{"w":"reward","ko":"보상하다","reason":"punish의 반의어"}],"collocBest":[{"en":"punish wrongdoing","ko":"잘못을 처벌하다"},{"en":"punish severely","ko":"엄하게 처벌하다"}]},"nuance":{"koSimple":"잘못한 사람에게 벌을 딱 내리는 모습","whenToUse":"잘못에 벌을 줄 때"},"krDetail":[{"ko":"처벌하다","explain":"'처벌(處罰)하다'는 한자어이고, 순우리말로는 '벌을 주다'라는 뜻이야."},{"ko":"벌주다","explain":"'벌주다'는 순우리말 표현으로, 잘못에 대해 아픈 대가를 치르게 한다는 뜻이야."}],"usageExamples":[{"en":"The law punishes people who steal.","ko":"법은 훔치는 사람들을 처벌한다."},{"en":"He was punished for lying.","ko":"그는 거짓말한 것으로 벌을 받았다."}],"grammarNote":"punish는 사람을 목적어로 쓰고, 이유는 for로 연결해. 학생들이 punish about, punish of로 쓰는 실수를 해.","grammarQuiz":[{"sentence":"The teacher punished him _____ cheating on the test.","ko":"선생님은 시험에서 부정행위를 했다는 이유로 그를 처벌했다.","answer":["for"],"hint":"이유 전치사"},{"sentence":"Parents should not _____ children too harshly for mistakes.","ko":"부모는 실수에 대해 아이들을 너무 심하게 처벌해서는 안 된다.","answer":["punish"],"hint":"조동사 뒤 원형"}]},
+    {"id":"w05165","w":"punishment","pos":["n"],"ph":"/ˈpʌnɪʃmənt/","cefr":"A2","kr":["처벌","형벌"],"ex":[{"en":"The punishment must fit the crime.","ko":"처벌은 범죄에 합당해야 한다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"penalty","ko":"벌","reason":"punishment의 동의어"},{"w":"reward","ko":"보상","reason":"punishment의 반의어"},{"w":"harsh","ko":"가혹한","reason":"punishment와 자주 결합"}],"collocBest":[{"en":"face punishment","ko":"처벌을 받다"},{"en":"harsh punishment","ko":"가혹한 처벌"}]},"nuance":{"koSimple":"잘못에 대해 받는 벌 그 자체","whenToUse":"벌·처벌 자체를 가리킬 때"},"krDetail":[{"ko":"처벌","explain":"'처벌(處罰)'은 한자어이고, 순우리말로는 '벌'이라는 뜻이야."},{"ko":"형벌","explain":"'형벌(刑罰)'은 한자어이고, 순우리말로는 '법에 따라 주는 벌'이라는 뜻이야."}],"usageExamples":[{"en":"Losing his phone was a fair punishment.","ko":"휴대폰을 잃는 것은 공정한 처벌이었다."},{"en":"The punishment for the crime was severe.","ko":"그 범죄에 대한 형벌은 가혹했다."}],"grammarNote":"punishment는 불가산 명사로 자주 쓰이지만, 구체적 종류를 셀 때는 가산으로 쓰여. 학생들이 항상 punishments로 쓰는 실수를 해.","grammarQuiz":[{"sentence":"The criminal received severe _____ for his terrible crime.","ko":"그 범죄자는 자신의 끔찍한 범죄에 대해 엄중한 처벌을 받았다.","answer":["punishment"],"hint":"불가산 명사"},{"sentence":"There are different _____ for different types of wrongdoing.","ko":"다양한 잘못에 대해 다양한 형벌이 있다.","answer":["punishments"],"hint":"가산 복수"}]},
+    {"id":"w05166","w":"pupil","pos":["n"],"ph":"/ˈpjuːpəl/","cefr":"A2","kr":["학생","동공"],"ex":[{"en":"The pupil asked a great question.","ko":"그 학생은 훌륭한 질문을 했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"student","ko":"학생","reason":"pupil의 동의어"},{"w":"learner","ko":"학습자","reason":"학생 동의어"},{"w":"teacher","ko":"교사","reason":"pupil의 반의어"}],"collocBest":[{"en":"school pupil","ko":"학교 학생"},{"en":"pupil of the eye","ko":"눈동자"}]},"nuance":{"koSimple":"학교에서 배우는 어린 학생","whenToUse":"영국식 초등 학생 말할 때"},"krDetail":[{"ko":"학생","explain":"'학생(學生)'은 한자어이고, 순우리말로는 '배우는 사람'이라는 뜻이야."},{"ko":"동공","explain":"'동공(瞳孔)'은 한자어이고, 순우리말로는 '눈동자'라는 뜻이야."}],"usageExamples":[{"en":"Every pupil in the class passed.","ko":"그 반의 모든 학생이 통과했다."},{"en":"The pupils of her eyes grew wide.","ko":"그녀의 눈동자가 커졌다."}],"grammarNote":"pupil은 주로 영국식 영어에서 초·중등 학생을 뜻해. 학생들이 미국에서도 아무 학교에나 쓸 수 있다고 착각하는 경우가 많아.","grammarQuiz":[{"sentence":"There are thirty _____ in her elementary school class.","ko":"그녀의 초등학교 교실에는 서른 명의 학생이 있다.","answer":["pupils"],"hint":"복수형"},{"sentence":"The doctor checked the size of my _____ carefully.","ko":"의사는 내 눈동자의 크기를 조심스럽게 확인했다.","answer":["pupils"],"hint":"복수, 눈"}]},
+    {"id":"w05167","w":"puppy","pos":["n"],"ph":"/ˈpʌpi/","cefr":"A2","kr":["강아지"],"ex":[{"en":"The puppy wagged its tail excitedly.","ko":"강아지는 신나게 꼬리를 흔들었다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"pup","ko":"새끼","reason":"puppy의 축약형 동의어"},{"w":"dog","ko":"개","reason":"puppy는 어린 dog"},{"w":"adopt","ko":"입양하다","reason":"puppy와 자주 결합"}],"collocBest":[{"en":"newborn puppy","ko":"갓 태어난 강아지"},{"en":"adopt a puppy","ko":"강아지를 입양하다"}]},"nuance":{"koSimple":"꼬리 살랑살랑 흔드는 새끼 강아지","whenToUse":"어린 강아지를 귀엽게 부를 때"},"krDetail":[{"ko":"강아지","explain":"'강아지'는 순우리말로, 어린 개를 뜻해."}],"usageExamples":[{"en":"The puppy chewed on my shoe.","ko":"그 강아지가 내 신발을 물어뜯었다."},{"en":"We got a new puppy last week.","ko":"우리는 지난주에 새 강아지를 데려왔다."}],"grammarNote":"puppy의 복수형은 puppies로 y를 i로 바꿔 -es를 붙여. 학생들이 puppys로 쓰는 실수를 자주 해.","grammarQuiz":[{"sentence":"Our dog gave birth to five cute _____ last night.","ko":"우리 개는 어젯밤에 다섯 마리의 귀여운 강아지를 낳았다.","answer":["puppies"],"hint":"y→i+es"},{"sentence":"The little _____ is playing in the garden right now.","ko":"그 작은 강아지는 지금 정원에서 놀고 있다.","answer":["puppy"],"hint":"단수"}]},
+    {"id":"w05173","w":"purpose","pos":["n"],"ph":"/ˈpɜːpəs/","cefr":"A2","kr":["목적","용도"],"ex":[{"en":"The purpose of this exercise is to build strength.","ko":"이 운동의 목적은 체력을 키우는 것이다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"aim","ko":"목표","reason":"purpose의 동의어"},{"w":"goal","ko":"목표","reason":"목적 동의어"},{"w":"intention","ko":"의도","reason":"목적 시나리오 동의어"}],"collocBest":[{"en":"on purpose","ko":"의도적으로"},{"en":"serve a purpose","ko":"목적을 달성하다"}]},"nuance":{"koSimple":"'왜 그거 해?'의 그 이유·목적","whenToUse":"무엇을 위해 하는지 말할 때"},"krDetail":[{"ko":"목적","explain":"'목적(目的)'은 한자어이고, 순우리말로는 '이루려 하는 것'이라는 뜻이야."},{"ko":"용도","explain":"'용도(用途)'는 한자어이고, 순우리말로는 '쓰임새'라는 뜻이야."}],"usageExamples":[{"en":"What is the purpose of your visit?","ko":"당신 방문의 목적은 무엇입니까?"},{"en":"This tool has many purposes.","ko":"이 도구는 여러 용도가 있다."}],"grammarNote":"on purpose(고의로) vs by accident(우연히)를 헷갈려. 학생들이 in purpose, with purpose로 잘못 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"He broke the window _____ purpose to get inside.","ko":"그는 안에 들어가려고 고의로 창문을 깼다.","answer":["on"],"hint":"전치사"},{"sentence":"What is the main _____ of this new machine?","ko":"이 새 기계의 주된 용도는 무엇인가?","answer":["purpose"],"hint":"단수 명사"}]},
     {"id":"w05179","w":"puzzle","pos":["n","v"],"ph":"/ˈpʌzəl/","cefr":"A2","kr":["퍼즐","당혹시키다"],"ex":[{"en":"The math puzzle was hard to solve.","ko":"수학 퍼즐은 풀기 어려웠다."}],"mnemonic":{"soundHint":"퍼즐","story":"외래어 '퍼즐'이 그대로 puzzle.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"mystery","ko":"수수께끼","reason":"puzzle의 동의어"},{"w":"confuse","ko":"혼란시키다","reason":"당혹시키다 동의어"},{"w":"jigsaw","ko":"직소","reason":"puzzle과 자주 결합"}],"collocBest":[{"en":"jigsaw puzzle","ko":"직소 퍼즐"},{"en":"puzzle out","ko":"풀어내다"}]},"nuance":{"koSimple":"조각 맞춰 그림 완성하는 게임","whenToUse":"맞추는 놀이나 어리둥절할 때"},"krDetail":[{"ko":"퍼즐","explain":"'퍼즐'은 외래어이고, 순우리말로는 '풀이 놀이'라는 뜻으로 풀 수 있어."},{"ko":"당혹시키다","explain":"'당혹(當惑)시키다'는 한자어이고, 순우리말로는 '어리둥절하게 하다'라는 뜻이야."}],"usageExamples":[{"en":"The math problem really puzzled the whole class yesterday.","ko":"그 수학 문제는 어제 반 전체를 정말 당혹시켰다."},{"en":"I finished the thousand-piece puzzle during winter break.","ko":"나는 겨울방학 동안 천 조각짜리 퍼즐을 완성했다."}],"grammarNote":"puzzle은 사람을 목적어로 취해 '당혹시키다'가 돼. 학생들이 puzzled와 puzzling을 헷갈려 사람을 puzzling이라고 쓰는 실수를 해.","grammarQuiz":[{"sentence":"The math problem really _____ me for a long time.","ko":"그 수학 문제는 오랫동안 정말로 나를 당혹시켰다.","answer":["puzzled"],"hint":"과거 시제"},{"sentence":"She looked _____ when she read the strange letter.","ko":"그녀는 그 이상한 편지를 읽었을 때 당황해 보였다.","answer":["puzzled"],"hint":"감정 형용사"}]},
-    {"id":"w05181","w":"pyramid","pos":["n"],"ph":"/ˈpɪrəmɪd/","cefr":"A2","kr":["피라미드"],"ex":[{"en":"The pyramids of Egypt are ancient wonders.","ko":"이집트 피라미드는 고대 불가사의다."}],"mnemonic":{"soundHint":"피라미드","story":"외래어 '피라미드'가 그대로 pyramid.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"Egypt","ko":"이집트","reason":"pyramid의 대표 시나리오 국가"},{"w":"triangle","ko":"삼각형","reason":"pyramid의 단면 모양"},{"w":"tomb","ko":"무덤","reason":"pyramid의 용도"}],"collocBest":[{"en":"Egyptian pyramid","ko":"이집트 피라미드"},{"en":"pyramid shape","ko":"피라미드 형태"}]},"nuance":{"koSimple":"이집트 사막에 우뚝 선 삼각뿔","whenToUse":"삼각뿔 모양 건축물을 말할 때"},"krDetail":[{"ko":"피라미드","explain":"'피라미드'는 외래어이고, 순우리말로는 '세모 뿔 모양의 큰 무덤'이라는 뜻으로 풀 수 있어."}],"usageExamples":null,"grammarNote":"고유한 피라미드는 정관사 the를 붙여. 학생들이 the Great Pyramid, the Pyramids of Giza에서 the를 빼먹는 실수가 잦아.","grammarQuiz":[{"sentence":"_____ Great Pyramid of Giza is very famous worldwide.","ko":"기자의 대피라미드는 전 세계적으로 매우 유명하다.","answer":["The"],"hint":"정관사"},{"sentence":"Ancient Egyptians built huge _____ as royal tombs.","ko":"고대 이집트인들은 왕실 무덤으로 거대한 피라미드들을 지었다.","answer":["pyramids"],"hint":"복수형"}]},
-    {"id":"w05183","w":"quality","pos":["n","adj"],"ph":"/ˈkwɒlɪti/","cefr":"A2","kr":["질","품질"],"ex":[{"en":"The quality of this product is excellent.","ko":"이 제품의 품질은 훌륭하다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"standard","ko":"기준","reason":"quality의 동의어"},{"w":"grade","ko":"등급","reason":"품질 동의어"},{"w":"high","ko":"높은","reason":"quality와 자주 결합"}],"collocBest":[{"en":"high quality","ko":"고품질"},{"en":"quality control","ko":"품질 관리"}]},"nuance":{"koSimple":"물건이 얼마나 좋고 튼튼한지의 정도","whenToUse":"좋고 나쁜 정도를 따질 때"},"krDetail":[{"ko":"질","explain":"'질(質)'은 한자어이고, 순우리말로는 '됨됨이' 또는 '바탕'이라는 뜻이야."},{"ko":"품질","explain":"'품질(品質)'은 한자어이고, 순우리말로는 '물건의 됨됨이'라는 뜻이야."}],"usageExamples":null,"grammarNote":"quality가 형용사처럼 쓰이면 관사와 어울려. 학생들이 'a high quality product'에서 a를 빼먹거나 quality를 복수로 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"This shop only sells _____ quality products to customers.","ko":"이 가게는 고객에게 오직 고품질 제품만을 판다.","answer":["high"],"hint":"형용사"},{"sentence":"The _____ of this service has improved a lot recently.","ko":"이 서비스의 품질은 최근에 많이 향상되었다.","answer":["quality"],"hint":"단수 명사"}]},
-    {"id":"w05185","w":"quarter","pos":["n"],"ph":"/ˈkwɔːrtər/","cefr":"A2","kr":["4분의 1","분기"],"ex":[{"en":"A quarter of the class passed the test.","ko":"반의 4분의 1이 시험에 통과했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"one-fourth","ko":"4분의 1","reason":"quarter의 동의어"},{"w":"district","ko":"지구","reason":"구역 뜻 동의어"},{"w":"final","ko":"결승","reason":"quarter와 결합, 준준결승"}],"collocBest":[{"en":"a quarter of","ko":"~의 4분의 1"},{"en":"quarter final","ko":"준준결승"}]},"nuance":{"koSimple":"피자를 넷으로 자른 한 조각","whenToUse":"4등분 중 하나·분기를 말할 때"},"krDetail":[{"ko":"4분의 1","explain":"'4분의 1'은 한자어 표현이고, 순우리말로는 '넷 중 하나'라는 뜻이야."},{"ko":"분기","explain":"'분기(分期)'는 한자어이고, 순우리말로는 '나눈 기간'이라는 뜻이야."}],"usageExamples":null,"grammarNote":"a quarter of + 명사 구조를 쓰고, 뒤 명사가 단수/복수인지에 따라 동사 수 일치가 결정돼. 학생들이 무조건 단수 동사를 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"A quarter _____ the students are absent from class today.","ko":"학생들의 4분의 1이 오늘 수업에 결석했다.","answer":["of"],"hint":"전치사"},{"sentence":"The company had strong sales in the last _____.","ko":"그 회사는 지난 분기에 강한 매출을 기록했다.","answer":["quarter"],"hint":"단수 명사"}]},
-    {"id":"w05194","w":"quietly","pos":["adv"],"ph":"/ˈkwaɪətli/","cefr":"A2","kr":["조용히","소리 없이"],"ex":[{"en":"She quietly left the room.","ko":"그녀는 조용히 방에서 나갔다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"silently","ko":"조용히","reason":"quietly의 동의어"},{"w":"softly","ko":"부드럽게","reason":"조용히 동의어"},{"w":"loudly","ko":"시끄럽게","reason":"quietly의 반의어"}],"collocBest":[{"en":"speak quietly","ko":"조용히 말하다"},{"en":"sit quietly","ko":"조용히 앉아 있다"}]},"nuance":{"koSimple":"발끝으로 살금살금 걷는 소리","whenToUse":"소리 없이 조용히 행동할 때"},"krDetail":[{"ko":"조용히","explain":"'조용히'는 순우리말로, 소리를 내지 않는 모양을 뜻해."},{"ko":"소리 없이","explain":"'소리 없이'는 순우리말 표현으로, 아무 소리도 나지 않게 한다는 뜻이야."}],"usageExamples":null,"grammarNote":"quietly는 부사이므로 동사를 꾸며. 학생들이 quiet(형용사)과 quietly를 혼동해서 'speak quiet'처럼 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"Please speak _____ in the library so others can study.","ko":"다른 사람들이 공부할 수 있도록 도서관에서는 조용히 말해 주세요.","answer":["quietly"],"hint":"동사 수식 부사"},{"sentence":"The baby was sleeping _____ in her mother's arms.","ko":"그 아기는 엄마 품에서 조용히 자고 있었다.","answer":["quietly"],"hint":"동사 수식 부사"}]},
-    {"id":"w05196","w":"quite","pos":["adv"],"ph":"/kwaɪt/","cefr":"A2","kr":["꽤","상당히"],"ex":[{"en":"The exam was quite difficult.","ko":"시험이 꽤 어려웠다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"rather","ko":"꽤","reason":"quite의 동의어"},{"w":"fairly","ko":"꽤","reason":"정도 동의어"},{"w":"very","ko":"매우","reason":"정도 부사 시나리오"}],"collocBest":[{"en":"quite a few","ko":"꽤 많은"},{"en":"quite often","ko":"꽤 자주"}]},"nuance":{"koSimple":"'꽤 어렵네' 할 때 그 '꽤'","whenToUse":"보통보다 조금 더 세다고 말할 때"},"krDetail":[{"ko":"꽤","explain":"'꽤'는 순우리말로, 생각보다 많거나 상당한 정도를 뜻해."},{"ko":"상당히","explain":"'상당(相當)히'는 한자어이고, 순우리말로는 '꽤'라는 뜻이야."}],"usageExamples":null,"grammarNote":"quite + a/an + 형용사 + 명사 어순이 특이해. 학생들이 'a quite good movie'처럼 관사를 앞에 두는 실수를 자주 해.","grammarQuiz":[{"sentence":"That was quite _____ interesting movie we watched together.","ko":"그것은 우리가 함께 본 꽤 흥미로운 영화였다.","answer":["an"],"hint":"quite+관사+형용사"},{"sentence":"It is _____ cold outside today, so wear a coat.","ko":"오늘 밖은 꽤 추우니 코트를 입어라.","answer":["quite"],"hint":"형용사 수식 부사"}]},
-    {"id":"w05215","w":"railroad","pos":["n"],"ph":"/ˈreɪlrəʊd/","cefr":"A2","kr":["철도","철도 노선"],"ex":[{"en":"The railroad connects the two cities.","ko":"철도가 두 도시를 연결한다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"railway","ko":"철도","reason":"railroad의 동의어(영국식)"},{"w":"track","ko":"선로","reason":"철도 선로 동의어"},{"w":"train","ko":"기차","reason":"railroad 위를 달리는 것"}],"collocBest":[{"en":"railroad track","ko":"철도 선로"},{"en":"railroad station","ko":"철도역"}]},"nuance":{"koSimple":"기차가 달리는 두 줄 쇠 길","whenToUse":"기차 다니는 길·시설을 말할 때"},"krDetail":[{"ko":"철도","explain":"'철도(鐵道)'는 한자어이고, 순우리말로는 '쇠로 만든 길'이라는 뜻이야."},{"ko":"철도 노선","explain":"'철도 노선(路線)'은 한자어이고, 순우리말로는 '기차가 다니는 길'이라는 뜻이야."}],"usageExamples":null,"grammarNote":"railroad는 주로 미국식, railway는 영국식 표현이야. 학생들이 시험 지문 국적에 맞춰 쓰는 감각이 부족해.","grammarQuiz":[{"sentence":"The old _____ track runs through the small mountain village.","ko":"그 오래된 철도 선로는 작은 산골 마을을 관통해 지나간다.","answer":["railroad"],"hint":"미국식"},{"sentence":"American workers built a long _____ across the whole country.","ko":"미국 노동자들은 나라 전체를 가로지르는 긴 철도를 건설했다.","answer":["railroad"],"hint":"명사"}]},
-    {"id":"w05216","w":"railway","pos":["n"],"ph":"/ˈreɪlweɪ/","cefr":"A2","kr":["철도","철로"],"ex":[{"en":"The railway runs through the mountains.","ko":"철도가 산을 통과해 달린다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"railroad","ko":"철도","reason":"railway의 미국식 동의어"},{"w":"station","ko":"역","reason":"railway와 자주 결합"},{"w":"line","ko":"노선","reason":"railway와 결합, 철도 노선"}],"collocBest":[{"en":"railway station","ko":"기차역"},{"en":"railway line","ko":"철도 노선"}]},"nuance":{"koSimple":"영국식 기차가 다니는 철길","whenToUse":"기차 노선·역을 말할 때"},"krDetail":[{"ko":"철도","explain":"'철도(鐵道)'는 한자어이고, 순우리말로는 '쇠로 만든 길'이라는 뜻이야."},{"ko":"철로","explain":"'철로(鐵路)'는 한자어이고, 순우리말로는 '기차가 다니는 길'이라는 뜻이야."}],"usageExamples":null,"grammarNote":"railway는 주로 영국식 영어이고, 미국은 railroad를 써. 학생들이 두 단어를 완전히 같이 봐서 문맥 감이 떨어져.","grammarQuiz":[{"sentence":"I met my friend at the _____ station in London.","ko":"나는 런던의 기차역에서 내 친구를 만났다.","answer":["railway"],"hint":"영국식"},{"sentence":"The British _____ system is famous for its long history.","ko":"영국의 철도 체계는 오랜 역사로 유명하다.","answer":["railway"],"hint":"명사"}]},
+    {"id":"w05181","w":"pyramid","pos":["n"],"ph":"/ˈpɪrəmɪd/","cefr":"A2","kr":["피라미드"],"ex":[{"en":"The pyramids of Egypt are ancient wonders.","ko":"이집트 피라미드는 고대 불가사의다."}],"mnemonic":{"soundHint":"피라미드","story":"외래어 '피라미드'가 그대로 pyramid.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"Egypt","ko":"이집트","reason":"pyramid의 대표 시나리오 국가"},{"w":"triangle","ko":"삼각형","reason":"pyramid의 단면 모양"},{"w":"tomb","ko":"무덤","reason":"pyramid의 용도"}],"collocBest":[{"en":"Egyptian pyramid","ko":"이집트 피라미드"},{"en":"pyramid shape","ko":"피라미드 형태"}]},"nuance":{"koSimple":"이집트 사막에 우뚝 선 삼각뿔","whenToUse":"삼각뿔 모양 건축물을 말할 때"},"krDetail":[{"ko":"피라미드","explain":"'피라미드'는 외래어이고, 순우리말로는 '세모 뿔 모양의 큰 무덤'이라는 뜻으로 풀 수 있어."}],"usageExamples":[{"en":"The pyramid was built thousands of years ago.","ko":"그 피라미드는 수천 년 전에 지어졌다."},{"en":"We climbed to the top of the pyramid.","ko":"우리는 피라미드 꼭대기까지 올라갔다."}],"grammarNote":"고유한 피라미드는 정관사 the를 붙여. 학생들이 the Great Pyramid, the Pyramids of Giza에서 the를 빼먹는 실수가 잦아.","grammarQuiz":[{"sentence":"_____ Great Pyramid of Giza is very famous worldwide.","ko":"기자의 대피라미드는 전 세계적으로 매우 유명하다.","answer":["The"],"hint":"정관사"},{"sentence":"Ancient Egyptians built huge _____ as royal tombs.","ko":"고대 이집트인들은 왕실 무덤으로 거대한 피라미드들을 지었다.","answer":["pyramids"],"hint":"복수형"}]},
+    {"id":"w05183","w":"quality","pos":["n","adj"],"ph":"/ˈkwɒlɪti/","cefr":"A2","kr":["질","품질"],"ex":[{"en":"The quality of this product is excellent.","ko":"이 제품의 품질은 훌륭하다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"standard","ko":"기준","reason":"quality의 동의어"},{"w":"grade","ko":"등급","reason":"품질 동의어"},{"w":"high","ko":"높은","reason":"quality와 자주 결합"}],"collocBest":[{"en":"high quality","ko":"고품질"},{"en":"quality control","ko":"품질 관리"}]},"nuance":{"koSimple":"물건이 얼마나 좋고 튼튼한지의 정도","whenToUse":"좋고 나쁜 정도를 따질 때"},"krDetail":[{"ko":"질","explain":"'질(質)'은 한자어이고, 순우리말로는 '됨됨이' 또는 '바탕'이라는 뜻이야."},{"ko":"품질","explain":"'품질(品質)'은 한자어이고, 순우리말로는 '물건의 됨됨이'라는 뜻이야."}],"usageExamples":[{"en":"This shop sells high-quality clothes.","ko":"이 가게는 고품질 옷을 판다."},{"en":"We care about the quality of our food.","ko":"우리는 음식의 질에 신경을 쓴다."}],"grammarNote":"quality가 형용사처럼 쓰이면 관사와 어울려. 학생들이 'a high quality product'에서 a를 빼먹거나 quality를 복수로 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"This shop only sells _____ quality products to customers.","ko":"이 가게는 고객에게 오직 고품질 제품만을 판다.","answer":["high"],"hint":"형용사"},{"sentence":"The _____ of this service has improved a lot recently.","ko":"이 서비스의 품질은 최근에 많이 향상되었다.","answer":["quality"],"hint":"단수 명사"}]},
+    {"id":"w05185","w":"quarter","pos":["n"],"ph":"/ˈkwɔːrtər/","cefr":"A2","kr":["4분의 1","분기"],"ex":[{"en":"A quarter of the class passed the test.","ko":"반의 4분의 1이 시험에 통과했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"one-fourth","ko":"4분의 1","reason":"quarter의 동의어"},{"w":"district","ko":"지구","reason":"구역 뜻 동의어"},{"w":"final","ko":"결승","reason":"quarter와 결합, 준준결승"}],"collocBest":[{"en":"a quarter of","ko":"~의 4분의 1"},{"en":"quarter final","ko":"준준결승"}]},"nuance":{"koSimple":"피자를 넷으로 자른 한 조각","whenToUse":"4등분 중 하나·분기를 말할 때"},"krDetail":[{"ko":"4분의 1","explain":"'4분의 1'은 한자어 표현이고, 순우리말로는 '넷 중 하나'라는 뜻이야."},{"ko":"분기","explain":"'분기(分期)'는 한자어이고, 순우리말로는 '나눈 기간'이라는 뜻이야."}],"usageExamples":[{"en":"Cut the apple into quarters.","ko":"사과를 4등분으로 잘라라."},{"en":"Sales rose in the first quarter.","ko":"매출이 1분기에 올랐다."}],"grammarNote":"a quarter of + 명사 구조를 쓰고, 뒤 명사가 단수/복수인지에 따라 동사 수 일치가 결정돼. 학생들이 무조건 단수 동사를 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"A quarter _____ the students are absent from class today.","ko":"학생들의 4분의 1이 오늘 수업에 결석했다.","answer":["of"],"hint":"전치사"},{"sentence":"The company had strong sales in the last _____.","ko":"그 회사는 지난 분기에 강한 매출을 기록했다.","answer":["quarter"],"hint":"단수 명사"}]},
+    {"id":"w05194","w":"quietly","pos":["adv"],"ph":"/ˈkwaɪətli/","cefr":"A2","kr":["조용히","소리 없이"],"ex":[{"en":"She quietly left the room.","ko":"그녀는 조용히 방에서 나갔다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"silently","ko":"조용히","reason":"quietly의 동의어"},{"w":"softly","ko":"부드럽게","reason":"조용히 동의어"},{"w":"loudly","ko":"시끄럽게","reason":"quietly의 반의어"}],"collocBest":[{"en":"speak quietly","ko":"조용히 말하다"},{"en":"sit quietly","ko":"조용히 앉아 있다"}]},"nuance":{"koSimple":"발끝으로 살금살금 걷는 소리","whenToUse":"소리 없이 조용히 행동할 때"},"krDetail":[{"ko":"조용히","explain":"'조용히'는 순우리말로, 소리를 내지 않는 모양을 뜻해."},{"ko":"소리 없이","explain":"'소리 없이'는 순우리말 표현으로, 아무 소리도 나지 않게 한다는 뜻이야."}],"usageExamples":[{"en":"Please speak quietly in the library.","ko":"도서관에서는 조용히 말하세요."},{"en":"He closed the door quietly.","ko":"그는 조용히 문을 닫았다."}],"grammarNote":"quietly는 부사이므로 동사를 꾸며. 학생들이 quiet(형용사)과 quietly를 혼동해서 'speak quiet'처럼 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"Please speak _____ in the library so others can study.","ko":"다른 사람들이 공부할 수 있도록 도서관에서는 조용히 말해 주세요.","answer":["quietly"],"hint":"동사 수식 부사"},{"sentence":"The baby was sleeping _____ in her mother's arms.","ko":"그 아기는 엄마 품에서 조용히 자고 있었다.","answer":["quietly"],"hint":"동사 수식 부사"}]},
+    {"id":"w05196","w":"quite","pos":["adv"],"ph":"/kwaɪt/","cefr":"A2","kr":["꽤","상당히"],"ex":[{"en":"The exam was quite difficult.","ko":"시험이 꽤 어려웠다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"rather","ko":"꽤","reason":"quite의 동의어"},{"w":"fairly","ko":"꽤","reason":"정도 동의어"},{"w":"very","ko":"매우","reason":"정도 부사 시나리오"}],"collocBest":[{"en":"quite a few","ko":"꽤 많은"},{"en":"quite often","ko":"꽤 자주"}]},"nuance":{"koSimple":"'꽤 어렵네' 할 때 그 '꽤'","whenToUse":"보통보다 조금 더 세다고 말할 때"},"krDetail":[{"ko":"꽤","explain":"'꽤'는 순우리말로, 생각보다 많거나 상당한 정도를 뜻해."},{"ko":"상당히","explain":"'상당(相當)히'는 한자어이고, 순우리말로는 '꽤'라는 뜻이야."}],"usageExamples":[{"en":"The movie was quite interesting.","ko":"그 영화는 꽤 재미있었다."},{"en":"It is quite cold outside today.","ko":"오늘 밖은 상당히 춥다."}],"grammarNote":"quite + a/an + 형용사 + 명사 어순이 특이해. 학생들이 'a quite good movie'처럼 관사를 앞에 두는 실수를 자주 해.","grammarQuiz":[{"sentence":"That was quite _____ interesting movie we watched together.","ko":"그것은 우리가 함께 본 꽤 흥미로운 영화였다.","answer":["an"],"hint":"quite+관사+형용사"},{"sentence":"It is _____ cold outside today, so wear a coat.","ko":"오늘 밖은 꽤 추우니 코트를 입어라.","answer":["quite"],"hint":"형용사 수식 부사"}]},
+    {"id":"w05215","w":"railroad","pos":["n"],"ph":"/ˈreɪlrəʊd/","cefr":"A2","kr":["철도","철도 노선"],"ex":[{"en":"The railroad connects the two cities.","ko":"철도가 두 도시를 연결한다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"railway","ko":"철도","reason":"railroad의 동의어(영국식)"},{"w":"track","ko":"선로","reason":"철도 선로 동의어"},{"w":"train","ko":"기차","reason":"railroad 위를 달리는 것"}],"collocBest":[{"en":"railroad track","ko":"철도 선로"},{"en":"railroad station","ko":"철도역"}]},"nuance":{"koSimple":"기차가 달리는 두 줄 쇠 길","whenToUse":"기차 다니는 길·시설을 말할 때"},"krDetail":[{"ko":"철도","explain":"'철도(鐵道)'는 한자어이고, 순우리말로는 '쇠로 만든 길'이라는 뜻이야."},{"ko":"철도 노선","explain":"'철도 노선(路線)'은 한자어이고, 순우리말로는 '기차가 다니는 길'이라는 뜻이야."}],"usageExamples":[{"en":"The railroad was built in 1900.","ko":"그 철도는 1900년에 지어졌다."},{"en":"A train runs along the railroad.","ko":"기차 한 대가 철도를 따라 달린다."}],"grammarNote":"railroad는 주로 미국식, railway는 영국식 표현이야. 학생들이 시험 지문 국적에 맞춰 쓰는 감각이 부족해.","grammarQuiz":[{"sentence":"The old _____ track runs through the small mountain village.","ko":"그 오래된 철도 선로는 작은 산골 마을을 관통해 지나간다.","answer":["railroad"],"hint":"미국식"},{"sentence":"American workers built a long _____ across the whole country.","ko":"미국 노동자들은 나라 전체를 가로지르는 긴 철도를 건설했다.","answer":["railroad"],"hint":"명사"}]},
+    {"id":"w05216","w":"railway","pos":["n"],"ph":"/ˈreɪlweɪ/","cefr":"A2","kr":["철도","철로"],"ex":[{"en":"The railway runs through the mountains.","ko":"철도가 산을 통과해 달린다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"railroad","ko":"철도","reason":"railway의 미국식 동의어"},{"w":"station","ko":"역","reason":"railway와 자주 결합"},{"w":"line","ko":"노선","reason":"railway와 결합, 철도 노선"}],"collocBest":[{"en":"railway station","ko":"기차역"},{"en":"railway line","ko":"철도 노선"}]},"nuance":{"koSimple":"영국식 기차가 다니는 철길","whenToUse":"기차 노선·역을 말할 때"},"krDetail":[{"ko":"철도","explain":"'철도(鐵道)'는 한자어이고, 순우리말로는 '쇠로 만든 길'이라는 뜻이야."},{"ko":"철로","explain":"'철로(鐵路)'는 한자어이고, 순우리말로는 '기차가 다니는 길'이라는 뜻이야."}],"usageExamples":[{"en":"We waited at the railway station.","ko":"우리는 기차역에서 기다렸다."},{"en":"The railway connects many towns.","ko":"그 철도는 여러 마을을 연결한다."}],"grammarNote":"railway는 주로 영국식 영어이고, 미국은 railroad를 써. 학생들이 두 단어를 완전히 같이 봐서 문맥 감이 떨어져.","grammarQuiz":[{"sentence":"I met my friend at the _____ station in London.","ko":"나는 런던의 기차역에서 내 친구를 만났다.","answer":["railway"],"hint":"영국식"},{"sentence":"The British _____ system is famous for its long history.","ko":"영국의 철도 체계는 오랜 역사로 유명하다.","answer":["railway"],"hint":"명사"}]},
     {"id":"w05220","w":"raise","pos":["v","n"],"ph":"/reɪz/","cefr":"A2","kr":["올리다","인상"],"ex":[{"en":"Please raise your hand if you have a question.","ko":"질문이 있으면 손을 드세요."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"lift","ko":"들어 올리다","reason":"raise의 동의어"},{"w":"increase","ko":"증가시키다","reason":"인상 동의어"},{"w":"lower","ko":"낮추다","reason":"raise의 반의어"}],"collocBest":[{"en":"raise money","ko":"돈을 모으다"},{"en":"raise awareness","ko":"인식을 높이다"}]},"nuance":{"koSimple":"손이나 물건을 위로 쭉 들어 올림","whenToUse":"높이거나 모으거나 키울 때"},"krDetail":[{"ko":"올리다","explain":"'올리다'는 순우리말로, 아래에서 위로 옮기는 행동을 뜻해."},{"ko":"인상","explain":"'인상(引上)'은 한자어이고, 순우리말로는 '값을 올림'이라는 뜻이야."}],"usageExamples":[{"en":"The teacher raised her hand to quiet the noisy students.","ko":"선생님은 시끄러운 학생들을 조용히 시키려고 손을 들었다."},{"en":"The flag is raised at eight every morning at school.","ko":"그 국기는 매일 아침 여덟 시에 학교에서 게양된다."}],"grammarNote":"타동사 raise(목적어 필요) vs 자동사 rise(목적어 없음)를 자주 헷갈려. 학생들이 'The sun raises'처럼 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"The teacher asked us to _____ our hands quietly.","ko":"선생님은 우리에게 조용히 손을 들라고 하셨다.","answer":["raise"],"hint":"타동사 원형"},{"sentence":"They will _____ money for the poor children next week.","ko":"그들은 다음 주에 가난한 아이들을 위해 돈을 모을 것이다.","answer":["raise"],"hint":"조동사 뒤"}]},
     {"id":"w05227","w":"range","pos":["n","v"],"ph":"/reɪndʒ/","cefr":"A2","kr":["범위","영역"],"ex":[{"en":"The store offers a wide range of products.","ko":"그 가게는 다양한 제품들을 제공한다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"scope","ko":"범위","reason":"range의 동의어"},{"w":"variety","ko":"다양성","reason":"범위 동의어"},{"w":"wide","ko":"넓은","reason":"range와 자주 결합"}],"collocBest":[{"en":"wide range","ko":"넓은 범위"},{"en":"range of options","ko":"선택 범위"}]},"nuance":{"koSimple":"'여기부터 저기까지' 그 폭","whenToUse":"넓이·다양한 종류를 말할 때"},"krDetail":[{"ko":"범위","explain":"'범위(範圍)'는 한자어이고, 순우리말로는 '테두리'라는 뜻이야."},{"ko":"영역","explain":"'영역(領域)'은 한자어이고, 순우리말로는 '차지한 자리'라는 뜻이야."}],"usageExamples":[{"en":"The library offers a wide range of English novels for teens.","ko":"그 도서관은 십대를 위한 광범위한 영어 소설을 제공한다."},{"en":"The prices range from five dollars to about twenty dollars.","ko":"그 가격은 5달러에서 약 20달러까지의 범위이다."}],"grammarNote":"자동사 range from A to B 구조가 자주 쓰여. 학생들이 range between A to B처럼 어색하게 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"Prices _____ from ten dollars to fifty dollars per item.","ko":"가격은 품목당 10달러에서 50달러까지 다양하다.","answer":["range"],"hint":"자동사 원형"},{"sentence":"The library has a wide _____ of interesting books for teens.","ko":"그 도서관은 십대를 위한 폭넓은 종류의 흥미로운 책들을 갖고 있다.","answer":["range"],"hint":"명사"}]},
-    {"id":"w05240","w":"rather","pos":["adv"],"ph":"/ˈrɑːðər/","cefr":"A2","kr":["오히려","꽤"],"ex":[{"en":"I'd rather stay home tonight.","ko":"오늘 밤은 집에 있고 싶다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"quite","ko":"꽤","reason":"rather의 동의어"},{"w":"somewhat","ko":"다소","reason":"정도 동의어"},{"w":"instead","ko":"대신에","reason":"rather than 시나리오"}],"collocBest":[{"en":"would rather","ko":"차라리 ~하겠다"},{"en":"rather than","ko":"~보다는"}]},"nuance":{"koSimple":"'차라리 이거!' 할 때의 오히려","whenToUse":"차라리·오히려 골라 말할 때"},"krDetail":[{"ko":"오히려","explain":"'오히려'는 순우리말로, 예상과 반대인 상황을 뜻해."},{"ko":"꽤","explain":"'꽤'는 순우리말로, 생각보다 상당한 정도를 뜻해."}],"usageExamples":null,"grammarNote":"would rather + 동사원형 구조에서 학생들이 to부정사나 -ing를 붙이는 실수를 자주 해.","grammarQuiz":[{"sentence":"I would _____ stay home than go out in the rain.","ko":"나는 빗속에 나가느니 차라리 집에 있겠다.","answer":["rather"],"hint":"would+___+동사원형"},{"sentence":"She chose to walk _____ than take the bus today.","ko":"그녀는 오늘 버스를 타기보다는 걷기를 택했다.","answer":["rather"],"hint":"rather than"}]},
+    {"id":"w05240","w":"rather","pos":["adv"],"ph":"/ˈrɑːðər/","cefr":"A2","kr":["오히려","꽤"],"ex":[{"en":"I'd rather stay home tonight.","ko":"오늘 밤은 집에 있고 싶다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"quite","ko":"꽤","reason":"rather의 동의어"},{"w":"somewhat","ko":"다소","reason":"정도 동의어"},{"w":"instead","ko":"대신에","reason":"rather than 시나리오"}],"collocBest":[{"en":"would rather","ko":"차라리 ~하겠다"},{"en":"rather than","ko":"~보다는"}]},"nuance":{"koSimple":"'차라리 이거!' 할 때의 오히려","whenToUse":"차라리·오히려 골라 말할 때"},"krDetail":[{"ko":"오히려","explain":"'오히려'는 순우리말로, 예상과 반대인 상황을 뜻해."},{"ko":"꽤","explain":"'꽤'는 순우리말로, 생각보다 상당한 정도를 뜻해."}],"usageExamples":[{"en":"The weather is rather cold today.","ko":"오늘 날씨는 꽤 춥다."},{"en":"I would rather walk than take the bus.","ko":"나는 버스를 타느니 차라리 걷겠다."}],"grammarNote":"would rather + 동사원형 구조에서 학생들이 to부정사나 -ing를 붙이는 실수를 자주 해.","grammarQuiz":[{"sentence":"I would _____ stay home than go out in the rain.","ko":"나는 빗속에 나가느니 차라리 집에 있겠다.","answer":["rather"],"hint":"would+___+동사원형"},{"sentence":"She chose to walk _____ than take the bus today.","ko":"그녀는 오늘 버스를 타기보다는 걷기를 택했다.","answer":["rather"],"hint":"rather than"}]},
     {"id":"w05249","w":"reach","pos":["v","n"],"ph":"/riːtʃ/","cefr":"A2","kr":["닿다","도달하다"],"ex":[{"en":"We reached the top of the mountain.","ko":"우리는 산 정상에 도달했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"attain","ko":"이루다","reason":"reach의 동의어"},{"w":"arrive","ko":"도착하다","reason":"도달 동의어"},{"w":"miss","ko":"놓치다","reason":"reach의 반의어"}],"collocBest":[{"en":"reach a goal","ko":"목표에 도달하다"},{"en":"reach an agreement","ko":"합의에 이르다"}]},"nuance":{"koSimple":"손 뻗어 목표까지 겨우 닿는 순간","whenToUse":"목적지·목표에 다다랐을 때"},"krDetail":[{"ko":"닿다","explain":"'닿다'는 순우리말로, 어떤 곳이나 대상에 이르러 붙는다는 뜻이야."},{"ko":"도달하다","explain":"'도달(到達)하다'는 한자어이고, 순우리말로는 '이르러 닿다'라는 뜻이야."}],"usageExamples":[{"en":"She easily reached the top shelf with her long arms.","ko":"그녀는 긴 팔로 맨 위 선반에 쉽게 닿았다."},{"en":"The train finally reached the station after a long delay.","ko":"그 기차는 오랜 지연 끝에 마침내 역에 도착했다."}],"grammarNote":"reach는 타동사로 to/at 없이 바로 목적어를 취해. 학생들이 'reach to the station'처럼 to를 넣는 실수가 매우 잦아.","grammarQuiz":[{"sentence":"We finally _____ the top of the mountain at sunset.","ko":"우리는 마침내 해질 무렵 산의 정상에 도달했다.","answer":["reached"],"hint":"타동사 과거"},{"sentence":"The train will _____ Seoul Station in ten minutes.","ko":"그 기차는 10분 안에 서울역에 도착할 것이다.","answer":["reach"],"hint":"전치사 없이"}]},
-    {"id":"w05253","w":"reader","pos":["n"],"ph":"/ˈriːdər/","cefr":"A2","kr":["독자","읽는 사람"],"ex":[{"en":"The book attracted many young readers.","ko":"그 책은 많은 젊은 독자들을 끌어들였다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"audience","ko":"독자층","reason":"reader의 집합 동의어"},{"w":"writer","ko":"작가","reason":"reader의 관계 반의어"},{"w":"avid","ko":"열렬한","reason":"reader와 자주 결합"}],"collocBest":[{"en":"avid reader","ko":"열렬한 독자"},{"en":"target reader","ko":"목표 독자"}]},"nuance":{"koSimple":"책 펼쳐 읽고 있는 사람","whenToUse":"글 읽는 사람·독자를 말할 때"},"krDetail":[{"ko":"독자","explain":"'독자(讀者)'는 한자어이고, 순우리말로는 '읽는 사람'이라는 뜻이야."},{"ko":"읽는 사람","explain":"'읽는 사람'은 순우리말 표현으로, 글을 읽는 이를 뜻해."}],"usageExamples":null,"grammarNote":"reader는 read + er 구조인 행위자 명사야. 학생들이 readder처럼 d를 겹쳐 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"This book has many young _____ around the whole world.","ko":"이 책은 전 세계에 많은 어린 독자들을 갖고 있다.","answer":["readers"],"hint":"복수형"},{"sentence":"A good _____ can enjoy any kind of book easily.","ko":"훌륭한 독자는 어떤 종류의 책이든 쉽게 즐길 수 있다.","answer":["reader"],"hint":"단수"}]},
-    {"id":"w05258","w":"realize","pos":["v"],"ph":"/ˈriːəlaɪz/","cefr":"A2","kr":["깨닫다","실현하다"],"ex":[{"en":"I didn't realize how late it was.","ko":"나는 얼마나 늦었는지 깨닫지 못했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"recognize","ko":"인식하다","reason":"realize의 동의어"},{"w":"understand","ko":"이해하다","reason":"깨달음 동의어"},{"w":"dream","ko":"꿈","reason":"realize와 결합, 꿈을 실현"}],"collocBest":[{"en":"realize a dream","ko":"꿈을 실현하다"},{"en":"suddenly realize","ko":"갑자기 깨닫다"}]},"nuance":{"koSimple":"'아!' 하고 머릿속에 불이 켜지는 순간","whenToUse":"몰랐던 걸 갑자기 알아챌 때"},"krDetail":[{"ko":"깨닫다","explain":"'깨닫다'는 순우리말로, 몰랐던 것을 알게 되는 순간을 뜻해."},{"ko":"실현하다","explain":"'실현(實現)하다'는 한자어이고, 순우리말로는 '이루어 내다'라는 뜻이야."}],"usageExamples":null,"grammarNote":"realize 뒤에는 that절이 자주 와. 학생들이 realize about, realize of처럼 전치사를 붙이는 실수가 잦아.","grammarQuiz":[{"sentence":"I suddenly _____ that I had left my bag home.","ko":"나는 갑자기 가방을 집에 두고 왔다는 것을 깨달았다.","answer":["realized"],"hint":"과거 시제"},{"sentence":"She worked hard to _____ her dream of becoming a doctor.","ko":"그녀는 의사가 되는 꿈을 실현하기 위해 열심히 일했다.","answer":["realize"],"hint":"to부정사 뒤"}]},
+    {"id":"w05253","w":"reader","pos":["n"],"ph":"/ˈriːdər/","cefr":"A2","kr":["독자","읽는 사람"],"ex":[{"en":"The book attracted many young readers.","ko":"그 책은 많은 젊은 독자들을 끌어들였다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"audience","ko":"독자층","reason":"reader의 집합 동의어"},{"w":"writer","ko":"작가","reason":"reader의 관계 반의어"},{"w":"avid","ko":"열렬한","reason":"reader와 자주 결합"}],"collocBest":[{"en":"avid reader","ko":"열렬한 독자"},{"en":"target reader","ko":"목표 독자"}]},"nuance":{"koSimple":"책 펼쳐 읽고 있는 사람","whenToUse":"글 읽는 사람·독자를 말할 때"},"krDetail":[{"ko":"독자","explain":"'독자(讀者)'는 한자어이고, 순우리말로는 '읽는 사람'이라는 뜻이야."},{"ko":"읽는 사람","explain":"'읽는 사람'은 순우리말 표현으로, 글을 읽는 이를 뜻해."}],"usageExamples":[{"en":"The magazine has many young readers.","ko":"그 잡지는 젊은 독자가 많다."},{"en":"She is a fast reader.","ko":"그녀는 책을 빨리 읽는 사람이다."}],"grammarNote":"reader는 read + er 구조인 행위자 명사야. 학생들이 readder처럼 d를 겹쳐 쓰는 실수가 잦아.","grammarQuiz":[{"sentence":"This book has many young _____ around the whole world.","ko":"이 책은 전 세계에 많은 어린 독자들을 갖고 있다.","answer":["readers"],"hint":"복수형"},{"sentence":"A good _____ can enjoy any kind of book easily.","ko":"훌륭한 독자는 어떤 종류의 책이든 쉽게 즐길 수 있다.","answer":["reader"],"hint":"단수"}]},
+    {"id":"w05258","w":"realize","pos":["v"],"ph":"/ˈriːəlaɪz/","cefr":"A2","kr":["깨닫다","실현하다"],"ex":[{"en":"I didn't realize how late it was.","ko":"나는 얼마나 늦었는지 깨닫지 못했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"recognize","ko":"인식하다","reason":"realize의 동의어"},{"w":"understand","ko":"이해하다","reason":"깨달음 동의어"},{"w":"dream","ko":"꿈","reason":"realize와 결합, 꿈을 실현"}],"collocBest":[{"en":"realize a dream","ko":"꿈을 실현하다"},{"en":"suddenly realize","ko":"갑자기 깨닫다"}]},"nuance":{"koSimple":"'아!' 하고 머릿속에 불이 켜지는 순간","whenToUse":"몰랐던 걸 갑자기 알아챌 때"},"krDetail":[{"ko":"깨닫다","explain":"'깨닫다'는 순우리말로, 몰랐던 것을 알게 되는 순간을 뜻해."},{"ko":"실현하다","explain":"'실현(實現)하다'는 한자어이고, 순우리말로는 '이루어 내다'라는 뜻이야."}],"usageExamples":[{"en":"I suddenly realized my mistake.","ko":"나는 갑자기 내 실수를 깨달았다."},{"en":"She realized her dream of becoming a doctor.","ko":"그녀는 의사가 되려는 꿈을 실현했다."}],"grammarNote":"realize 뒤에는 that절이 자주 와. 학생들이 realize about, realize of처럼 전치사를 붙이는 실수가 잦아.","grammarQuiz":[{"sentence":"I suddenly _____ that I had left my bag home.","ko":"나는 갑자기 가방을 집에 두고 왔다는 것을 깨달았다.","answer":["realized"],"hint":"과거 시제"},{"sentence":"She worked hard to _____ her dream of becoming a doctor.","ko":"그녀는 의사가 되는 꿈을 실현하기 위해 열심히 일했다.","answer":["realize"],"hint":"to부정사 뒤"}]},
     {"id":"w05263","w":"reason","pos":["n","v"],"ph":"/ˈriːzən/","cefr":"A2","kr":["이유","이성"],"ex":[{"en":"What is the reason for your absence?","ko":"결석 이유가 무엇인가요?"}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"cause","ko":"원인","reason":"reason의 동의어"},{"w":"motive","ko":"동기","reason":"이유 동의어"},{"w":"result","ko":"결과","reason":"이유-결과 시나리오 반의어"}],"collocBest":[{"en":"for this reason","ko":"이런 이유로"},{"en":"reason for","ko":"~에 대한 이유"}]},"nuance":{"koSimple":"왜 그런지 알려주는 근거","whenToUse":"원인·설명이 필요할 때"},"krDetail":[{"ko":"이유","explain":"'이유(理由)'는 한자어이고, 순우리말로는 '까닭'이라는 뜻이야."},{"ko":"이성","explain":"'이성(理性)'은 한자어이고, 순우리말로는 '옳고 그름을 가리는 마음'이라는 뜻이야."}],"usageExamples":[{"en":"No one really explained the reason for the sudden change.","ko":"아무도 그 갑작스러운 변화의 이유를 제대로 설명하지 않았다."},{"en":"There is a good reason why she was late this morning.","ko":"그녀가 오늘 아침 늦은 데는 그럴 만한 이유가 있다."}],"grammarNote":"reason for + 명사/동명사 구조야. 학생들이 reason of, reason to로 잘못 쓰거나 to부정사 자리에 넣는 실수가 잦아.","grammarQuiz":[{"sentence":"What is the main reason _____ your late arrival today?","ko":"당신이 오늘 늦게 도착한 주된 이유는 무엇인가요?","answer":["for"],"hint":"전치사"},{"sentence":"There are many _____ why students love this new teacher.","ko":"학생들이 이 새 선생님을 좋아하는 많은 이유가 있다.","answer":["reasons"],"hint":"복수"}]},
-    {"id":"w05274","w":"receive","pos":["v"],"ph":"/rɪˈsiːv/","cefr":"A2","kr":["받다","수신하다"],"ex":[{"en":"She received a letter from her friend.","ko":"그녀는 친구로부터 편지를 받았다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"get","ko":"받다","reason":"receive의 동의어"},{"w":"obtain","ko":"얻다","reason":"받다 동의어"},{"w":"send","ko":"보내다","reason":"receive의 반의어"}],"collocBest":[{"en":"receive an award","ko":"상을 받다"},{"en":"receive a call","ko":"전화를 받다"}]},"nuance":{"koSimple":"손 내밀어 편지·선물을 받는 그림","whenToUse":"주는 걸 받는 쪽일 때"},"krDetail":[{"ko":"받다","explain":"'받다'는 순우리말로, 남이 주는 것을 손에 얻는다는 뜻이야."},{"ko":"수신하다","explain":"'수신(受信)하다'는 한자어이고, 순우리말로는 '소식을 받다'라는 뜻이야."}],"usageExamples":null,"grammarNote":"receive는 이중자음 ei 스펠링에서 학생들이 'recieve'로 잘못 쓰는 실수가 매우 잦아. 'i before e except after c' 규칙을 기억해.","grammarQuiz":[{"sentence":"She was very happy to _____ a birthday present from him.","ko":"그녀는 그로부터 생일 선물을 받고 매우 기뻤다.","answer":["receive"],"hint":"to부정사"},{"sentence":"I _____ your email early this morning, thank you.","ko":"나는 오늘 아침 일찍 당신의 이메일을 받았어요, 고맙습니다.","answer":["received"],"hint":"과거 시제"}]},
-    {"id":"w03976","w":"maker","pos":["n"],"ph":"/ˈmeɪkər/","cefr":"A2","kr":["제조자","만드는 사람"],"ex":[{"en":"He is a film maker.","ko":"그는 영화 제작자이다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"creator","ko":"창작자","reason":"maker의 동의어"},{"w":"producer","ko":"생산자","reason":"maker의 동의어"}],"collocBest":[{"en":"decision maker","ko":"의사결정자"},{"en":"film maker","ko":"영화 제작자"}]},"nuance":{"koSimple":"무언가를 뚝딱뚝딱 만드는 사람","whenToUse":"제작자·결정자 말할 때"},"krDetail":[{"ko":"제조자","explain":"물건을 만들어 내는 사람이나 회사"},{"ko":"만드는 사람","explain":"무언가를 새로 만들어 내는 사람"}],"usageExamples":null,"grammarNote":"make + -er 형태의 명사. 다른 명사와 합쳐 복합어(decision-maker, filmmaker)를 자주 만듦.","grammarQuiz":[{"sentence":"The car _____ launched a new electric model this year in Korea.","ko":"그 자동차 제조사는 올해 한국에서 새로운 전기차 모델을 출시했다.","answer":["maker"],"hint":"명사, -er 형태"}]},
-    {"id":"w04075","w":"medicine","pos":["n"],"ph":"/ˈmedsən/","cefr":"A2","kr":["의학","약"],"ex":[{"en":"Medicine has advanced greatly.","ko":"의학은 크게 발전했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"drug","ko":"약","reason":"medicine의 동의어"},{"w":"remedy","ko":"치료약","reason":"medicine의 동의어"}],"collocBest":[{"en":"traditional medicine","ko":"전통 의학"},{"en":"take medicine","ko":"약을 먹다"}]},"nuance":{"koSimple":"병을 낫게 해주는 알약·물약","whenToUse":"약 먹거나 의학 학문 말할 때"},"krDetail":[{"ko":"의학","explain":"병을 고치고 예방하는 방법을 연구하는 학문"},{"ko":"약","explain":"병을 낫게 하려고 먹거나 바르는 물질"}],"usageExamples":null,"grammarNote":"학문(의학) 뜻은 불가산, 약(medicine) 뜻은 가·불가 모두 가능. take medicine(약을 먹다)에서는 관용적으로 불가산.","grammarQuiz":[{"sentence":"You should take this _____ three times a day after every meal.","ko":"너는 이 약을 매 식사 후 하루 세 번 먹어야 한다.","answer":["medicine"],"hint":"명사, 관사 없이 불가산"}]},
-    {"id":"w04730","w":"parrot","pos":["n","v"],"ph":"/ˈpærət/","cefr":"A2","kr":["앵무새","앵무새처럼 따라 하다"],"ex":[{"en":"The parrot could say many words.","ko":"그 앵무새는 많은 단어를 말할 수 있었다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"mimic","ko":"흉내내다","reason":"동의어 - 따라 하는 행동"},{"w":"colorful","ko":"화려한","reason":"콜로케이션 - colorful parrot"},{"w":"cage","ko":"새장","reason":"시나리오 - 새장 속의 앵무새"}],"collocBest":[{"en":"colorful parrot","ko":"화려한 앵무새"},{"en":"parrot back","ko":"앵무새처럼 따라 하다"}]},"nuance":{"koSimple":"알록달록 깃털에 말 따라 하는 새","whenToUse":"앵무새이거나 앵무새처럼 따라 말할 때"},"krDetail":[{"ko":"앵무새","explain":"말을 따라 하는 알록달록한 새"},{"ko":"앵무새처럼 따라 하다","explain":"뜻도 모르고 그대로 흉내 내다"}],"usageExamples":[{"en":"The clever parrot parroted every word my brother said.","ko":"그 영리한 앵무새는 오빠가 한 말을 모두 따라했다."},{"en":"A green parrot sat quietly on the science teacher's shoulder.","ko":"초록색 앵무새 한 마리가 과학 선생님 어깨에 조용히 앉아 있었다."}],"grammarNote":null,"grammarQuiz":null},
-    {"id":"w04900","w":"plastic","pos":["n","adj"],"ph":"/ˈplæstɪk/","cefr":"A2","kr":["플라스틱","플라스틱으로 만든"],"ex":[{"en":"The bottle is made of plastic.","ko":"그 병은 플라스틱으로 만들어졌다."}],"mnemonic":{"soundHint":"플라스틱 → 그대로 '플라스틱'","story":"'플라스틱(plastic)'은 우리말에도 그대로 정착한 외래어야. 발음·뜻이 완전히 같아 별도 힌트 필요 없어.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"recycle","ko":"재활용하다","reason":"plastic 처리와 직결되는 환경 시나리오"},{"w":"bottle","ko":"병","reason":"plastic 제품의 대표 사례"},{"w":"waste","ko":"쓰레기","reason":"plastic pollution의 핵심 문제"}],"collocBest":[{"en":"plastic bag","ko":"비닐봉투"},{"en":"plastic pollution","ko":"플라스틱 오염"}]},"nuance":{"koSimple":"가볍고 잘 안 부서지는 인공 재료","whenToUse":"병·봉투·환경오염 말할 때"},"krDetail":[{"ko":"플라스틱","explain":"합성 소재"},{"ko":"플라스틱으로 만든","explain":"합성 소재로 된"}],"usageExamples":null,"grammarNote":"plastic이 형용사로 쓰일 때는 명사 앞에 위치해 재료를 나타낸다. 학생들은 be made of plastic처럼 명사 자리에 써야 할 때와 형용사 자리를 구분하지 못한다.","grammarQuiz":[{"sentence":"Please do not use _____ bags at the grocery store.","ko":"식료품점에서 비닐봉투를 사용하지 마세요.","answer":["plastic"],"hint":"형용사로"},{"sentence":"This bottle is made _____ recycled plastic materials completely.","ko":"이 병은 재활용된 플라스틱 소재로 완전히 만들어졌다.","answer":["of"],"hint":"재료 전치사"}]},
-    {"id":"w04956","w":"population","pos":["n"],"ph":"/ˌpɒpjʊˈleɪʃən/","cefr":"A2","kr":["인구","개체 수"],"ex":[{"en":"The city's population is growing fast.","ko":"그 도시의 인구는 빠르게 증가하고 있다."}],"mnemonic":{"soundHint":"파퓰레이션 → popular(대중적) + tion","story":"popular(대중적)에 -tion 붙이면 population(대중 전체 = 인구). 같은 뿌리에서 자란 명사형이야.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"growth","ko":"증가","reason":"population growth 필수 콜로케이션"},{"w":"city","ko":"도시","reason":"population이 집중되는 대표 장소"},{"w":"census","ko":"인구 조사","reason":"population 측정 시나리오"}],"collocBest":[{"en":"world population","ko":"세계 인구"},{"en":"population growth","ko":"인구 증가"}]},"nuance":{"koSimple":"한 지역에 사는 사람 총 숫자","whenToUse":"사람·동물 수를 셀 때"},"krDetail":[{"ko":"인구","explain":"지역에 사는 사람 수"},{"ko":"개체 수","explain":"동식물 무리의 수"}],"usageExamples":null,"grammarNote":"population은 집합명사로 단수 취급이지만 구성원 각각을 강조할 때는 복수 취급이 가능하다. 학생들은 항상 단수만 사용한다고 오해한다.","grammarQuiz":[{"sentence":"The _____ of this city has grown rapidly in recent years.","ko":"이 도시의 인구는 최근 몇 년 동안 급속히 늘었다.","answer":["population"],"hint":"명사 단수"},{"sentence":"The tiger _____ is decreasing quickly due to habitat loss.","ko":"호랑이 개체 수는 서식지 손실 때문에 빠르게 줄고 있다.","answer":["population"],"hint":"동물 개체 수"}]},
-    {"id":"w04478","w":"olive","pos":["n","adj"],"ph":"/ˈɒlɪv/","cefr":"A2","kr":["올리브","올리브색"],"ex":[{"en":"She added olives to the salad.","ko":"그녀는 샐러드에 올리브를 넣었다."}],"mnemonic":{"soundHint":"올리브","story":"'올리브'는 외래어로 그대로 쓰이는 자연스러운 한국어 발음이다.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"oil","ko":"기름","reason":"콜로케이션 - olive oil로 결합"},{"w":"branch","ko":"가지","reason":"관용구 - olive branch(화해)"},{"w":"green","ko":"초록색","reason":"시나리오 - 올리브색 계열의 색상"}],"collocBest":[{"en":"olive oil","ko":"올리브 오일"},{"en":"olive branch","ko":"화해의 손길"}]},"nuance":{"koSimple":"작고 초록빛 도는 지중해 열매","whenToUse":"올리브 열매·색깔·기름을 말할 때"},"krDetail":null,"usageExamples":null,"grammarNote":null,"grammarQuiz":null},
-    {"id":"w03750","w":"lately","pos":["adv"],"ph":"/ˈleɪtli/","cefr":"A2","kr":["최근에","요즈음"],"ex":[{"en":"Have you seen any good movies lately?","ko":"최근에 좋은 영화를 본 적 있나요?"}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"recently","ko":"최근에","reason":"동의어"},{"w":"nowadays","ko":"요즘에","reason":"동의어"},{"w":"late","ko":"늦은","reason":"파생어원"}],"collocBest":[{"en":"lately noticed","ko":"최근에 알아챈"},{"en":"not lately","ko":"최근에는 아닌"}]},"nuance":{"koSimple":"'요즘 어때?' 할 때 그 '요즘'","whenToUse":"현재까지 이어지는 최근 상황을 말할 때"},"krDetail":[{"ko":"요즈음","explain":"지금과 가까운 얼마 전부터 지금까지"}],"usageExamples":null,"grammarNote":"lately는 주로 현재완료 시제와 함께 쓴다. late(형용사/부사: 늦은/늦게)와 뜻이 완전히 다름에 주의.","grammarQuiz":[{"sentence":"I _____ been feeling very tired _____ because of my new job.","ko":"새 일자리 때문에 나는 최근에 매우 피곤함을 느껴 왔다.","answer":["have","lately"],"hint":"현재완료 + 부사"}]},
-    {"id":"w03708","w":"knowledge","pos":["n"],"ph":"/ˈnɒlɪdʒ/","cefr":"A2","kr":["지식","앎"],"ex":[{"en":"Knowledge is power in the modern world.","ko":"지식은 현대 사회에서 힘이다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"know","ko":"알다","reason":"파생어 - know의 명사형"},{"w":"learn","ko":"배우다","reason":"시나리오 - 지식을 얻는 행위"},{"w":"ignorance","ko":"무지","reason":"반의어"}],"collocBest":[{"en":"general knowledge","ko":"일반 상식"},{"en":"knowledge base","ko":"지식 기반"}]},"nuance":{"koSimple":"머릿속에 차곡차곡 쌓아둔 아는 것","whenToUse":"배워서 알게 된 정보·상식을 말할 때"},"krDetail":[{"ko":"지식","explain":"배우고 익혀서 알게 된 내용"}],"usageExamples":null,"grammarNote":"knowledge는 불가산명사로 a/an이나 복수형을 사용하지 않는다. knowledge of/about 형태.","grammarQuiz":[{"sentence":"He has deep _____ _____ ancient Korean history and culture.","ko":"그는 고대 한국 역사와 문화에 대한 깊은 지식을 가지고 있다.","answer":["knowledge","of"],"hint":"지식 + 전치사"}]}
+    {"id":"w05274","w":"receive","pos":["v"],"ph":"/rɪˈsiːv/","cefr":"A2","kr":["받다","수신하다"],"ex":[{"en":"She received a letter from her friend.","ko":"그녀는 친구로부터 편지를 받았다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"get","ko":"받다","reason":"receive의 동의어"},{"w":"obtain","ko":"얻다","reason":"받다 동의어"},{"w":"send","ko":"보내다","reason":"receive의 반의어"}],"collocBest":[{"en":"receive an award","ko":"상을 받다"},{"en":"receive a call","ko":"전화를 받다"}]},"nuance":{"koSimple":"손 내밀어 편지·선물을 받는 그림","whenToUse":"주는 걸 받는 쪽일 때"},"krDetail":[{"ko":"받다","explain":"'받다'는 순우리말로, 남이 주는 것을 손에 얻는다는 뜻이야."},{"ko":"수신하다","explain":"'수신(受信)하다'는 한자어이고, 순우리말로는 '소식을 받다'라는 뜻이야."}],"usageExamples":[{"en":"I received a gift from my friend.","ko":"나는 친구에게서 선물을 받았다."},{"en":"Did you receive my email?","ko":"제 이메일을 받으셨나요?"}],"grammarNote":"receive는 이중자음 ei 스펠링에서 학생들이 'recieve'로 잘못 쓰는 실수가 매우 잦아. 'i before e except after c' 규칙을 기억해.","grammarQuiz":[{"sentence":"She was very happy to _____ a birthday present from him.","ko":"그녀는 그로부터 생일 선물을 받고 매우 기뻤다.","answer":["receive"],"hint":"to부정사"},{"sentence":"I _____ your email early this morning, thank you.","ko":"나는 오늘 아침 일찍 당신의 이메일을 받았어요, 고맙습니다.","answer":["received"],"hint":"과거 시제"}]},
+    {"id":"w03976","w":"maker","pos":["n"],"ph":"/ˈmeɪkər/","cefr":"A2","kr":["제조자","만드는 사람"],"ex":[{"en":"He is a film maker.","ko":"그는 영화 제작자이다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"creator","ko":"창작자","reason":"maker의 동의어"},{"w":"producer","ko":"생산자","reason":"maker의 동의어"}],"collocBest":[{"en":"decision maker","ko":"의사결정자"},{"en":"film maker","ko":"영화 제작자"}]},"nuance":{"koSimple":"무언가를 뚝딱뚝딱 만드는 사람","whenToUse":"제작자·결정자 말할 때"},"krDetail":[{"ko":"제조자","explain":"물건을 만들어 내는 사람이나 회사"},{"ko":"만드는 사람","explain":"무언가를 새로 만들어 내는 사람"}],"usageExamples":[{"en":"This company is the biggest car maker in the world.","ko":"이 회사는 세계에서 가장 큰 자동차 제조사이다."},{"en":"My grandmother is a wonderful bread maker.","ko":"우리 할머니는 빵을 아주 잘 만드시는 분이다."}],"grammarNote":"make + -er 형태의 명사. 다른 명사와 합쳐 복합어(decision-maker, filmmaker)를 자주 만듦.","grammarQuiz":[{"sentence":"The car _____ launched a new electric model this year in Korea.","ko":"그 자동차 제조사는 올해 한국에서 새로운 전기차 모델을 출시했다.","answer":["maker"],"hint":"명사, -er 형태"}]},
+    {"id":"w04075","w":"medicine","pos":["n"],"ph":"/ˈmedsən/","cefr":"A2","kr":["의학","약"],"ex":[{"en":"Medicine has advanced greatly.","ko":"의학은 크게 발전했다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"drug","ko":"약","reason":"medicine의 동의어"},{"w":"remedy","ko":"치료약","reason":"medicine의 동의어"}],"collocBest":[{"en":"traditional medicine","ko":"전통 의학"},{"en":"take medicine","ko":"약을 먹다"}]},"nuance":{"koSimple":"병을 낫게 해주는 알약·물약","whenToUse":"약 먹거나 의학 학문 말할 때"},"krDetail":[{"ko":"의학","explain":"병을 고치고 예방하는 방법을 연구하는 학문"},{"ko":"약","explain":"병을 낫게 하려고 먹거나 바르는 물질"}],"usageExamples":[{"en":"Take this medicine three times a day.","ko":"이 약을 하루에 세 번 드세요."},{"en":"He decided to study medicine to become a doctor.","ko":"그는 의사가 되려고 의학을 공부하기로 했다."}],"grammarNote":"학문(의학) 뜻은 불가산, 약(medicine) 뜻은 가·불가 모두 가능. take medicine(약을 먹다)에서는 관용적으로 불가산.","grammarQuiz":[{"sentence":"You should take this _____ three times a day after every meal.","ko":"너는 이 약을 매 식사 후 하루 세 번 먹어야 한다.","answer":["medicine"],"hint":"명사, 관사 없이 불가산"}]},
+    {"id":"w04730","w":"parrot","pos":["n","v"],"ph":"/ˈpærət/","cefr":"A2","kr":["앵무새","앵무새처럼 따라 하다"],"ex":[{"en":"The parrot could say many words.","ko":"그 앵무새는 많은 단어를 말할 수 있었다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"mimic","ko":"흉내내다","reason":"동의어 - 따라 하는 행동"},{"w":"colorful","ko":"화려한","reason":"콜로케이션 - colorful parrot"},{"w":"cage","ko":"새장","reason":"시나리오 - 새장 속의 앵무새"}],"collocBest":[{"en":"colorful parrot","ko":"화려한 앵무새"},{"en":"parrot back","ko":"앵무새처럼 따라 하다"}]},"nuance":{"koSimple":"알록달록 깃털에 말 따라 하는 새","whenToUse":"앵무새이거나 앵무새처럼 따라 말할 때"},"krDetail":[{"ko":"앵무새","explain":"말을 따라 하는 알록달록한 새"},{"ko":"앵무새처럼 따라 하다","explain":"뜻도 모르고 그대로 흉내 내다"}],"usageExamples":[{"en":"The clever parrot parroted every word my brother said.","ko":"그 영리한 앵무새는 오빠가 한 말을 모두 따라했다."},{"en":"A green parrot sat quietly on the science teacher's shoulder.","ko":"초록색 앵무새 한 마리가 과학 선생님 어깨에 조용히 앉아 있었다."}],"grammarNote":"parrot은 명사로 '앵무새', 동사로 '뜻도 모르고 그대로 따라 하다'라는 뜻이다. 동사로 쓸 때는 흔히 부정적인 느낌을 준다.","grammarQuiz":null},
+    {"id":"w04900","w":"plastic","pos":["n","adj"],"ph":"/ˈplæstɪk/","cefr":"A2","kr":["플라스틱","플라스틱으로 만든"],"ex":[{"en":"The bottle is made of plastic.","ko":"그 병은 플라스틱으로 만들어졌다."}],"mnemonic":{"soundHint":"플라스틱 → 그대로 '플라스틱'","story":"'플라스틱(plastic)'은 우리말에도 그대로 정착한 외래어야. 발음·뜻이 완전히 같아 별도 힌트 필요 없어.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"recycle","ko":"재활용하다","reason":"plastic 처리와 직결되는 환경 시나리오"},{"w":"bottle","ko":"병","reason":"plastic 제품의 대표 사례"},{"w":"waste","ko":"쓰레기","reason":"plastic pollution의 핵심 문제"}],"collocBest":[{"en":"plastic bag","ko":"비닐봉투"},{"en":"plastic pollution","ko":"플라스틱 오염"}]},"nuance":{"koSimple":"가볍고 잘 안 부서지는 인공 재료","whenToUse":"병·봉투·환경오염 말할 때"},"krDetail":[{"ko":"플라스틱","explain":"합성 소재"},{"ko":"플라스틱으로 만든","explain":"합성 소재로 된"}],"usageExamples":[{"en":"Please recycle your plastic bottles.","ko":"플라스틱 병을 재활용해 주세요."},{"en":"She used a plastic bag for the shopping.","ko":"그녀는 장을 볼 때 비닐봉지를 사용했다."}],"grammarNote":"plastic이 형용사로 쓰일 때는 명사 앞에 위치해 재료를 나타낸다. 학생들은 be made of plastic처럼 명사 자리에 써야 할 때와 형용사 자리를 구분하지 못한다.","grammarQuiz":[{"sentence":"Please do not use _____ bags at the grocery store.","ko":"식료품점에서 비닐봉투를 사용하지 마세요.","answer":["plastic"],"hint":"형용사로"},{"sentence":"This bottle is made _____ recycled plastic materials completely.","ko":"이 병은 재활용된 플라스틱 소재로 완전히 만들어졌다.","answer":["of"],"hint":"재료 전치사"}]},
+    {"id":"w04956","w":"population","pos":["n"],"ph":"/ˌpɒpjʊˈleɪʃən/","cefr":"A2","kr":["인구","개체 수"],"ex":[{"en":"The city's population is growing fast.","ko":"그 도시의 인구는 빠르게 증가하고 있다."}],"mnemonic":{"soundHint":"파퓰레이션 → popular(대중적) + tion","story":"popular(대중적)에 -tion 붙이면 population(대중 전체 = 인구). 같은 뿌리에서 자란 명사형이야.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"growth","ko":"증가","reason":"population growth 필수 콜로케이션"},{"w":"city","ko":"도시","reason":"population이 집중되는 대표 장소"},{"w":"census","ko":"인구 조사","reason":"population 측정 시나리오"}],"collocBest":[{"en":"world population","ko":"세계 인구"},{"en":"population growth","ko":"인구 증가"}]},"nuance":{"koSimple":"한 지역에 사는 사람 총 숫자","whenToUse":"사람·동물 수를 셀 때"},"krDetail":[{"ko":"인구","explain":"지역에 사는 사람 수"},{"ko":"개체 수","explain":"동식물 무리의 수"}],"usageExamples":[{"en":"The population of the country is over 50 million.","ko":"그 나라의 인구는 5천만 명이 넘는다."},{"en":"The tiger population is decreasing.","ko":"호랑이 개체 수가 줄어들고 있다."}],"grammarNote":"population은 집합명사로 단수 취급이지만 구성원 각각을 강조할 때는 복수 취급이 가능하다. 학생들은 항상 단수만 사용한다고 오해한다.","grammarQuiz":[{"sentence":"The _____ of this city has grown rapidly in recent years.","ko":"이 도시의 인구는 최근 몇 년 동안 급속히 늘었다.","answer":["population"],"hint":"명사 단수"},{"sentence":"The tiger _____ is decreasing quickly due to habitat loss.","ko":"호랑이 개체 수는 서식지 손실 때문에 빠르게 줄고 있다.","answer":["population"],"hint":"동물 개체 수"}]},
+    {"id":"w04478","w":"olive","pos":["n","adj"],"ph":"/ˈɒlɪv/","cefr":"A2","kr":["올리브","올리브색"],"ex":[{"en":"She added olives to the salad.","ko":"그녀는 샐러드에 올리브를 넣었다."}],"mnemonic":{"soundHint":"올리브","story":"'올리브'는 외래어로 그대로 쓰이는 자연스러운 한국어 발음이다.","hintConfidence":3},"pairs":{"buddyWords":[{"w":"oil","ko":"기름","reason":"콜로케이션 - olive oil로 결합"},{"w":"branch","ko":"가지","reason":"관용구 - olive branch(화해)"},{"w":"green","ko":"초록색","reason":"시나리오 - 올리브색 계열의 색상"}],"collocBest":[{"en":"olive oil","ko":"올리브 오일"},{"en":"olive branch","ko":"화해의 손길"}]},"nuance":{"koSimple":"작고 초록빛 도는 지중해 열매","whenToUse":"올리브 열매·색깔·기름을 말할 때"},"krDetail":[{"ko":"올리브","explain":"기름을 짜는 작은 열매"},{"ko":"올리브색","explain":"짙은 황록색"}],"usageExamples":[{"en":"We cooked the pasta with olive oil.","ko":"우리는 올리브유로 파스타를 요리했다."},{"en":"He wore an olive green jacket.","ko":"그는 올리브색 재킷을 입었다."}],"grammarNote":"olive는 명사로 열매를, 형용사로 색을 나타낸다. 'olive oil(올리브유)'처럼 다른 명사 앞에서 형용사처럼 쓰이기도 한다.","grammarQuiz":null},
+    {"id":"w03750","w":"lately","pos":["adv"],"ph":"/ˈleɪtli/","cefr":"A2","kr":["최근에","요즈음"],"ex":[{"en":"Have you seen any good movies lately?","ko":"최근에 좋은 영화를 본 적 있나요?"}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"recently","ko":"최근에","reason":"동의어"},{"w":"nowadays","ko":"요즘에","reason":"동의어"},{"w":"late","ko":"늦은","reason":"파생어원"}],"collocBest":[{"en":"lately noticed","ko":"최근에 알아챈"},{"en":"not lately","ko":"최근에는 아닌"}]},"nuance":{"koSimple":"'요즘 어때?' 할 때 그 '요즘'","whenToUse":"현재까지 이어지는 최근 상황을 말할 때"},"krDetail":[{"ko":"요즈음","explain":"지금과 가까운 얼마 전부터 지금까지"}],"usageExamples":[{"en":"I have been very busy lately.","ko":"나는 최근에 매우 바빴다."},{"en":"He hasn't called me lately.","ko":"그는 최근에 나에게 전화하지 않았다."}],"grammarNote":"lately는 주로 현재완료 시제와 함께 쓴다. late(형용사/부사: 늦은/늦게)와 뜻이 완전히 다름에 주의.","grammarQuiz":[{"sentence":"I _____ been feeling very tired _____ because of my new job.","ko":"새 일자리 때문에 나는 최근에 매우 피곤함을 느껴 왔다.","answer":["have","lately"],"hint":"현재완료 + 부사"}]},
+    {"id":"w03708","w":"knowledge","pos":["n"],"ph":"/ˈnɒlɪdʒ/","cefr":"A2","kr":["지식","앎"],"ex":[{"en":"Knowledge is power in the modern world.","ko":"지식은 현대 사회에서 힘이다."}],"mnemonic":{"soundHint":null,"story":null,"hintConfidence":0},"pairs":{"buddyWords":[{"w":"know","ko":"알다","reason":"파생어 - know의 명사형"},{"w":"learn","ko":"배우다","reason":"시나리오 - 지식을 얻는 행위"},{"w":"ignorance","ko":"무지","reason":"반의어"}],"collocBest":[{"en":"general knowledge","ko":"일반 상식"},{"en":"knowledge base","ko":"지식 기반"}]},"nuance":{"koSimple":"머릿속에 차곡차곡 쌓아둔 아는 것","whenToUse":"배워서 알게 된 정보·상식을 말할 때"},"krDetail":[{"ko":"지식","explain":"배우고 익혀서 알게 된 내용"}],"usageExamples":[{"en":"Books give us a lot of useful knowledge.","ko":"책은 우리에게 많은 유용한 지식을 준다."},{"en":"She has deep knowledge of Korean history.","ko":"그녀는 한국 역사에 대한 깊은 지식이 있다."}],"grammarNote":"knowledge는 불가산명사로 a/an이나 복수형을 사용하지 않는다. knowledge of/about 형태.","grammarQuiz":[{"sentence":"He has deep _____ _____ ancient Korean history and culture.","ko":"그는 고대 한국 역사와 문화에 대한 깊은 지식을 가지고 있다.","answer":["knowledge","of"],"hint":"지식 + 전치사"}]}
   ],
   reviewPolicy:{ leitnerBoxes:5 },
   xpTable:{ correct:10, streakBonus:5, perfectChapter:200, firstClear:100 },
@@ -1831,56 +1945,51 @@ function renderQuiz(){
   } else if(mode === "spelling"){
     promptHTML = `
       <div class="quiz-prompt">
-        <div class="label">뜻을 보고 영어 단어를 입력하세요</div>
+        <div class="label">뜻을 보고 영어 단어를 입력하세요 <span class="prefill-hint">(첫 글자는 잠겨 있음)</span></div>
         <div class="qkr">${escape(word.kr.join(" · "))}</div>
         <div class="qph">${escape(word.ph||"")}</div>
       </div>`;
     answerHTML = `
       <div class="input-box">
-        <input type="text" id="ansInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="영어로 입력...">
+        <div class="word-answer" id="wordAnswer" data-answer="${escape(word.w)}"></div>
         <button class="submit-btn" id="submitBtn">제출</button>
       </div>`;
   } else if(mode === "listening"){
     promptHTML = `
       <div class="quiz-prompt">
-        <div class="label">발음을 듣고 단어를 입력하세요</div>
+        <div class="label">발음을 듣고 단어를 입력하세요 <span class="prefill-hint">(첫 글자는 잠겨 있음)</span></div>
         <button class="lis-btn" id="lisBtn">🔊 다시 듣기</button>
         <div class="qph">${escape(word.ph||"")}</div>
       </div>`;
     answerHTML = `
       <div class="input-box">
-        <input type="text" id="ansInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="영어로 입력...">
+        <div class="word-answer" id="wordAnswer" data-answer="${escape(word.w)}"></div>
         <button class="submit-btn" id="submitBtn">제출</button>
       </div>`;
   } else if(mode === "colloc-write"){
     const c = state.quizCurrent.colloc;
-    const hint = firstCharsHint(c.en);
     promptHTML = `
       <div class="quiz-prompt">
-        <div class="label">뜻에 맞는 <b>콜로케이션</b>을 영어로 쓰세요</div>
+        <div class="label">뜻에 맞는 <b>콜로케이션</b>을 영어로 쓰세요 <span class="prefill-hint">(각 단어 첫 글자 잠금)</span></div>
         <div class="qkr">${escape(c.ko)}</div>
       </div>`;
     answerHTML = `
       <div class="input-box">
-        <input type="text" id="ansInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${escape(hint)}">
+        <div class="word-answer" id="wordAnswer" data-answer="${escape(c.en)}"></div>
         <button class="submit-btn" id="submitBtn">제출</button>
       </div>`;
   } else if(mode === "cloze"){
     const { tokens, blankIdxs, sentence } = state.quizCurrent;
-    // 문장 렌더 — 빈칸 위치에 인풋 (정답의 첫 글자 placeholder 힌트)
     const sentHTML = tokens.map((t, i) => {
       const bIdx = blankIdxs.indexOf(i);
       if(bIdx >= 0){
-        const ans = t.text;
-        const size = Math.max(4, Math.min(14, ans.length + 2));
-        const hint = firstCharsHint(ans);
-        return `<input type="text" class="cloze-input" data-blank-idx="${bIdx}" data-ans="${escape(ans)}" size="${size}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${escape(hint)}">`;
+        return `<span class="word-answer inline cloze-wa" data-blank-idx="${bIdx}" data-answer="${escape(t.text)}"></span>`;
       }
       return escape(t.text);
     }).join("");
     promptHTML = `
       <div class="quiz-prompt cloze-prompt">
-        <div class="label">해석에 맞게 <b>${blankIdxs.length}개 빈칸</b>을 채우세요</div>
+        <div class="label">해석에 맞게 <b>${blankIdxs.length}개 빈칸</b>을 채우세요 <span class="prefill-hint">(각 단어 첫 글자 잠금)</span></div>
         <div class="qkr">${escape(sentence.ko)}</div>
         <div class="cloze-sentence">${sentHTML}</div>
       </div>`;
@@ -1890,19 +1999,16 @@ function renderQuiz(){
       </div>`;
   } else if(mode === "grammar-fill"){
     const { quiz } = state.quizCurrent;
-    // sentence 안의 _____ (밑줄 3개 이상)을 인풋으로 대체 · 각 빈칸에 정답의 첫 글자만 placeholder 로 힌트
     const ansList = Array.isArray(quiz.answer) ? quiz.answer : [quiz.answer];
     let blankSeq = 0;
     const sentHTML = escape(quiz.sentence).replace(/_{3,}/g, () => {
       const ans = ansList[blankSeq] ?? ansList[0];
-      const size = Math.max(5, Math.min(20, (ans||'').length + 2));
       const idx = blankSeq++;
-      const hint = firstCharsHint(ans);
-      return `<input type="text" class="cloze-input grammar-input" data-blank-idx="${idx}" data-ans="${escape(ans)}" size="${size}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${escape(hint)}">`;
+      return `<span class="word-answer inline cloze-wa" data-blank-idx="${idx}" data-answer="${escape(ans)}"></span>`;
     });
     promptHTML = `
       <div class="quiz-prompt cloze-prompt grammar-prompt">
-        <div class="label">📌 <b>문법 포인트</b> — 해석에 맞게 빈칸을 채우세요</div>
+        <div class="label">📌 <b>문법 포인트</b> — 해석에 맞게 빈칸을 채우세요 <span class="prefill-hint">(각 단어 첫 글자 잠금)</span></div>
         <div class="qkr">${escape(quiz.ko)}</div>
         <div class="cloze-sentence">${sentHTML}</div>
       </div>`;
@@ -1932,25 +2038,17 @@ function renderQuiz(){
       btn.addEventListener("click", ()=> handleChoice(btn));
     });
   } else if(mode === "cloze" || mode === "grammar-fill"){
-    const inputs = document.querySelectorAll(".cloze-input");
-    inputs.forEach((inp, i)=>{
-      inp.addEventListener("keydown", e=>{
-        if(e.key === "Enter"){
-          const next = inputs[i+1];
-          if(next) next.focus();
-          else handleSubmit();
-        }
-      });
-    });
+    const containers = Array.from(document.querySelectorAll(".cloze-wa"));
+    containers.forEach(c => renderWordAnswer(c, c.dataset.answer));
     document.getElementById("submitBtn").addEventListener("click", handleSubmit);
-    if(inputs[0]) setTimeout(()=>inputs[0].focus(), 100);
+    const first = document.querySelector(".cloze-wa .rest-input");
+    if(first) setTimeout(()=>first.focus(), 100);
   } else {
-    const inp = document.getElementById("ansInput");
-    inp.addEventListener("keydown", e=>{
-      if(e.key === "Enter") handleSubmit();
-    });
+    const container = document.getElementById("wordAnswer");
+    renderWordAnswer(container, container.dataset.answer);
     document.getElementById("submitBtn").addEventListener("click", handleSubmit);
-    setTimeout(()=>inp.focus(), 100);
+    const first = container.querySelector(".rest-input");
+    if(first) setTimeout(()=>first.focus(), 100);
     if(mode === "listening"){
       setTimeout(()=>speak(word.w), 250);
       document.getElementById("lisBtn").addEventListener("click", ()=>speak(word.w));
@@ -1996,58 +2094,50 @@ function handleSubmit(){
   if(state.quizAnswered) return;
   const { word, mode } = state.quizCurrent;
 
-  // ── 심화: 콜로케이션 영작 ──────────────────────────────
-  if(mode === "colloc-write"){
-    const inp = document.getElementById("ansInput");
-    const val = normalizeAnswer(inp.value);
-    if(!val) return;
-    state.quizAnswered = true;
-    const correct = normalizeAnswer(state.quizCurrent.colloc.en);
-    const isCorrect = val === correct;
-    inp.classList.add(isCorrect ? "correct" : "wrong");
-    inp.disabled = true;
-    document.getElementById("submitBtn").disabled = true;
-    if(!isCorrect){
-      document.getElementById("feedback").innerHTML = `정답: <b style="color:var(--grade)">${escape(state.quizCurrent.colloc.en)}</b>`;
-    }
-    finishQuestion(isCorrect);
-    return;
-  }
-
-  // ── 심화: 예문 빈칸 채우기 · 문법 빈칸 채우기 ────────────
+  // ── 심화: 예문 빈칸 · 문법 빈칸 ────────────────────────
   if(mode === "cloze" || mode === "grammar-fill"){
-    const inputs = Array.from(document.querySelectorAll(".cloze-input"));
-    if(inputs.some(i => !i.value.trim())) return;
+    const containers = Array.from(document.querySelectorAll(".cloze-wa"));
+    if(containers.some(anyWordEmpty)) return;
     state.quizAnswered = true;
     let allOk = true;
-    inputs.forEach(i => {
-      const guess = normalizeAnswer(i.value);
-      const ans = normalizeAnswer(i.dataset.ans);
-      const ok = guess === ans;
-      i.classList.add(ok ? "correct" : "wrong");
-      i.disabled = true;
-      if(!ok) allOk = false;
+    containers.forEach(function(c){
+      const guess = normalizeAnswer(collectWordAnswer(c));
+      const ans = normalizeAnswer(c.dataset.answer);
+      const okAll = guess === ans;
+      const perGroup = Array.from(c.querySelectorAll('.word-group')).map(function(g, i){
+        const w = (c.dataset.answer || '').split(/\s+/)[i] || '';
+        const combined = (g.dataset.first || '') + (g.querySelector('.rest-input') ? g.querySelector('.rest-input').value : '');
+        return normalizeAnswer(combined) === normalizeAnswer(w);
+      });
+      markWordAnswer(c, perGroup);
+      if(!okAll) allOk = false;
     });
     document.getElementById("submitBtn").disabled = true;
     if(!allOk){
-      const answers = inputs.map(i => `<b style="color:var(--grade)">${escape(i.dataset.ans)}</b>`).join(" , ");
+      const answers = containers.map(function(c){ return `<b style="color:var(--grade)">${escape(c.dataset.answer)}</b>`; }).join(" , ");
       document.getElementById("feedback").innerHTML = `정답: ${answers}`;
     }
     finishQuestion(allOk);
     return;
   }
 
-  // ── 기본: 철자·리스닝 ────────────────────────────────
-  const inp = document.getElementById("ansInput");
-  const val = (inp.value||"").trim().toLowerCase();
-  if(!val) return;
+  // ── 기본/심화 단일 컨테이너: spelling / listening / colloc-write
+  const container = document.getElementById("wordAnswer");
+  if(!container) return;
+  if(anyWordEmpty(container)) return;
   state.quizAnswered = true;
-  const isCorrect = val === word.w.toLowerCase();
-  inp.classList.add(isCorrect ? "correct" : "wrong");
-  inp.disabled = true;
+  const correctAns = container.dataset.answer;
+  const guess = normalizeAnswer(collectWordAnswer(container));
+  const isCorrect = guess === normalizeAnswer(correctAns);
+  const perGroup = Array.from(container.querySelectorAll('.word-group')).map(function(g, i){
+    const w = (correctAns || '').split(/\s+/)[i] || '';
+    const combined = (g.dataset.first || '') + (g.querySelector('.rest-input') ? g.querySelector('.rest-input').value : '');
+    return normalizeAnswer(combined) === normalizeAnswer(w);
+  });
+  markWordAnswer(container, perGroup);
   document.getElementById("submitBtn").disabled = true;
   if(!isCorrect){
-    document.getElementById("feedback").innerHTML = `정답: <b style="color:var(--grade)">${escape(word.w)}</b>`;
+    document.getElementById("feedback").innerHTML = `정답: <b style="color:var(--grade)">${escape(correctAns)}</b>`;
   }
   finishQuestion(isCorrect);
 }
@@ -2139,9 +2229,14 @@ function finishSession(){
   const main = document.getElementById("main");
   const stageLbl = isAdv ? "심화단계" : "기본단계";
   const passedM3 = (pct >= 60) && (DATA.grade === '중3');
-  const title = passedM3
-    ? `💰 방금 당신의 미래 연봉이 10만원 더 올라갔슴돠!!`
-    : (isPerfect ? `🎊 ${stageLbl} 무결점 클리어!` : (pct >= 80 ? `🎉 ${stageLbl} 잘했어요!` : pct >= 60 ? `👍 ${stageLbl} 통과!` : "💪 다시 도전!"));
+  const isHighGrade = ['고1','고2','수능'].includes(DATA.grade);
+  const highGradePerfect = isHighGrade && isAdv && isPerfect;
+  const highGradeMsg = highGradePerfect ? pickHGMessage() : null;
+  const title = highGradeMsg
+    ? `🏆 ${escape(highGradeMsg)}`
+    : passedM3
+      ? `💰 방금 당신의 미래 연봉이 10만원 더 올라갔슴돠!!`
+      : (isPerfect ? `🎊 ${stageLbl} 무결점 클리어!` : (pct >= 80 ? `🎉 ${stageLbl} 잘했어요!` : pct >= 60 ? `👍 ${stageLbl} 통과!` : "💪 다시 도전!"));
 
   // 심화면 [🎯 심화 다시] + [🏠 홈으로]. 기본이면 [🔁 다시 보기] + (심화 해금 시) [🎯 심화 도전]
   const canGoAdvanced = !isAdv && state.basicThresholdPassed;
@@ -2167,8 +2262,7 @@ function finishSession(){
        <button class="start-btn alt" id="homeBtn">🏠 Home</button>`
     : `<button class="start-btn" id="retryBtn">🔁 다시 보기</button>
        ${hasWrong ? `<button class="start-btn wrong-only" id="retryWrongBtn">🔴 틀린문제만 (${state.quizWrongItems.length})</button>` : ""}
-       ${canGoAdvanced ? `<button class="start-btn adv" id="goAdvBtn">🎯 심화단계 도전</button>`
-                       : `<button class="start-btn alt" id="nextBtn">▶ 다음 챕터</button>`}`;
+       ${canGoAdvanced ? `<button class="start-btn adv" id="goAdvBtn">🎯 심화단계 도전</button>` : ""}`;
 
   main.innerHTML = `
     <div class="result">
@@ -2206,6 +2300,20 @@ function finishSession(){
 
   // celebration
   setTimeout(()=>{
+    if(highGradeMsg){
+      // 고등학교 심화 100% — 화면 오버레이 + 랜덤 메시지 + TTS + 폭죽 다량
+      showHighGradeCelebration(highGradeMsg);
+      SFX.grandFanfare();
+      fx.spawn("rainbow-burst");
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.fireworks(); }, 350);
+      setTimeout(()=>{ fx.spawn("jackpot-full"); SFX.coinDrop(); }, 800);
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.bigWin(); }, 1400);
+      setTimeout(()=>{ fx.spawn("rainbow-burst"); SFX.streak(); }, 2100);
+      setTimeout(()=>{ fx.spawn("fireworks-grand"); SFX.fireworks(); }, 2900);
+      setTimeout(()=>{ fx.spawn("jackpot-full"); SFX.coinDrop(); }, 3700);
+      setTimeout(()=>{ SFX.grandFanfare(); }, 4500);
+      return;
+    }
     if(advGrand){
       // 심화 90%+ — 화려·명랑 팡파레 + 축포 다량 (배곧 쵝오!)
       fx.spawn("rainbow-burst");
@@ -2259,10 +2367,159 @@ function finishSession(){
 /* ============================================================
    UTILS
    ============================================================ */
+/* 고등학교 심화 100% — 랜덤 축하 메시지 + 화면 오버레이 + TTS */
+const HG_MESSAGES = [
+  "당신의 노력에 경의를 표합니다!!",
+  "배곧 쵝오를 넘어서!!",
+  "이러다 연세대 가는거 아냐??",
+  "자꾸 이러면 서울대 들어간다.",
+  "왜 이렇게 잘 해?",
+  "커서 훌륭한 사람 되겠어!!",
+  "미래의 당신 집이 한 평 커졌어!!"
+];
+function pickHGMessage(){
+  return HG_MESSAGES[Math.floor(Math.random() * HG_MESSAGES.length)];
+}
+function showHighGradeCelebration(msg){
+  const old = document.querySelector('.hg-celebration');
+  if(old) old.remove();
+  const overlay = document.createElement('div');
+  overlay.className = 'hg-celebration';
+  const sparkles = ['✨','🎉','🎊','⭐','💫','🌟','🎆','🎇','💥']
+    .map((e,i)=>{
+      const x = 8 + Math.random()*84, y = 8 + Math.random()*84;
+      const d = (Math.random()*1.6).toFixed(2);
+      return `<span class="hg-sparkle" style="left:${x}%;top:${y}%;animation-delay:${d}s">${e}</span>`;
+    }).join('');
+  overlay.innerHTML = `<div class="hg-halo"></div>${sparkles}<div class="hg-msg">${escape(msg)}</div>`;
+  document.body.appendChild(overlay);
+  setTimeout(()=>overlay.remove(), 6100);
+  try{
+    if('speechSynthesis' in window){
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(msg);
+      u.lang = 'ko-KR'; u.rate = 0.98; u.pitch = 1.12; u.volume = 1;
+      const voices = speechSynthesis.getVoices();
+      const ko = voices.find(v => /^ko/i.test(v.lang));
+      if(ko) u.voice = ko;
+      setTimeout(()=>speechSynthesis.speak(u), 400);
+    }
+  }catch(e){}
+}
+
 /* 빈칸 힌트: 정답 문자열의 각 단어 첫 글자를 "a… b…" 형태로 반환
    예: "appeared" → "a…"  ·  "in the absence of" → "i… t… a… o…"  ·  "feel bad" → "f… b…"  */
 function firstCharsHint(s){
   return (s||'').trim().split(/\s+/).filter(Boolean).map(w => (w.charAt(0)||'') + '…').join(' ');
+}
+/* 빈칸 프리필: 정답 각 단어의 첫 글자를 공백으로 이어붙여 반환 (인풋 value 로 채워둠)
+   예: "appeared" → "a"  ·  "in the absence of" → "i t a o"  ·  "feel bad" → "f b"  */
+function firstCharsPrefill(s){
+  return (s||'').trim().split(/\s+/).filter(Boolean).map(w => (w.charAt(0)||'')).join(' ');
+}
+/* 인풋에 프리필된 첫 글자 잠금 + 커서 이동 훅 부착 */
+function attachPrefillGuard(inp){
+  const prefill = inp.dataset.prefill || '';
+  if(!prefill) return;
+  const moveCursorEnd = () => { try{ inp.setSelectionRange(inp.value.length, inp.value.length); }catch(e){} };
+  inp.addEventListener('focus', () => setTimeout(moveCursorEnd, 0));
+  inp.addEventListener('click', () => {
+    if(inp.selectionStart < prefill.length) moveCursorEnd();
+  });
+  inp.addEventListener('keydown', e => {
+    // 프리필 영역 보호: 첫 글자들을 지우거나 그 앞으로 이동하는 키 방지
+    const s = inp.selectionStart, e2 = inp.selectionEnd;
+    if(e.key === 'Backspace' && s <= prefill.length && s === e2){ e.preventDefault(); moveCursorEnd(); return; }
+    if(e.key === 'Delete'    && s <  prefill.length){ e.preventDefault(); moveCursorEnd(); return; }
+    if((e.key === 'ArrowLeft' || e.key === 'Home') && s <= prefill.length){ e.preventDefault(); moveCursorEnd(); return; }
+  });
+  inp.addEventListener('input', () => {
+    // 사용자 값이 프리필로 시작하지 않으면 프리필을 앞에 다시 붙임 (드래그·잘라내기 등 방지)
+    if(!inp.value.startsWith(prefill)){
+      inp.value = prefill + inp.value.replace(new RegExp('^' + prefill.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').slice(0,0)),'');
+      moveCursorEnd();
+    }
+  });
+}
+/* 프리필 인풋에서 사용자가 실제로 추가 입력한 부분이 있는지 (첫 글자만 남은 상태는 미제출) */
+function hasUserInput(inp){
+  const prefill = inp.dataset.prefill || '';
+  return (inp.value||'').trim().length > prefill.trim().length;
+}
+/* ============================================================
+   낱말박스 (자동완성 방어) — 각 단어당 [잠금 첫글자] + [빈 인풋]
+   ============================================================ */
+function renderWordAnswer(container, answer){
+  container.innerHTML = '';
+  const words = String(answer || '').trim().split(/\s+/).filter(Boolean);
+  words.forEach((word, wi) => {
+    const group = document.createElement('span');
+    const isSingle = word.length <= 1;
+    group.className = 'word-group' + (isSingle ? ' single-letter' : '');
+    group.dataset.first = isSingle ? '' : (word[0] || '');
+    group.dataset.full = word;
+    if(!isSingle){
+      const first = document.createElement('span');
+      first.className = 'first-letter';
+      first.textContent = word[0] || '';
+      group.appendChild(first);
+    }
+    const inp = document.createElement('input');
+    inp.className = 'rest-input';
+    inp.type = 'text';
+    inp.autocomplete = 'off';
+    inp.autocorrect = 'off';
+    inp.setAttribute('autocapitalize','off');
+    inp.spellcheck = false;
+    inp.inputMode = 'text';
+    inp.name = 'wa-' + Math.random().toString(36).slice(2,8);
+    inp.dataset.wi = wi;
+    inp.setAttribute('aria-label', (wi+1) + '번째 단어의 나머지 스펠링');
+    group.appendChild(inp);
+    container.appendChild(group);
+  });
+  wireWordInputs(container);
+}
+function wireWordInputs(container){
+  const inputs = Array.from(container.querySelectorAll('.rest-input'));
+  inputs.forEach((inp, i) => {
+    inp.addEventListener('input', () => {
+      inp.value = (inp.value || '').toLowerCase().replace(/[^a-z'\-]/g,'');
+    });
+    inp.addEventListener('keydown', e => {
+      if(e.key === 'Enter'){
+        const next = inputs[i+1];
+        if(next){ e.preventDefault(); next.focus(); }
+        else { e.preventDefault(); handleSubmit(); }
+      } else if(e.key === 'Tab' && !e.shiftKey){
+        const next = inputs[i+1];
+        if(next){ e.preventDefault(); next.focus(); }
+      } else if(e.key === 'Backspace' && !inp.value && i > 0){
+        e.preventDefault();
+        const prev = inputs[i-1];
+        prev.focus();
+        try{ prev.setSelectionRange(prev.value.length, prev.value.length); }catch(_e){}
+      }
+    });
+  });
+}
+function collectWordAnswer(container){
+  const groups = Array.from(container.querySelectorAll('.word-group'));
+  return groups.map(function(g){
+    var inp = g.querySelector('.rest-input');
+    return (g.dataset.first || '') + (inp ? inp.value : '');
+  }).join(' ');
+}
+function anyWordEmpty(container){
+  return Array.from(container.querySelectorAll('.rest-input')).some(function(i){ return !i.value.trim(); });
+}
+function markWordAnswer(container, perGroupOk){
+  const groups = Array.from(container.querySelectorAll('.word-group'));
+  groups.forEach(function(g, i){
+    g.classList.add(perGroupOk[i] ? 'correct' : 'wrong');
+    var inp = g.querySelector('.rest-input');
+    if(inp) inp.disabled = true;
+  });
 }
 function shuffle(arr){
   for(let i=arr.length-1;i>0;i--){
