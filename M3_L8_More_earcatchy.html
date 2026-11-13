@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ear_catchy — M3_L8_More</title>
+<style>
+html{overscroll-behavior-y:contain;}
+body{margin:0;background:#e9e9e9;font-family:'Noto Sans KR','Malgun Gothic',sans-serif;}
+.toolbar{position:sticky;top:0;z-index:50;max-width:860px;margin:0 auto;padding:10px 14px;background:#fff;border-bottom:2px solid #3f8a83;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.toolbar button{font-family:inherit;font-size:13px;padding:7px 14px;cursor:pointer;border:1.5px solid #3f8a83;background:#fff;color:#2f6f69;border-radius:5px;font-weight:700;}
+.toolbar button.active{background:#3f8a83;color:#fff;}
+.toolbar button:disabled{cursor:not-allowed;opacity:.45;background:#eee;color:#888;border-color:#bbb;}
+
+.ws{--ink:#1a1a1a;--soft:#444;--line:#1a1a1a;max-width:800px;margin:16px auto;background:#fff;color:var(--ink);
+  padding:26px 30px 40px;border:1px solid #ccc;font-family:'Noto Sans KR','Malgun Gothic',sans-serif;}
+.ws h1{font-size:21px;margin:0 0 6px;}
+.ws .meta{font-size:13.5px;color:var(--soft);margin-bottom:6px;}
+.ws .namebar{font-size:14px;margin:10px 0 18px;border:1px solid #999;border-radius:6px;padding:8px 12px;display:flex;gap:26px;}
+.ws .namebar span{display:inline-flex;align-items:center;gap:6px;}
+.task-block{border-top:2px solid var(--line);margin-top:22px;padding-top:14px;}
+.task-title{font-size:15.5px;font-weight:800;margin-bottom:6px;}
+.task-instr{font-size:13.5px;color:var(--soft);margin-bottom:10px;line-height:1.6;}
+.ws .footnote{font-size:12.5px;color:#777;margin-top:18px;border-top:1px dashed #bbb;padding-top:8px;}
+.ws .ans{display:none;}
+.ws.answer-mode .ans{display:inline;color:#111;font-weight:700;}
+.ws-input{font-family:inherit;font-size:14.5px;color:#111;border:none;border-bottom:1.5px solid #666;background:#fff;padding:3px 6px;min-width:240px;outline:none;}
+.ws-input:focus{border-bottom-color:#3f8a83;background:#f7fdfc;}
+.ws-input.wide{width:70%;min-width:260px;}
+.q-img-wrap{margin:8px 0;}
+.q-img{max-width:100%;height:auto;border:1px solid #ccc;border-radius:6px;display:block;}
+.ws-select{font-family:inherit;font-size:14.5px;color:#111;border:1.5px solid #666;background:#fff;border-radius:5px;padding:4px 8px;outline:none;cursor:pointer;}
+.ws-select:focus{border-color:#3f8a83;background:#f7fdfc;}
+.qtag{display:inline-block;font-size:11px;font-weight:700;color:#2f6f69;background:#eef6f5;border:1px solid #bcdcd8;border-radius:5px;padding:1px 7px;margin-right:6px;vertical-align:middle;letter-spacing:.3px;}
+.pts{display:inline-block;font-size:11.5px;font-weight:700;color:#a15c00;background:#fff6e6;border:1px solid #f0d29a;border-radius:5px;padding:1px 6px;margin-left:4px;vertical-align:middle;}
+.q-row{margin:10px 0 16px;padding-left:2px;}
+.q-label{font-size:13.5px;color:#333;margin-bottom:5px;}
+.mc-choices{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+.mc-choices label{font-size:14px;cursor:pointer;display:flex;gap:7px;align-items:flex-start;}
+.ws-para{line-height:1.95;margin:8px 0;font-size:15px;}
+.grade-box{margin-top:22px;border:2px solid #3f8a83;border-radius:8px;padding:14px 16px;background:#f4fbfa;display:none;}
+.grade-box.show{display:block;}
+.grade-box h3{margin:0 0 8px;font-size:15px;color:#2f6f69;}
+.score-banner{display:none;position:sticky;top:0;z-index:40;margin:0 0 18px;padding:12px 16px;border-radius:9px;border:2px solid #3f8a83;background:#f4fbfa;box-shadow:0 2px 6px rgba(0,0,0,.08);}
+.score-banner.show{display:block;}
+.score-banner.pass{border-color:#2f9e6b;background:#eafaf1;}
+.score-banner.fail{border-color:#d0555f;background:#fdeeef;}
+.score-banner .sb-main{font-size:16.5px;font-weight:800;color:#1c1c1c;}
+.score-banner .sb-sub{font-size:12.5px;color:#555;margin-top:3px;}
+.qgrade{display:none;font-size:11.5px;font-weight:800;padding:1px 8px;border-radius:999px;margin-left:6px;vertical-align:middle;white-space:nowrap;}
+.ws.answer-mode .qgrade.show{display:inline-block;}
+.qgrade.ok{background:#e3f7ee;color:#127a4f;border:1px solid #8fd9b6;}
+.qgrade.bad{background:#fdecee;color:#b23a48;border:1px solid #f3b7bd;}
+.qgrade.partial{background:#fff6e6;color:#a15c00;border:1px solid #f0d29a;}
+.qgrade.pending{background:#eef2f7;color:#555;border:1px solid #cfd8e3;}
+.gc-student-ans{display:block;width:70%;min-width:260px;margin-top:2px;padding:6px 9px;font-size:14.5px;color:#111;background:#f7fdfc;border:1px solid #666;border-radius:5px;white-space:pre-wrap;overflow-wrap:break-word;word-break:break-word;line-height:1.55;}
+.gc-student-ans.empty{color:#999;font-style:italic;}
+.gc-partial-reason{margin-top:6px;font-size:12.5px;color:#a15c00;background:#fff6e6;border:1px dashed #f0d29a;border-radius:6px;padding:6px 10px;line-height:1.5;white-space:pre-wrap;}
+/* ===== 오답만 재시험 ===== */
+.retry-banner{display:none;margin:0 0 16px;padding:11px 15px;border:1.5px dashed #3f8a83;border-radius:8px;background:#eef6f5;font-size:13px;color:#2f6f69;line-height:1.6;}
+.ws.retry-mode .retry-banner{display:block;}
+[data-qid].q-locked{position:relative;opacity:.6;background:#f4f4f4;border-radius:6px;}
+[data-qid].q-locked input,[data-qid].q-locked select,[data-qid].q-locked textarea{pointer-events:none;}
+[data-qid].q-locked::after{content:attr(data-lock-label);position:absolute;top:-10px;right:8px;font-size:11px;font-weight:800;color:#2f6f69;background:#eafaf1;border:1px solid #8fd9b6;border-radius:999px;padding:2px 10px;white-space:nowrap;}
+[data-qid].q-retry-target{position:relative;box-shadow:0 0 0 2px #f0d29a inset;border-radius:6px;}
+[data-qid].q-retry-target::after{content:attr(data-retry-label);position:absolute;top:-10px;right:8px;font-size:11px;font-weight:800;color:#a15c00;background:#fff6e6;border:1px solid #f0d29a;border-radius:999px;padding:2px 10px;white-space:nowrap;}
+#bRetryWrong{display:none;}
+#bRetryWrong.show{display:inline-block;}
+@media print{.toolbar{display:none;}.retry-banner{display:none;}body{background:#fff;}.ws{border:none;margin:0;max-width:none;padding:14mm;}.task-block{page-break-inside:avoid;}.score-banner{position:static;box-shadow:none;}}
+.ec-section{margin:14px 0;padding:11px 15px;background:#eef5f3;border-left:4px solid #3f8a83;border-radius:6px;color:#2a3b38;font-size:14px;line-height:1.7;}
+.ec-intro{background:#eaf0fb;border-left-color:#5a76c7;}
+.ec-summary{background:#fff5e6;border-left-color:#e0962f;font-weight:600;}
+.ec-sent{margin:15px 0;padding:13px 15px;background:#fff;border:1px solid #d7dde3;border-radius:10px;}
+.ec-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.ec-no{font-size:11.5px;font-weight:800;color:#2f6f69;background:#dff0ec;border:1px solid #bfe0d9;border-radius:999px;padding:2px 10px;white-space:nowrap;}
+.ec-note{font-size:12.5px;color:#6a7a86;}
+.ec-eng{font-size:15.5px;line-height:1.6;color:#17202a;font-weight:600;letter-spacing:.1px;}
+.ec-breakdown{margin-top:8px;border-top:1px dashed #e0e5ea;padding-top:8px;display:flex;flex-direction:column;gap:7px;}
+.ec-eng-frag{font-size:13.5px;color:#2b3a45;font-weight:600;}
+.ec-kor{font-size:13px;color:#55616c;line-height:1.65;margin-top:1px;}
+.ec-modebar{margin:0 0 10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:#555;}
+.ec-modebar>span{font-weight:700;color:#444;}
+.ec-modebar button{font-family:inherit;font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid #3f8a83;background:#fff;color:#2f6f69;cursor:pointer;}
+.ec-modebar button.active{background:#3f8a83;color:#fff;}
+.ec-modehint{font-size:11.5px;color:#8a95a0;}
+.ec-quiz{margin:15px 0;padding:12px 14px;border:1px solid #cfe0db !important;background:#f6fbfa !important;border-radius:10px;}
+.ec-quiz .q-label{font-size:14.5px;color:#17333a;font-weight:600;}
+#wsRoot.ec-exam .ec-explain{display:none !important;}
+@media print{.ec-modebar{display:none;}}
+
+</style>
+</head>
+<body>
+<div class="toolbar"><button id="bSubmit" onclick="submitTest()">✅ 테스트 제출</button><button id="bRetryWrong" onclick="startRetryMode()">🎯 오답만 재시험</button><button id="bRetry" class="active" onclick="retryTest()">🔁 전체 초기화</button><button onclick="window.print()">🖨 인쇄 / PDF</button></div>
+<div class="ws" id="wsRoot">
+<div class="retry-banner" id="retryBanner"></div>
+<div class="score-banner" id="scoreBanner"><div class="sb-main" id="sbMain"></div><div class="sb-sub" id="sbSub"></div></div>
+<h1>🧚 ear_catchy — M3_L8_More</h1>
+<div class="meta">제목: <b>M3_L8_More</b> · 학년: <b>중3</b></div>
+<div class="namebar"><span>이름 <input class="ws-input" data-role="studentName" style="min-width:150px"></span><span>학년 <select class="ws-select" data-role="grade" style="min-width:110px"><option value="">학년 선택</option><option value="초3">초3</option><option value="초4">초4</option><option value="초5">초5</option><option value="초6">초6</option><option value="중1">중1</option><option value="중2">중2</option><option value="중3" selected>중3</option><option value="고1">고1</option><option value="고2">고2</option><option value="고3">고3</option></select></span></div><div class="ec-modebar"><span>학습 자료 모드</span><button type="button" id="ecStudy" class="active" onclick="ecMode('study')">📖 학습</button><button type="button" id="ecExam" onclick="ecMode('exam')">📝 시험</button><span class="ec-modehint" id="ecModeHint">학습 모드 · 문장 해설이 모두 보입니다. (Quiz 정답은 제출 후 공개)</span></div>
+<div class="task-instr" style="margin-bottom:12px;">문장별 설명을 읽고 중간의 <b>Quiz</b>를 풀어 <b>제출</b>하면 자동 채점됩니다. 객관식·참/거짓 모두 자동 채점되며, 구글시트가 연결돼 있으면 결과가 기록됩니다.</div>
+<div class="ec-section ec-intro ec-explain">자, 귓구멍 활짝 열어! ear_catchy 등판했다! 오늘 우리가 박살 낼 지문은 꿈 하나 붙잡고 끝까지 안 놓은 남자, 윌 쇼츠 이야기야. 퍼즐 제작자라는 독특한 꿈을 진짜로 이뤄버린 썰이다. 순서는 세 개! 첫째, 끊어읽기로 전 문장 돌파. 둘째, 핵심 단어 털기. 셋째, 맞냐 틀리냐 패러프레이징 퀴즈. 지문아, 각오해라. 오늘 너 탈탈 털린다!</div><div class="ec-section ec-explain">첫 번째 코너, 기본 설명이다. 영어 덩어리 하나 듣고, 바로 우리말로 꽂아 넣는다. 가자!</div><div class="ec-sent"><div class="ec-head"><span class="ec-no">문장 1</span><span class="ec-note ec-explain">첫 문장부터 간다!</span></div><div class="ec-eng">When you ask kids what they want to be, you often hear a pilot, a doctor, or a firefighter.</div><div class="ec-explain ec-breakdown"><div class="ec-unit"><div class="ec-eng-frag">When you ask kids what they want to be,</div><div class="ec-kor">아이들한테 뭐가 되고 싶냐고 물어보면. 여기서 what they want to be, 이게 간접의문문이야. what 뒤에 주어 they, 동사 want 순서! 의문문인데 평서문 어순, 이거 시험에 무조건 나온다!</div></div><div class="ec-unit"><div class="ec-eng-frag">you often hear a pilot, a doctor, or a firefighter.</div><div class="ec-kor">흔히 듣는 대답은 조종사, 의사, 소방관. 다들 아는 무난한 직업들이지. 자, 이제 반전 들어온다.</div></div></div></div><div class="ec-sent"><div class="ec-head"><span class="ec-no">문장 2</span><span class="ec-note ec-explain">문장 두 개, 한 번에 몰아친다!</span></div><div class="ec-eng">But 14-year-old Will Shortz had a different answer. He wanted to become a puzzle maker.</div><div class="ec-explain ec-breakdown"><div class="ec-unit"><div class="ec-eng-frag">But 14-year-old Will Shortz had a different answer.</div><div class="ec-kor">그런데 열네 살 윌 쇼츠는 대답이 달랐다! 14-year-old에서 year에 s 없는 거 봤지? 숫자 하이픈 단위로 형용사 만들 때는 단수! years라고 쓰면 감점이야!</div></div><div class="ec-unit"><div class="ec-eng-frag">He wanted to become a puzzle maker.</div><div class="ec-kor">그는 퍼즐 제작자가 되고 싶었다. 조종사, 의사 사이에 퍼즐 메이커! 이게 바로 이 지문의 시작점이야.</div></div></div></div><div class="q-row ec-quiz" data-qid="q001" data-qtype="choice" data-points="7" data-answer="2"><div class="q-label"><span class="qtag">Quiz 1</span>윌 쇼츠의 꿈에 대해 지문 흐름에 맞는 것은?<span class="pts">7점</span></div><div class="mc-choices"><label><input type="radio" name="q001" data-role="choice" value="1"> 1. Will's dream was similar to the usual answers of most kids.</label><label><input type="radio" name="q001" data-role="choice" value="2"> 2. Will's dream was different from the usual answers of most kids.</label><label><input type="radio" name="q001" data-role="choice" value="3"> 3. Will's dream was different from the strange answers of most kids.</label><label><input type="radio" name="q001" data-role="choice" value="4"> 4. Will's dream was different from the usual answers of most teachers.</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 2번 · 아이들의 흔한 대답과 달리 윌은 different answer, 즉 퍼즐 제작자를 꿈꿨다.</div></div><div class="ec-sent"><div class="ec-head"><span class="ec-no">문장 3</span><span class="ec-note ec-explain">두 번째 구간, 노력 파트 들어간다. 여기서부터 윌이 진짜 미쳤다!</span></div><div class="ec-eng">Will did not just talk. He took action to make his dream come true.</div><div class="ec-explain ec-breakdown"><div class="ec-unit"><div class="ec-eng-frag">Will did not just talk.</div><div class="ec-kor">윌은 그냥 말만 한 게 아니었다. not just, 이 표현 나오면 귀 쫑긋! 뒤에 진짜 행동이 온다는 신호탄이야.</div></div><div class="ec-unit"><div class="ec-eng-frag">He took action to make his dream come true.</div><div class="ec-kor">그는 꿈을 이루려고 행동에 옮겼다. to make는 목적, 이루기 위해서. 그리고 make his dream come true, 사역동사 make 뒤에 동사원형 come! to come 쓰면 바로 땡이다!</div></div></div></div><div class="q-row ec-quiz" data-qid="q002" data-qtype="choice" data-points="7" data-answer="4"><div class="q-label"><span class="qtag">Quiz 2</span>윌이 행동에 옮긴 이유로 알맞은 것은?<span class="pts">7점</span></div><div class="mc-choices"><label><input type="radio" name="q002" data-role="choice" value="1"> 1. Will took action because he wanted his dream to be forgotten.</label><label><input type="radio" name="q002" data-role="choice" value="2"> 2. Will took action although he wanted his dream to come true.</label><label><input type="radio" name="q002" data-role="choice" value="3"> 3. Will took action because his parents wanted his dream to come true.</label><label><input type="radio" name="q002" data-role="choice" value="4"> 4. Will took action because he wanted his dream to come true.</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 4번 · He took action to make his dream come true, 꿈을 이루기 위해 행동했다.</div></div><div class="ec-sent"><div class="ec-head"><span class="ec-no">문장 4</span><span class="ec-note ec-explain">행동 개시! 계속 간다!</span></div><div class="ec-eng">He started sending in his puzzles to magazines.</div><div class="ec-explain ec-breakdown"><div class="ec-unit"><div class="ec-eng-frag">He started sending in his puzzles to magazines.</div><div class="ec-kor">그는 자기 퍼즐을 잡지사에 보내기 시작했다. start 뒤에 동명사 sending, 열네 살이 잡지사에 투고를 해? 클래스가 다르다!</div></div></div></div><div class="ec-sent"><div class="ec-head"><span class="ec-no">문장 5</span><span class="ec-note ec-explain">여기서 첫 번째 시련 등장!</span></div><div class="ec-eng">In college, Will could not find a major in puzzle making, but he did not give up.</div><div class="ec-explain ec-breakdown"><div class="ec-unit"><div class="ec-eng-frag">In college, Will could not find a major in puzzle making,</div><div class="ec-kor">대학에 갔는데, 퍼즐 제작 전공이 없었다. major는 여기서 형용사 주요한이 아니라 명사, 전공! 헷갈리지 마!</div></div><div class="ec-unit"><div class="ec-eng-frag">but he did not give up.</div><div class="ec-kor">하지만 그는 포기하지 않았다! but 하나로 분위기 확 뒤집힌다. 전공이 없어? 그럼 만들면 되지!</div></div></div></div><div class="q-row ec-quiz" data-qid="q003" data-qtype="choice" data-points="7" data-answer="1"><div class="q-label"><span class="qtag">Quiz 3</span>대학에서 윌의 상황으로 알맞은 것은?<span class="pts">7점</span></div><div class="mc-choices"><label><input type="radio" name="q003" data-role="choice" value="1"> 1. Will had no puzzle major in college, but he kept going.</label><label><input type="radio" name="q003" data-role="choice" value="2"> 2. Will had no puzzle major in college, but he quit soon.</label><label><input type="radio" name="q003" data-role="choice" value="3"> 3. Will had a puzzle major in college, but he kept going.</label><label><input type="radio" name="q003" data-role="choice" value="4"> 4. Will had no puzzle major in high school, but he kept going.</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 1번 · 대학에 퍼즐 전공이 없었지만 he did not give up, 포기하지 않았다.</div></div><div class="ec-sent"><div class="ec-head"><span class="ec-no">문장 6</span><span class="ec-note ec-explain">진짜 만들었다! 들어봐!</span></div><div class="ec-eng">He created courses for himself with the help of professors.</div><div class="ec-explain ec-breakdown"><div class="ec-unit"><div class="ec-eng-frag">He created courses for himself</div><div class="ec-kor">그는 자기 자신을 위한 강좌를 만들었다. for himself, 재귀대명사! 남 말고 나 자신을 위해서.</div></div><div class="ec-unit"><div class="ec-eng-frag">with the help of professors.</div><div class="ec-kor">교수님들의 도움을 받아서. 혼자 맨땅에 헤딩한 게 아니라 도움까지 끌어왔다는 거, 이게 실행력이야!</div></div></div></div><div class="ec-sent"><div class="ec-head"><span class="ec-no">문장 7</span><span class="ec-note ec-explain">결과 바로 나온다!</span></div><div class="ec-eng">Soon, he became an expert.</div><div class="ec-explain ec-breakdown"><div class="ec-unit"><div class="ec-eng-frag">Soon, he became an expert.</div><div class="ec-kor">곧 그는 전문가가 되었다. become 뒤에 명사 보어 an expert. 짧고 굵다!</div></div></div></div><div class="ec-sent"><div class="ec-head"><span class="ec-no">문장 8</span><span class="ec-note ec-explain">졸업 후 이야기 간다!</span></div><div class="ec-eng">After graduation, he created puzzles for a small magazine for fifteen years.</div><div class="ec-explain ec-breakdown"><div class="ec-unit"><div class="ec-eng-frag">After graduation, he created puzzles</div><div class="ec-kor">졸업하고 나서, 그는 퍼즐을 만들었다.</div></div><div class="ec-unit"><div class="ec-eng-frag">for a small magazine for fifteen years.</div><div class="ec-kor">작은 잡지사를 위해, 무려 15년 동안! for가 두 번 나오는데 앞에 for는 대상, 뒤에 for는 기간. 같은 for인데 역할이 다르다, 이거 함정 포인트야! 그리고 15년, 작은 잡지사에서 버틴 거야. 이게 노력 구간의 마무리다.</div></div></div></div><div class="q-row ec-quiz" data-qid="q004" data-qtype="choice" data-points="7" data-answer="3"><div class="q-label"><span class="qtag">Quiz 4</span>졸업 후 윌에 대해 맞는 것은?<span class="pts">7점</span></div><div class="mc-choices"><label><input type="radio" name="q004" data-role="choice" value="1"> 1. After college, Will made puzzles for a famous magazine for a long time.</label><label><input type="radio" name="q004" data-role="choice" value="2"> 2. After college, Will made puzzles for a small magazine for a short time.</label><label><input type="radio" name="q004" data-role="choice" value="3"> 3. After college, Will made puzzles for a small magazine for a long time.</label><label><input type="radio" name="q004" data-role="choice" value="4"> 4. After college, Will solved puzzles for a small magazine for a long time.</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 3번 · 졸업 후 작은 잡지사에서 15년이라는 긴 시간 동안 퍼즐을 만들었다.</div></div><div class="ec-sent"><div class="ec-head"><span class="ec-no">문장 9</span><span class="ec-note ec-explain">자, 마지막 구간! 꿈이 이루어진다!</span></div><div class="ec-eng">Then something wonderful happened to him.</div><div class="ec-explain ec-breakdown"><div class="ec-unit"><div class="ec-eng-frag">Then something wonderful happened to him.</div><div class="ec-kor">그러고 나서 멋진 일이 그에게 일어났다. something wonderful, thing으로 끝나는 말은 형용사가 뒤에서 꾸민다! wonderful something이라고 쓰면 지문이 웃는다!</div></div></div></div><div class="ec-sent"><div class="ec-head"><span class="ec-no">문장 10</span><span class="ec-note ec-explain">무슨 일이냐고? 들어라!</span></div><div class="ec-eng">He got a job at a famous national newspaper.</div><div class="ec-explain ec-breakdown"><div class="ec-unit"><div class="ec-eng-frag">He got a job at a famous national newspaper.</div><div class="ec-kor">그는 유명한 전국 신문사에 취직했다. 작은 잡지사 15년 버티고, 이제 전국구 무대로 올라간 거야!</div></div></div></div><div class="ec-sent"><div class="ec-head"><span class="ec-no">문장 11</span><span class="ec-note ec-explain">가서 판을 뒤집는다!</span></div><div class="ec-eng">There, he made big changes in the puzzle section, making it more fun.</div><div class="ec-explain ec-breakdown"><div class="ec-unit"><div class="ec-eng-frag">There, he made big changes in the puzzle section,</div><div class="ec-kor">거기서 그는 퍼즐 지면에 큰 변화를 줬다.</div></div><div class="ec-unit"><div class="ec-eng-frag">making it more fun.</div><div class="ec-kor">그래서 그걸 더 재밌게 만들었다. 분사구문이고, make 목적어 형용사, 5형식! it은 퍼즐 지면이야.</div></div></div></div><div class="q-row ec-quiz" data-qid="q005" data-qtype="choice" data-points="6" data-answer="2"><div class="q-label"><span class="qtag">Quiz 5</span>신문사에서 윌이 한 일로 알맞은 것은?<span class="pts">6점</span></div><div class="mc-choices"><label><input type="radio" name="q005" data-role="choice" value="1"> 1. Will changed the puzzle section and made it more difficult.</label><label><input type="radio" name="q005" data-role="choice" value="2"> 2. Will changed the puzzle section and made it more enjoyable.</label><label><input type="radio" name="q005" data-role="choice" value="3"> 3. Will changed the sports section and made it more enjoyable.</label><label><input type="radio" name="q005" data-role="choice" value="4"> 4. Will kept the puzzle section and made it more enjoyable.</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 2번 · 퍼즐 지면에 큰 변화를 주어 making it more fun, 더 재미있게 만들었다.</div></div><div class="ec-sent"><div class="ec-head"><span class="ec-no">문장 12</span><span class="ec-note ec-explain">결과 폭발한다!</span></div><div class="ec-eng">His puzzles became famous all over the country.</div><div class="ec-explain ec-breakdown"><div class="ec-unit"><div class="ec-eng-frag">His puzzles became famous all over the country.</div><div class="ec-kor">그의 퍼즐은 전국에서 유명해졌다. become 뒤에 형용사 famous. 열네 살 꿈이 전국구가 된 순간이야!</div></div></div></div><div class="ec-sent"><div class="ec-head"><span class="ec-no">문장 13</span><span class="ec-note ec-explain">그리고 이 지문의 주제문! 밑줄 쫙, 별 다섯 개!</span></div><div class="ec-eng">Will's unique childhood dream came true because he never let go of it.</div><div class="ec-explain ec-breakdown"><div class="ec-unit"><div class="ec-eng-frag">Will's unique childhood dream came true</div><div class="ec-kor">윌의 독특한 어린 시절 꿈은 이루어졌다.</div></div><div class="ec-unit"><div class="ec-eng-frag">because he never let go of it.</div><div class="ec-kor">왜? 그가 그 꿈을 절대 놓지 않았기 때문에! because 뒤가 이유, it은 his dream. 결론부에서 because로 이유를 딱 정리해주는 문장, 이게 바로 주제문이다!</div></div></div></div><div class="q-row ec-quiz" data-qid="q006" data-qtype="choice" data-points="6" data-answer="4"><div class="q-label"><span class="qtag">Quiz 6</span>이 지문의 주제, 즉 윌의 꿈이 이루어진 이유로 알맞은 것은?<span class="pts">6점</span></div><div class="mc-choices"><label><input type="radio" name="q006" data-role="choice" value="1"> 1. Will's dream came true because he soon gave up on it.</label><label><input type="radio" name="q006" data-role="choice" value="2"> 2. Will's dream came true because his teachers never gave up on it.</label><label><input type="radio" name="q006" data-role="choice" value="3"> 3. Will's dream came true although he never gave up on it.</label><label><input type="radio" name="q006" data-role="choice" value="4"> 4. Will's dream came true because he never gave up on it.</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 4번 · 주제문: because he never let go of it, 꿈을 끝까지 놓지 않았기 때문에 이루어졌다.</div></div><div class="ec-section ec-summary ec-explain">오늘의 한 줄 요약 간다. 남들과 다른 꿈이라도, 말만 하지 말고 행동하고, 길이 없으면 만들고, 끝까지 놓지 않으면 이루어진다! 흐름은 딱 세 단계야. 특별한 꿈, 포기하지 않는 노력, 그리고 꿈의 실현. 이 세 칸만 머릿속에 박아두면 이 지문은 끝이다!</div><div class="ec-section ec-explain">두 번째 코너, 단어와 표현이다. 퀴즈 먼저 때리고 설명 들어간다. 감으로 찍지 말고 지문 흐름으로 풀어!</div><div class="q-row ec-quiz" data-qid="q007" data-qtype="choice" data-points="6" data-answer="1"><div class="q-label"><span class="qtag">Quiz 7</span>지문 속 took action과 가장 같은 의미의 문장은?<span class="pts">6점</span></div><div class="mc-choices"><label><input type="radio" name="q007" data-role="choice" value="1"> 1. Will actually did something to reach his dream.</label><label><input type="radio" name="q007" data-role="choice" value="2"> 2. Will only said something to reach his dream.</label><label><input type="radio" name="q007" data-role="choice" value="3"> 3. Will actually did something to forget his dream.</label><label><input type="radio" name="q007" data-role="choice" value="4"> 4. Will's friends actually did something to reach his dream.</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 1번 · take action은 말만 하지 않고 실제로 행동했다는 뜻이다.</div></div><div class="ec-section ec-explain">take action, 행동에 옮기다. 유의어는 act, do something, 반의어는 just talk, 말만 하기, 그리고 do nothing. 헷갈림 포인트! take part in은 참여하다, take action은 행동하다. take 뒤에 뭐가 붙냐에 따라 뜻이 확 바뀐다. 지문에서 Will did not just talk 바로 뒤에 took action이 나온 거, 말과 행동의 대비라는 거 꼭 기억해!</div><div class="q-row ec-quiz" data-qid="q008" data-qtype="choice" data-points="6" data-answer="3"><div class="q-label"><span class="qtag">Quiz 8</span>지문 속 did not give up과 같은 의미의 문장은?<span class="pts">6점</span></div><div class="mc-choices"><label><input type="radio" name="q008" data-role="choice" value="1"> 1. Will stopped trying when things got hard.</label><label><input type="radio" name="q008" data-role="choice" value="2"> 2. Will kept trying when things got easy.</label><label><input type="radio" name="q008" data-role="choice" value="3"> 3. Will kept trying when things got hard.</label><label><input type="radio" name="q008" data-role="choice" value="4"> 4. Will rarely tried when things got hard.</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 3번 · did not give up은 어려운 상황에서도 계속 노력했다는 뜻이다.</div></div><div class="ec-section ec-explain">give up, 포기하다. 유의어는 quit, stop trying, 반의어는 keep trying, keep going. 헷갈림 포인트! give up 뒤에 동사가 오면 동명사, give up smoking처럼 ing! 그리고 give in은 굴복하다, give away는 거저 주다. 비슷하게 생겼다고 같은 뜻 아니다!</div><div class="q-row ec-quiz" data-qid="q009" data-qtype="choice" data-points="6" data-answer="4"><div class="q-label"><span class="qtag">Quiz 9</span>expert의 뜻을 바르게 설명한 문장은?<span class="pts">6점</span></div><div class="mc-choices"><label><input type="radio" name="q009" data-role="choice" value="1"> 1. An expert is a person who knows very little about something.</label><label><input type="radio" name="q009" data-role="choice" value="2"> 2. An expert is a machine that knows a lot about something.</label><label><input type="radio" name="q009" data-role="choice" value="3"> 3. An expert is a person who wants to know a lot about something.</label><label><input type="radio" name="q009" data-role="choice" value="4"> 4. An expert is a person who knows a lot about something.</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 4번 · expert는 어떤 분야에 대해 많이 아는 사람, 전문가다.</div></div><div class="ec-section ec-explain">expert, 전문가. 유의어는 specialist, master, 반의어는 beginner, amateur. 헷갈림 포인트! expect는 기대하다, experience는 경험. 철자 비슷하다고 대충 읽으면 지문한테 당한다! 윌은 전공도 없던 분야에서 스스로 강좌 만들어서 expert가 된 거야.</div><div class="q-row ec-quiz" data-qid="q010" data-qtype="choice" data-points="6" data-answer="2"><div class="q-label"><span class="qtag">Quiz 10</span>지문 속 never let go of it과 같은 의미의 문장은?<span class="pts">6점</span></div><div class="mc-choices"><label><input type="radio" name="q010" data-role="choice" value="1"> 1. He always threw away his dream.</label><label><input type="radio" name="q010" data-role="choice" value="2"> 2. He always held on to his dream.</label><label><input type="radio" name="q010" data-role="choice" value="3"> 3. He always held on to his job.</label><label><input type="radio" name="q010" data-role="choice" value="4"> 4. He sometimes held on to his dream.</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 2번 · never let go of it은 꿈을 끝까지 붙잡았다, hold on to his dream과 같다.</div></div><div class="ec-section ec-explain">let go of, 놓아주다, 손을 놓다. 반의어가 핵심이야, hold on to, 꽉 붙잡다! 그러니까 never let go of는 결국 끝까지 붙잡았다는 뜻. 헷갈림 포인트! let go of 뒤에 of 빠뜨리면 안 되고, 여기서 it은 꿈이야, 일자리가 아니라! 그리고 꿈 앞에 붙은 unique, 독특한, 이건 남들이 다 말하는 조종사, 의사랑 다르다는 첫 문단이랑 연결된다.</div><div class="ec-section ec-explain">세 번째 코너, 패러프레이징 일치다! 지문이랑 맞으면 참, 틀리면 거짓. 단어 하나 비튼 거 잡아내라!</div><div class="q-row ec-quiz" data-qid="q011" data-qtype="choice" data-points="6" data-answer="1"><div class="q-label"><span class="qtag">Quiz 11</span>다음 문장, 지문이랑 맞냐 틀리냐.<span class="pts">6점</span></div><div class="ws-para" style="white-space:pre-line;">Many kids answer with common jobs like a pilot or a doctor.</div><div class="mc-choices"><label><input type="radio" name="q011" data-role="choice" value="1"> 1. 참 (True)</label><label><input type="radio" name="q011" data-role="choice" value="2"> 2. 거짓 (False)</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 참(True) · 아이들에게 물으면 흔히 조종사, 의사, 소방관 같은 대답을 듣는다고 했다.</div></div><div class="q-row ec-quiz" data-qid="q012" data-qtype="choice" data-points="6" data-answer="2"><div class="q-label"><span class="qtag">Quiz 12</span>다음 문장, 지문이랑 맞냐 틀리냐.<span class="pts">6점</span></div><div class="ws-para" style="white-space:pre-line;">In college, Will found a major in puzzle making.</div><div class="mc-choices"><label><input type="radio" name="q012" data-role="choice" value="1"> 1. 참 (True)</label><label><input type="radio" name="q012" data-role="choice" value="2"> 2. 거짓 (False)</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 거짓(False) · 지문은 could not find a major, 전공을 찾을 수 없었다고 했다.</div></div><div class="q-row ec-quiz" data-qid="q013" data-qtype="choice" data-points="6" data-answer="2"><div class="q-label"><span class="qtag">Quiz 13</span>다음 문장, 지문이랑 맞냐 틀리냐.<span class="pts">6점</span></div><div class="ws-para" style="white-space:pre-line;">Will created courses for himself without the help of professors.</div><div class="mc-choices"><label><input type="radio" name="q013" data-role="choice" value="1"> 1. 참 (True)</label><label><input type="radio" name="q013" data-role="choice" value="2"> 2. 거짓 (False)</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 거짓(False) · 지문은 with the help of professors, 교수들의 도움으로 강좌를 만들었다고 했다.</div></div><div class="q-row ec-quiz" data-qid="q014" data-qtype="choice" data-points="6" data-answer="1"><div class="q-label"><span class="qtag">Quiz 14</span>다음 문장, 지문이랑 맞냐 틀리냐.<span class="pts">6점</span></div><div class="ws-para" style="white-space:pre-line;">After graduation, Will worked for a small magazine for fifteen years.</div><div class="mc-choices"><label><input type="radio" name="q014" data-role="choice" value="1"> 1. 참 (True)</label><label><input type="radio" name="q014" data-role="choice" value="2"> 2. 거짓 (False)</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 참(True) · 졸업 후 작은 잡지사에서 15년 동안 퍼즐을 만들었다.</div></div><div class="q-row ec-quiz" data-qid="q015" data-qtype="choice" data-points="6" data-answer="2"><div class="q-label"><span class="qtag">Quiz 15</span>다음 문장, 지문이랑 맞냐 틀리냐.<span class="pts">6점</span></div><div class="ws-para" style="white-space:pre-line;">Will made the puzzle section of the newspaper less fun.</div><div class="mc-choices"><label><input type="radio" name="q015" data-role="choice" value="1"> 1. 참 (True)</label><label><input type="radio" name="q015" data-role="choice" value="2"> 2. 거짓 (False)</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 거짓(False) · 지문은 making it more fun, 더 재미있게 만들었다고 했다.</div></div><div class="q-row ec-quiz" data-qid="q016" data-qtype="choice" data-points="6" data-answer="1"><div class="q-label"><span class="qtag">Quiz 16</span>다음 문장, 지문이랑 맞냐 틀리냐.<span class="pts">6점</span></div><div class="ws-para" style="white-space:pre-line;">Will's unique dream came true because he held on to it.</div><div class="mc-choices"><label><input type="radio" name="q016" data-role="choice" value="1"> 1. 참 (True)</label><label><input type="radio" name="q016" data-role="choice" value="2"> 2. 거짓 (False)</label></div><div class="ans" style="margin-top:6px;">정답 ▸ 참(True) · never let go of it은 꿈을 끝까지 붙잡았다는 뜻으로 일치한다.</div></div><div class="ec-section ec-summary ec-explain">자, 오늘 지문 완전히 털었다! 꿈은 말이 아니라 행동, 그리고 끝까지 안 놓는 사람이 이긴다. 윌 쇼츠처럼 너희도 오늘 배운 거 절대 놓지 마라! ear_catchy였다, 다음 지문에서 또 박살 내자!</div><div class="grade-box" id="gradeBox"><h3>📊 채점 결과</h3><div id="gradeBody"></div></div>
+<div class="footnote">본 학습지는 채점요정 · ear_catchy로 생성되었습니다.</div>
+</div>
+<script>window.WS_CONFIG={"testName":"M3_L8_More","level":"mid_json","threshold":80,"endpoint":"https://script.google.com/macros/s/AKfycbxHb25T0B2rBRvTMo4kF2hDHy0WlQSYOpLTDi2yUYoU7QPv3VotIjcKdGus6IDQckxs8w/exec"};</script>
+<script id="ecData" type="application/json">{"scriptText":"자, 귓구멍 활짝 열어! ear_catchy 등판했다! 오늘 우리가 박살 낼 지문은 꿈 하나 붙잡고 끝까지 안 놓은 남자, 윌 쇼츠 이야기야. 퍼즐 제작자라는 독특한 꿈을 진짜로 이뤄버린 썰이다. 순서는 세 개! 첫째, 끊어읽기로 전 문장 돌파. 둘째, 핵심 단어 털기. 셋째, 맞냐 틀리냐 패러프레이징 퀴즈. 지문아, 각오해라. 오늘 너 탈탈 털린다!\n\n첫 번째 코너, 기본 설명이다. 영어 덩어리 하나 듣고, 바로 우리말로 꽂아 넣는다. 가자!\n\n첫 문장부터 간다!\nWhen you ask kids what they want to be,\n아이들한테 뭐가 되고 싶냐고 물어보면. 여기서 what they want to be, 이게 간접의문문이야. what 뒤에 주어 they, 동사 want 순서! 의문문인데 평서문 어순, 이거 시험에 무조건 나온다!\nyou often hear a pilot, a doctor, or a firefighter.\n흔히 듣는 대답은 조종사, 의사, 소방관. 다들 아는 무난한 직업들이지. 자, 이제 반전 들어온다.\n\n문장 두 개, 한 번에 몰아친다!\nBut 14-year-old Will Shortz had a different answer.\n그런데 열네 살 윌 쇼츠는 대답이 달랐다! 14-year-old에서 year에 s 없는 거 봤지? 숫자 하이픈 단위로 형용사 만들 때는 단수! years라고 쓰면 감점이야!\nHe wanted to become a puzzle maker.\n그는 퍼즐 제작자가 되고 싶었다. 조종사, 의사 사이에 퍼즐 메이커! 이게 바로 이 지문의 시작점이야.\n\nQuiz 1. 윌 쇼츠의 꿈에 대해 지문 흐름에 맞는 것은?\n1번, Will's dream was similar to the usual answers of most kids.\n2번, Will's dream was different from the usual answers of most kids.\n3번, Will's dream was different from the strange answers of most kids.\n4번, Will's dream was different from the usual answers of most teachers.\nOne, two, three, four, five.\n\n두 번째 구간, 노력 파트 들어간다. 여기서부터 윌이 진짜 미쳤다!\nWill did not just talk.\n윌은 그냥 말만 한 게 아니었다. not just, 이 표현 나오면 귀 쫑긋! 뒤에 진짜 행동이 온다는 신호탄이야.\nHe took action to make his dream come true.\n그는 꿈을 이루려고 행동에 옮겼다. to make는 목적, 이루기 위해서. 그리고 make his dream come true, 사역동사 make 뒤에 동사원형 come! to come 쓰면 바로 땡이다!\n\nQuiz 2. 윌이 행동에 옮긴 이유로 알맞은 것은?\n1번, Will took action because he wanted his dream to be forgotten.\n2번, Will took action although he wanted his dream to come true.\n3번, Will took action because his parents wanted his dream to come true.\n4번, Will took action because he wanted his dream to come true.\nOne, two, three, four, five.\n\n행동 개시! 계속 간다!\nHe started sending in his puzzles to magazines.\n그는 자기 퍼즐을 잡지사에 보내기 시작했다. start 뒤에 동명사 sending, 열네 살이 잡지사에 투고를 해? 클래스가 다르다!\n\n여기서 첫 번째 시련 등장!\nIn college, Will could not find a major in puzzle making,\n대학에 갔는데, 퍼즐 제작 전공이 없었다. major는 여기서 형용사 주요한이 아니라 명사, 전공! 헷갈리지 마!\nbut he did not give up.\n하지만 그는 포기하지 않았다! but 하나로 분위기 확 뒤집힌다. 전공이 없어? 그럼 만들면 되지!\n\nQuiz 3. 대학에서 윌의 상황으로 알맞은 것은?\n1번, Will had no puzzle major in college, but he kept going.\n2번, Will had no puzzle major in college, but he quit soon.\n3번, Will had a puzzle major in college, but he kept going.\n4번, Will had no puzzle major in high school, but he kept going.\nOne, two, three, four, five.\n\n진짜 만들었다! 들어봐!\nHe created courses for himself\n그는 자기 자신을 위한 강좌를 만들었다. for himself, 재귀대명사! 남 말고 나 자신을 위해서.\nwith the help of professors.\n교수님들의 도움을 받아서. 혼자 맨땅에 헤딩한 게 아니라 도움까지 끌어왔다는 거, 이게 실행력이야!\n\n결과 바로 나온다!\nSoon, he became an expert.\n곧 그는 전문가가 되었다. become 뒤에 명사 보어 an expert. 짧고 굵다!\n\n졸업 후 이야기 간다!\nAfter graduation, he created puzzles\n졸업하고 나서, 그는 퍼즐을 만들었다.\nfor a small magazine for fifteen years.\n작은 잡지사를 위해, 무려 15년 동안! for가 두 번 나오는데 앞에 for는 대상, 뒤에 for는 기간. 같은 for인데 역할이 다르다, 이거 함정 포인트야! 그리고 15년, 작은 잡지사에서 버틴 거야. 이게 노력 구간의 마무리다.\n\nQuiz 4. 졸업 후 윌에 대해 맞는 것은?\n1번, After college, Will made puzzles for a famous magazine for a long time.\n2번, After college, Will made puzzles for a small magazine for a short time.\n3번, After college, Will made puzzles for a small magazine for a long time.\n4번, After college, Will solved puzzles for a small magazine for a long time.\nOne, two, three, four, five.\n\n자, 마지막 구간! 꿈이 이루어진다!\nThen something wonderful happened to him.\n그러고 나서 멋진 일이 그에게 일어났다. something wonderful, thing으로 끝나는 말은 형용사가 뒤에서 꾸민다! wonderful something이라고 쓰면 지문이 웃는다!\n\n무슨 일이냐고? 들어라!\nHe got a job at a famous national newspaper.\n그는 유명한 전국 신문사에 취직했다. 작은 잡지사 15년 버티고, 이제 전국구 무대로 올라간 거야!\n\n가서 판을 뒤집는다!\nThere, he made big changes in the puzzle section,\n거기서 그는 퍼즐 지면에 큰 변화를 줬다.\nmaking it more fun.\n그래서 그걸 더 재밌게 만들었다. 분사구문이고, make 목적어 형용사, 5형식! it은 퍼즐 지면이야.\n\nQuiz 5. 신문사에서 윌이 한 일로 알맞은 것은?\n1번, Will changed the puzzle section and made it more difficult.\n2번, Will changed the puzzle section and made it more enjoyable.\n3번, Will changed the sports section and made it more enjoyable.\n4번, Will kept the puzzle section and made it more enjoyable.\nOne, two, three, four, five.\n\n결과 폭발한다!\nHis puzzles became famous all over the country.\n그의 퍼즐은 전국에서 유명해졌다. become 뒤에 형용사 famous. 열네 살 꿈이 전국구가 된 순간이야!\n\n그리고 이 지문의 주제문! 밑줄 쫙, 별 다섯 개!\nWill's unique childhood dream came true\n윌의 독특한 어린 시절 꿈은 이루어졌다.\nbecause he never let go of it.\n왜? 그가 그 꿈을 절대 놓지 않았기 때문에! because 뒤가 이유, it은 his dream. 결론부에서 because로 이유를 딱 정리해주는 문장, 이게 바로 주제문이다!\n\nQuiz 6. 이 지문의 주제, 즉 윌의 꿈이 이루어진 이유로 알맞은 것은?\n1번, Will's dream came true because he soon gave up on it.\n2번, Will's dream came true because his teachers never gave up on it.\n3번, Will's dream came true although he never gave up on it.\n4번, Will's dream came true because he never gave up on it.\nOne, two, three, four, five.\n\n오늘의 한 줄 요약 간다. 남들과 다른 꿈이라도, 말만 하지 말고 행동하고, 길이 없으면 만들고, 끝까지 놓지 않으면 이루어진다! 흐름은 딱 세 단계야. 특별한 꿈, 포기하지 않는 노력, 그리고 꿈의 실현. 이 세 칸만 머릿속에 박아두면 이 지문은 끝이다!\n\n두 번째 코너, 단어와 표현이다. 퀴즈 먼저 때리고 설명 들어간다. 감으로 찍지 말고 지문 흐름으로 풀어!\n\nQuiz 7. 지문 속 took action과 가장 같은 의미의 문장은?\n1번, Will actually did something to reach his dream.\n2번, Will only said something to reach his dream.\n3번, Will actually did something to forget his dream.\n4번, Will's friends actually did something to reach his dream.\nOne, two, three, four, five.\n\ntake action, 행동에 옮기다. 유의어는 act, do something, 반의어는 just talk, 말만 하기, 그리고 do nothing. 헷갈림 포인트! take part in은 참여하다, take action은 행동하다. take 뒤에 뭐가 붙냐에 따라 뜻이 확 바뀐다. 지문에서 Will did not just talk 바로 뒤에 took action이 나온 거, 말과 행동의 대비라는 거 꼭 기억해!\n\nQuiz 8. 지문 속 did not give up과 같은 의미의 문장은?\n1번, Will stopped trying when things got hard.\n2번, Will kept trying when things got easy.\n3번, Will kept trying when things got hard.\n4번, Will rarely tried when things got hard.\nOne, two, three, four, five.\n\ngive up, 포기하다. 유의어는 quit, stop trying, 반의어는 keep trying, keep going. 헷갈림 포인트! give up 뒤에 동사가 오면 동명사, give up smoking처럼 ing! 그리고 give in은 굴복하다, give away는 거저 주다. 비슷하게 생겼다고 같은 뜻 아니다!\n\nQuiz 9. expert의 뜻을 바르게 설명한 문장은?\n1번, An expert is a person who knows very little about something.\n2번, An expert is a machine that knows a lot about something.\n3번, An expert is a person who wants to know a lot about something.\n4번, An expert is a person who knows a lot about something.\nOne, two, three, four, five.\n\nexpert, 전문가. 유의어는 specialist, master, 반의어는 beginner, amateur. 헷갈림 포인트! expect는 기대하다, experience는 경험. 철자 비슷하다고 대충 읽으면 지문한테 당한다! 윌은 전공도 없던 분야에서 스스로 강좌 만들어서 expert가 된 거야.\n\nQuiz 10. 지문 속 never let go of it과 같은 의미의 문장은?\n1번, He always threw away his dream.\n2번, He always held on to his dream.\n3번, He always held on to his job.\n4번, He sometimes held on to his dream.\nOne, two, three, four, five.\n\nlet go of, 놓아주다, 손을 놓다. 반의어가 핵심이야, hold on to, 꽉 붙잡다! 그러니까 never let go of는 결국 끝까지 붙잡았다는 뜻. 헷갈림 포인트! let go of 뒤에 of 빠뜨리면 안 되고, 여기서 it은 꿈이야, 일자리가 아니라! 그리고 꿈 앞에 붙은 unique, 독특한, 이건 남들이 다 말하는 조종사, 의사랑 다르다는 첫 문단이랑 연결된다.\n\n세 번째 코너, 패러프레이징 일치다! 지문이랑 맞으면 참, 틀리면 거짓. 단어 하나 비튼 거 잡아내라!\n\nQuiz 11. 다음 문장, 지문이랑 맞냐 틀리냐.\nMany kids answer with common jobs like a pilot or a doctor.\nOne, two, three, four, five.\n\nQuiz 12. 다음 문장, 지문이랑 맞냐 틀리냐.\nIn college, Will found a major in puzzle making.\nOne, two, three, four, five.\n\nQuiz 13. 다음 문장, 지문이랑 맞냐 틀리냐.\nWill created courses for himself without the help of professors.\nOne, two, three, four, five.\n\nQuiz 14. 다음 문장, 지문이랑 맞냐 틀리냐.\nAfter graduation, Will worked for a small magazine for fifteen years.\nOne, two, three, four, five.\n\nQuiz 15. 다음 문장, 지문이랑 맞냐 틀리냐.\nWill made the puzzle section of the newspaper less fun.\nOne, two, three, four, five.\n\nQuiz 16. 다음 문장, 지문이랑 맞냐 틀리냐.\nWill's unique dream came true because he held on to it.\nOne, two, three, four, five.\n\n자, 오늘 지문 완전히 털었다! 꿈은 말이 아니라 행동, 그리고 끝까지 안 놓는 사람이 이긴다. 윌 쇼츠처럼 너희도 오늘 배운 거 절대 놓지 마라! ear_catchy였다, 다음 지문에서 또 박살 내자!","answerKey":{"1":{"answer":"2","explanation":"아이들의 흔한 대답과 달리 윌은 different answer, 즉 퍼즐 제작자를 꿈꿨다.","kind":"mc"},"2":{"answer":"4","explanation":"He took action to make his dream come true, 꿈을 이루기 위해 행동했다.","kind":"mc"},"3":{"answer":"1","explanation":"대학에 퍼즐 전공이 없었지만 he did not give up, 포기하지 않았다.","kind":"mc"},"4":{"answer":"3","explanation":"졸업 후 작은 잡지사에서 15년이라는 긴 시간 동안 퍼즐을 만들었다.","kind":"mc"},"5":{"answer":"2","explanation":"퍼즐 지면에 큰 변화를 주어 making it more fun, 더 재미있게 만들었다.","kind":"mc"},"6":{"answer":"4","explanation":"주제문: because he never let go of it, 꿈을 끝까지 놓지 않았기 때문에 이루어졌다.","kind":"mc"},"7":{"answer":"1","explanation":"take action은 말만 하지 않고 실제로 행동했다는 뜻이다.","kind":"mc"},"8":{"answer":"3","explanation":"did not give up은 어려운 상황에서도 계속 노력했다는 뜻이다.","kind":"mc"},"9":{"answer":"4","explanation":"expert는 어떤 분야에 대해 많이 아는 사람, 전문가다.","kind":"mc"},"10":{"answer":"2","explanation":"never let go of it은 꿈을 끝까지 붙잡았다, hold on to his dream과 같다.","kind":"mc"},"11":{"answer":"1","explanation":"아이들에게 물으면 흔히 조종사, 의사, 소방관 같은 대답을 듣는다고 했다.","kind":"tf"},"12":{"answer":"2","explanation":"지문은 could not find a major, 전공을 찾을 수 없었다고 했다.","kind":"tf"},"13":{"answer":"2","explanation":"지문은 with the help of professors, 교수들의 도움으로 강좌를 만들었다고 했다.","kind":"tf"},"14":{"answer":"1","explanation":"졸업 후 작은 잡지사에서 15년 동안 퍼즐을 만들었다.","kind":"tf"},"15":{"answer":"2","explanation":"지문은 making it more fun, 더 재미있게 만들었다고 했다.","kind":"tf"},"16":{"answer":"1","explanation":"never let go of it은 꿈을 끝까지 붙잡았다는 뜻으로 일치한다.","kind":"tf"}},"meta":{"title":"M3_L8_More","grade":"중3"}}</script>
+<script>
+function ecMode(m){var root=document.getElementById('wsRoot');if(!root)return;var exam=(m==='exam');root.classList.toggle('ec-exam',exam);var sb=document.getElementById('ecStudy'),eb=document.getElementById('ecExam'),h=document.getElementById('ecModeHint');if(sb)sb.classList.toggle('active',!exam);if(eb)eb.classList.toggle('active',exam);if(h)h.textContent=exam?'시험 모드 · 해설이 숨겨집니다. 제출하면 각 Quiz의 정답·해설이 공개됩니다.':'학습 모드 · 문장 해설이 모두 보입니다. (Quiz 정답은 제출 후 공개)';}
+</script>
+<script>
+(function(){
+window.__WS_START=new Date();
+window.__WS_LOCKED={};
+function refresh(){ if(typeof _wsRefreshRetryButton==='function') _wsRefreshRetryButton(); }
+var nm=document.querySelector('[data-role=studentName]');
+if(nm){ nm.addEventListener('input',refresh); nm.addEventListener('change',refresh); }
+refresh();
+/* 스크롤 중 모바일 브라우저의 "당겨서 새로고침" 등으로 페이지가 리로드돼도 직전까지
+   작성 중이던 답안이 사라지지 않도록, 입력할 때마다 이 브라우저에만 임시 저장해 둔다. */
+if(typeof _wsRestoreDraft==='function') _wsRestoreDraft();
+document.addEventListener('input', function(e){ if(e.target.closest('#wsRoot') && typeof _wsQueueSaveDraft==='function') _wsQueueSaveDraft(); });
+document.addEventListener('change', function(e){ if(e.target.closest('#wsRoot') && typeof _wsQueueSaveDraft==='function') _wsQueueSaveDraft(); });
+window.addEventListener('pagehide', function(){ if(typeof _wsSaveDraft==='function') _wsSaveDraft(); });
+document.addEventListener('visibilitychange', function(){ if(document.visibilityState==='hidden' && typeof _wsSaveDraft==='function') _wsSaveDraft(); });
+})();
+function wsHint(btn){var k=btn.parentNode.querySelector('.hint-ko');if(k)k.classList.toggle('show');}
+function advSyncGFix(el){var row=el.closest('[data-qtype="interp"]');if(!row)return;var w=row.querySelector('[data-role=gfixWrong]');var c=row.querySelector('[data-role=gfixCorrect]');var hidden=row.querySelector('input[type=hidden][data-role=answer]');if(hidden)hidden.value=(w?w.value.trim():'')+' → '+(c?c.value.trim():'');}
+function _setReveal(on){var r=document.getElementById('wsRoot');r.classList.toggle('answer-mode',on);var s=document.getElementById('bSubmit'),t=document.getElementById('bRetry');if(s){s.classList.toggle('active',on);s.disabled=on;}if(t)t.classList.toggle('active',!on);}
+function _renumberTray(tray){[].slice.call(tray.querySelectorAll('.tile')).forEach(function(t,i){var b=t.querySelector('.num-badge');if(b)b.textContent=(i+1);});}
+(function(){
+var dragEl=null, tray=null, startX=0, startY=0, moved=false, pid=null;
+var ghostOffsetX=0, ghostOffsetY=0, ghostW=0, ghostH=0, caret=null;
+/* (업그레이드 2단계)
+   1단계 수정(2D 거리 비교)만으로는 부족했던 근본 원인: 드래그 중인 타일을 그 자리에 그대로
+   둔 채(투명도만 낮춰) flex 레이아웃 계산에 계속 참여시키고 있었다. 그래서 매 pointermove마다
+   "그 타일 자신의 너비"가 줄바꿈·이웃 타일 위치에 영향을 주고, 그 변화가 다시 다음 판정에
+   영향을 주는 피드백 루프가 생겨 — 폭이 넓은 타일일수록(예: "the analog hobby") 목표 지점
+   근처에서 튕기거나(자리를 못 잡음), 짧은 타일(예: "revival") 왼쪽으로 넣으려 해도 그 순간
+   줄바꿈이 다시 계산되며 제자리로 돌아가는 문제가 있었다.
+   해결: 드래그 시작 시 실제 타일을 트레이(flex 레이아웃)에서 완전히 분리해 document.body에
+   position:fixed 로 띄운 "고스트"로 만든다 — 남은 타일들은 그 순간 한 번만 재배치되고, 이후
+   드래그 내내 완전히 고정된다(더 이상 드래그 중인 타일의 폭이 판정에 영향을 주지 않음).
+   목표 위치는 남은(고정된) 타일만 보고 "줄(row) 우선"으로 계산한다: 손끝의 y좌표로 어느 줄인지
+   먼저 찾고, 그 줄 안에서 x좌표로 삽입 지점을 정한다 — 가는 삽입선(caret)으로 미리 보여준다.
+   드롭 시점에 그 위치로 실제 타일을 되돌려 넣는다. */
+function rowsOf(tr){
+  var els=[].slice.call(tr.querySelectorAll('.tile:not(.dragging)'));
+  var rows=[];
+  els.forEach(function(el){
+    var b=el.getBoundingClientRect();
+    var row=null;
+    for(var i=0;i<rows.length;i++){ if(Math.abs(rows[i].top-b.top)<4){row=rows[i];break;} }
+    if(!row){row={top:b.top,bottom:b.bottom,items:[]};rows.push(row);}
+    row.bottom=Math.max(row.bottom,b.bottom);
+    row.items.push({el:el,rect:b});
+  });
+  rows.forEach(function(r){r.items.sort(function(a,b){return a.rect.left-b.rect.left;});});
+  rows.sort(function(a,b){return a.top-b.top;});
+  return rows;
+}
+function insertionRef(tr,x,y){
+  var rows=rowsOf(tr);
+  if(!rows.length)return null; // 트레이가 비었으면 맨 끝(=시작)에 삽입
+  var row=rows[rows.length-1];
+  for(var i=0;i<rows.length;i++){ if(y<rows[i].bottom){row=rows[i];break;} }
+  var items=row.items;
+  for(var k=0;k<items.length;k++){
+    if(x < items[k].rect.left+items[k].rect.width/2) return items[k].el;
+  }
+  var last=items[items.length-1];
+  return last?last.el.nextElementSibling:null;
+}
+document.addEventListener('pointerdown',function(e){
+  var t=e.target.closest&&e.target.closest('.tile');
+  if(!t)return;
+  if(t.closest('.q-locked'))return; // 재시험 잠금 문항은 드래그 비활성
+  var tr=t.closest('.arrange-tray');
+  if(!tr)return;
+  dragEl=t;tray=tr;moved=false;startX=e.clientX;startY=e.clientY;pid=e.pointerId;
+  try{t.setPointerCapture(e.pointerId);}catch(_){}
+});
+document.addEventListener('pointermove',function(e){
+  if(!dragEl||e.pointerId!==pid)return;
+  if(!moved&&(Math.abs(e.clientX-startX)>4||Math.abs(e.clientY-startY)>4)){
+    moved=true;
+    var r=dragEl.getBoundingClientRect();
+    ghostW=r.width;ghostH=r.height;
+    ghostOffsetX=startX-r.left;ghostOffsetY=startY-r.top;
+    dragEl.style.width=ghostW+'px';dragEl.style.height=ghostH+'px';
+    dragEl.style.left=r.left+'px';dragEl.style.top=r.top+'px';
+    document.body.appendChild(dragEl);
+    dragEl.classList.add('dragging','tile-ghost');
+    caret=document.createElement('span');
+    caret.className='arrange-caret';
+    caret.style.height=ghostH+'px';
+    tray.appendChild(caret);
+  }
+  if(!moved)return;
+  e.preventDefault();
+  dragEl.style.left=(e.clientX-ghostOffsetX)+'px';
+  dragEl.style.top=(e.clientY-ghostOffsetY)+'px';
+  var ref=insertionRef(tray,e.clientX,e.clientY);
+  if(caret.nextSibling!==ref){ if(ref==null)tray.appendChild(caret);else tray.insertBefore(caret,ref); }
+},{passive:false});
+function endDrag(e){
+  if(!dragEl||(e&&e.pointerId!==pid))return;
+  if(moved){
+    dragEl.classList.remove('dragging','tile-ghost');
+    dragEl.style.position='';dragEl.style.left='';dragEl.style.top='';
+    dragEl.style.width='';dragEl.style.height='';
+    if(caret&&caret.parentNode){ caret.parentNode.insertBefore(dragEl,caret); }
+    else if(tray){ tray.appendChild(dragEl); } // 안전망: caret이 사라진 예외 상황에도 타일이 허공에 남지 않도록 트레이 끝에 복귀
+    if(tray)_renumberTray(tray);
+    if(typeof _wsQueueSaveDraft==='function')_wsQueueSaveDraft();
+  }
+  if(caret&&caret.parentNode)caret.parentNode.removeChild(caret);
+}
+document.addEventListener('pointerup',endDrag);
+document.addEventListener('pointercancel',endDrag);
+})();
+function _p2(n){return(n<10?'0':'')+n;}
+function _fmtRange(a,b){function dd(x){return x.getFullYear()+'-'+_p2(x.getMonth()+1)+'-'+_p2(x.getDate());}function tt(x){return _p2(x.getHours())+':'+_p2(x.getMinutes());}var ds=dd(a),de=dd(b);return ds===de?(ds+' '+tt(a)+'~'+tt(b)):(ds+' '+tt(a)+'~'+de+' '+tt(b));}
+function _collect(){var locked=window.__WS_LOCKED||{};var rows=[].slice.call(document.querySelectorAll('[data-qid]')).filter(function(r){return !locked[r.getAttribute('data-qid')];});var out=[];var objEarned=0,objMax=0,subjMax=0,subjCount=0;
+rows.forEach(function(r){var qid=r.getAttribute('data-qid');var type=r.getAttribute('data-qtype');var pts=+(r.getAttribute('data-points')||0);var rec={qid:qid,type:type,max:pts};
+if(type==='interp'){var i=r.querySelector('[data-role=answer]');rec.student=i?i.value.trim():'';rec.answer=r.getAttribute('data-answer')||'';rec.autoGraded=false;var hraw=r.getAttribute('data-hints');if(hraw){try{rec.hints=JSON.parse(hraw);}catch(_){rec.hints=hraw.split(',').map(function(x){return x.trim();}).filter(Boolean);}}subjMax+=pts;subjCount++;}
+else if(type==='arrange'){var toks=[].slice.call(r.querySelectorAll('.tile')).map(function(t){return t.getAttribute('data-tok');});rec.student=toks.join(' | ');rec.answer=r.getAttribute('data-answer')||'';rec.autoGraded=true;rec.correct=(rec.student===rec.answer);rec.awarded=rec.correct?pts:0;objEarned+=rec.awarded;objMax+=pts;}
+else if(type==='match'){var m=r.querySelector('[data-role=match]');rec.student=m?m.value:'';rec.answer=r.getAttribute('data-answer-match')||'';rec.autoGraded=true;rec.correct=(rec.student!==''&&rec.student===rec.answer);rec.awarded=rec.correct?pts:0;objEarned+=rec.awarded;objMax+=pts;}
+else if(type==='topic-num'){var s=r.querySelector('[data-role=answer]');rec.student=s?s.value:'';rec.answer=r.getAttribute('data-answer');rec.answerAlt=r.getAttribute('data-answer-alt')||null;rec.autoGraded=true;var ap=+(r.getAttribute('data-points-alt')||0);if(rec.student===rec.answer){rec.awarded=pts;rec.correct=true;}else if(rec.answerAlt&&rec.student===rec.answerAlt){rec.awarded=ap;rec.correct='alt';}else{rec.awarded=0;rec.correct=false;}objEarned+=rec.awarded;objMax+=pts;}
+else if(type==='choice'){var sc=r.querySelector('[data-role=choice]:checked');rec.student=sc?sc.value:'';rec.answer=r.getAttribute('data-answer')||'';rec.autoGraded=true;rec.correct=(rec.student!==''&&rec.student===rec.answer);rec.awarded=rec.correct?pts:0;objEarned+=rec.awarded;objMax+=pts;}
+else if(type==='multichoice'){var ck=[].slice.call(r.querySelectorAll('[data-role=mc]:checked')).map(function(x){return x.value;});rec.student=ck.slice().sort().join(',');rec.answer=(r.getAttribute('data-answer')||'').split(',').map(function(x){return x.trim();}).filter(Boolean).sort().join(',');rec.autoGraded=true;rec.correct=(rec.student!==''&&rec.student===rec.answer);rec.awarded=rec.correct?pts:0;objEarned+=rec.awarded;objMax+=pts;}
+else if(type==='contentmatch'){var isMatch=(r.getAttribute('data-match')==='true');var wAns=(r.getAttribute('data-word')||'').trim().toLowerCase().replace(/[^a-z']/g,'');var cAns=(r.getAttribute('data-correct')||'').trim().toLowerCase().replace(/[^a-z']/g,'');var ox=r.querySelector('[data-role=cmchoice]:checked');var oxVal=ox?ox.value:'';var wi=r.querySelector('[data-role=cmword]');var wVal=(wi?wi.value:'').trim().toLowerCase().replace(/[^a-z']/g,'');var ci=r.querySelector('[data-role=cmcorrect]');var cVal=(ci?ci.value:'').trim().toLowerCase().replace(/[^a-z']/g,'');rec.student=oxVal+((wVal||cVal)?(' / '+wVal+' → '+cVal):'');rec.answer=(isMatch?'O':'X')+(isMatch?'':(' / '+wAns+' → '+cAns));var half=Math.round(pts*0.5);var awarded=0;if(isMatch){awarded=(oxVal==='O')?pts:0;}else{var judgeOk=(oxVal==='X');if(judgeOk)awarded+=half;if(judgeOk&&wVal&&cVal&&wVal===wAns&&cVal===cAns)awarded+=(pts-half);}rec.autoGraded=true;rec.correct=(awarded===pts);rec.awarded=awarded;objEarned+=awarded;objMax+=pts;}
+out.push(rec);});
+return {answers:out,objEarned:objEarned,objMax:objMax,subjMax:subjMax,subjCount:subjCount};}
+function _payload(){var d=_collect();var cfg=window.WS_CONFIG||{};var nm=document.querySelector('[data-role=studentName]');var gr=document.querySelector('[data-role=grade]');var end=new Date();var start=window.__WS_START||end;
+return {testName:cfg.testName||document.title,level:cfg.level||'',student:nm?nm.value.trim():'',grade:gr?gr.value:'',threshold:(cfg.threshold!=null?cfg.threshold:80),startedAt:start.toISOString(),submittedAt:end.toISOString(),timeRange:_fmtRange(start,end),objectiveEarned:d.objEarned,objectiveMax:d.objMax,subjectiveMax:d.subjMax,questions:d.answers};}
+function _banner(html){var box=document.getElementById('gradeBox');var body=document.getElementById('gradeBody');if(body)body.innerHTML=html;if(box){box.classList.add('show');box.scrollIntoView({behavior:'smooth',block:'nearest'});}}
+function _scoreBanner(mainHtml, subHtml, cls){var box=document.getElementById('scoreBanner');if(!box)return;var m=document.getElementById('sbMain'),s=document.getElementById('sbSub');if(m)m.innerHTML=mainHtml;if(s)s.innerHTML=subHtml||'';box.className='score-banner show'+(cls?(' '+cls):'');box.scrollIntoView({behavior:'smooth',block:'start'});}
+function _qHost(qid){return document.querySelector('[data-qid="'+String(qid).replace(/"/g,'')+'"]');}
+function _badgeCls(awarded,max){if(max<=0)return 'ok';if(awarded>=max)return 'ok';if(awarded<=0)return 'bad';return 'partial';}
+function _setBadge(qid,cls,text){var host=_qHost(qid);if(!host)return;var tag=host.querySelector('.qtag');if(!tag)return;var b=tag.parentNode.querySelector('.qgrade[data-for="'+String(qid).replace(/"/g,'')+'"]');if(!b){b=document.createElement('span');b.setAttribute('data-for',qid);tag.parentNode.insertBefore(b,tag.nextSibling);}b.className='qgrade show '+cls;b.textContent=text;}
+function _clearBadges(){[].slice.call(document.querySelectorAll('.qgrade')).forEach(function(b){b.parentNode.removeChild(b);});}
+function _markObjective(answers){answers.forEach(function(rec){if(rec.autoGraded===false)return;var cls=_badgeCls(rec.awarded,rec.max);var icon=cls==='ok'?' ✅':(cls==='bad'?' ❌':' ▲');_setBadge(rec.qid,cls,(rec.awarded||0)+'/'+rec.max+'점'+icon);});}
+function _markSubjectivePending(answers){answers.forEach(function(rec){if(rec.autoGraded!==false)return;if(!String(rec.student||'').trim()){_setBadge(rec.qid,'bad','0/'+rec.max+'점 ❌ (무응답)');}else{_setBadge(rec.qid,'pending','⏳ 채점중');}});}
+function _markSubjectiveResult(grades){(grades||[]).forEach(function(g){var max=Number(g.max)||0,awarded=Number(g.awarded)||0;if(g.note){_setBadge(g.qid,'bad','⚠ '+g.note);return;}var cls=_badgeCls(awarded,max);var icon=cls==='ok'?' ✅':(cls==='bad'?' ❌':' ▲');_setBadge(g.qid,cls,awarded+'/'+max+'점'+icon);});}
+/* ===== 재시험(오답·부분점수만 다시 풀기) =====
+   설계: 백엔드(Apps Script)는 수정하지 않는다 — 잠긴(만점) 문항은 _collect()가 애초에
+   payload(items)에서 제외하므로, 서버는 그때그때 "다시 푼 문항"만 받는 평소와 동일한 요청으로 본다.
+   전체 누적 결과(어떤 문항이 잠겼는지·이전 점수)는 이 브라우저의 localStorage에만 저장한다. */
+function _wsTotalMax(){var sum=0;[].slice.call(document.querySelectorAll('[data-qid]')).forEach(function(h){sum+=(+(h.getAttribute('data-points')||0));});return sum;}
+function _wsStoreKey(){var cfg=window.WS_CONFIG||{};var nm=document.querySelector('[data-role=studentName]');var name=(nm?nm.value.trim():'')||'(익명)';return 'wsRetry::'+(cfg.testName||document.title)+'::'+(cfg.level||'')+'::'+name;}
+function _wsLoadAttempt(){try{var raw=localStorage.getItem(_wsStoreKey());return raw?JSON.parse(raw):null;}catch(_){return null;}}
+function _wsSaveAttempt(rec){try{localStorage.setItem(_wsStoreKey(),JSON.stringify(rec));}catch(_){}}
+function _wsClearAttempt(){try{localStorage.removeItem(_wsStoreKey());}catch(_){}}
+/* ===== 답안 임시저장(자동저장) =====
+   위 wsRetry:: 는 "제출·채점 완료 기록"이고, 이건 "아직 제출 전, 풀고 있는 도중"의 답안이다.
+   이름 입력칸은 새로고침되면 같이 비어버리므로 이름이 아니라 testName+level로만 키를 잡는다
+   (한 기기·한 순간에는 보통 한 학생만 풀고 있다고 가정 — 임시저장이므로 이 정도로 충분하다). */
+function _wsDraftKey(){var cfg=window.WS_CONFIG||{};return 'wsDraft::'+(cfg.testName||document.title)+'::'+(cfg.level||'');}
+function _wsSaveDraft(){
+  try{
+    var wsRoot=document.getElementById('wsRoot');
+    if(wsRoot&&wsRoot.classList.contains('answer-mode'))return; // 이미 제출·정답공개된 화면은 저장하지 않음
+    var d=_collect();
+    var nm=document.querySelector('[data-role=studentName]');
+    var gr=document.querySelector('[data-role=grade]');
+    var rec={student:nm?nm.value:'',grade:gr?gr.value:'',
+      answers:d.answers.map(function(r){return {qid:r.qid,type:r.type,student:r.student};}),
+      updatedAt:new Date().toISOString()};
+    localStorage.setItem(_wsDraftKey(),JSON.stringify(rec));
+  }catch(_){}
+}
+var __wsDraftTimer=null;
+function _wsQueueSaveDraft(){ if(__wsDraftTimer)clearTimeout(__wsDraftTimer); __wsDraftTimer=setTimeout(_wsSaveDraft,400); }
+function _wsLoadDraft(){try{var raw=localStorage.getItem(_wsDraftKey());return raw?JSON.parse(raw):null;}catch(_){return null;}}
+function _wsClearDraft(){try{localStorage.removeItem(_wsDraftKey());}catch(_){}}
+function _wsRestoreDraft(){
+  var d=_wsLoadDraft();
+  if(!d||!d.answers||!d.answers.length)return;
+  var any=false;
+  d.answers.forEach(function(rec){ if(!rec.student)return; var host=_qHost(rec.qid); if(host){ _wsFillAnswer(host,rec.type,rec.student); any=true; } });
+  if(!any)return;
+  var nm=document.querySelector('[data-role=studentName]');if(nm&&d.student&&!nm.value)nm.value=d.student;
+  var gr=document.querySelector('[data-role=grade]');if(gr&&d.grade&&!gr.value)gr.value=d.grade;
+  _setRetryBanner('💾 스크롤 중 새로고침 등으로 페이지가 다시 열려, 직전까지 작성 중이던 답안을 복구했습니다. <a href="#" onclick="_setRetryBanner(\'\');return false;" style="color:#2f6f69;text-decoration:underline;">닫기</a>');
+}
+function _setRetryBanner(html){var b=document.getElementById('retryBanner');if(b)b.innerHTML=html||'';}
+// 이전 답안을 문항 타입에 맞게 화면에 다시 채워 넣는다 (재시험 대상 문항을 수정하기 쉽도록)
+function _wsFillAnswer(host,type,val){val=val||'';
+if(type==='interp'){var i=host.querySelector('[data-role=answer]');if(i)i.value=val;var gw=host.querySelector('[data-role=gfixWrong]'),gc=host.querySelector('[data-role=gfixCorrect]');if(gw||gc){var gp=val.split(' → ');if(gw)gw.value=(gp[0]||'').trim();if(gc)gc.value=(gp[1]||'').trim();}}
+else if(type==='arrange'){var tray=host.querySelector('.arrange-tray');if(!tray)return;var toks=val.split(' | ');var pool={};[].slice.call(tray.querySelectorAll('.tile')).forEach(function(t){var k=t.getAttribute('data-tok');(pool[k]=pool[k]||[]).push(t);});var ordered=[],ok=true;toks.forEach(function(k){var arr=pool[k];if(arr&&arr.length){ordered.push(arr.shift());}else{ok=false;}});if(ok&&ordered.length===tray.querySelectorAll('.tile').length){ordered.forEach(function(t){tray.appendChild(t);});_renumberTray(tray);}}
+else if(type==='match'){var m=host.querySelector('[data-role=match]');if(m)m.value=val;}
+else if(type==='topic-num'){var s=host.querySelector('[data-role=answer]');if(s)s.value=val;}
+else if(type==='choice'){[].slice.call(host.querySelectorAll('[data-role=choice]')).forEach(function(r){r.checked=(r.value===val);});}
+else if(type==='multichoice'){var vs=(val||'').split(',').map(function(x){return x.trim();}).filter(Boolean);[].slice.call(host.querySelectorAll('[data-role=mc]')).forEach(function(c){c.checked=vs.indexOf(c.value)>=0;});}
+else if(type==='contentmatch'){var parts=val.split(' / ');var ox=parts[0];[].slice.call(host.querySelectorAll('[data-role=cmchoice]')).forEach(function(r){r.checked=(r.value===ox);});if(parts[1]){var wc=parts[1].split(' → ');var wi=host.querySelector('[data-role=cmword]');if(wi)wi.value=(wc[0]||'').trim();var ci=host.querySelector('[data-role=cmcorrect]');if(ci)ci.value=(wc[1]||'').trim();}}}
+// 문항을 잠금(이전 만점 → 재채점 제외) 또는 재시험 대상(수정 가능)으로 표시
+function _wsSetLocked(host,locked,info){host.classList.toggle('q-locked',locked);host.classList.toggle('q-retry-target',!locked);
+if(locked){host.setAttribute('data-lock-label','🔒 '+(info?info.awarded:0)+'/'+(info?info.max:0)+'점 (이전 만점)');host.removeAttribute('data-retry-label');}
+else{host.removeAttribute('data-lock-label');var prev=(info&&!info.pending)?(' (이전 '+info.awarded+'/'+info.max+'점)'):'';host.setAttribute('data-retry-label','🎯 재시험 대상'+prev);}
+[].slice.call(host.querySelectorAll('input,select,textarea')).forEach(function(el){el.disabled=locked;});}
+// 이번 회차 채점 결과(grades)를 이전에 잠긴 문항(prevLocked)과 합쳐 누적 결과로 저장하고 총점을 반환
+function _wsSaveMergedAttempt(prevLocked,roundQuestions,grades){
+var items={};Object.keys(prevLocked||{}).forEach(function(qid){items[qid]=prevLocked[qid];});
+var gmap={};(grades||[]).forEach(function(g){gmap[g.qid]=g;});
+(roundQuestions||[]).forEach(function(rec){var awarded,pending=false,reason='';
+if(gmap[rec.qid]){awarded=Number(gmap[rec.qid].awarded)||0;reason=gmap[rec.qid].reason||'';}
+else if(rec.autoGraded){awarded=Number(rec.awarded)||0;}
+else{awarded=0;pending=true;} // 서술형인데 구글시트 미연결 → 판정 불가, 항상 재시험 대상으로 열어둠
+items[rec.qid]={max:rec.max,awarded:awarded,student:rec.student,reason:reason,pending:pending};});
+var totalMax=0,totalEarned=0,anyOpen=false;
+Object.keys(items).forEach(function(qid){var it=items[qid];totalMax+=Number(it.max)||0;var full=!it.pending&&it.max>0&&it.awarded>=it.max;if(full){totalEarned+=it.max;}else{totalEarned+=(Number(it.awarded)||0);anyOpen=true;}});
+_wsSaveAttempt({items:items,updatedAt:new Date().toISOString()});
+return {totalEarned:totalEarned,totalMax:totalMax,anyOpen:anyOpen};}
+function _wsRefreshRetryButton(){var btn=document.getElementById('bRetryWrong');if(!btn)return;var prev=_wsLoadAttempt();var anyOpen=false;
+if(prev&&prev.items){Object.keys(prev.items).forEach(function(qid){var it=prev.items[qid];var full=!it.pending&&it.max>0&&it.awarded>=it.max;if(!full)anyOpen=true;});}
+btn.classList.toggle('show',!!(prev&&anyOpen));}
+function startRetryMode(){var prev=_wsLoadAttempt();
+if(!prev||!prev.items){alert('이전 제출 기록을 찾을 수 없습니다. 이름을 이전 제출 때와 똑같이 입력했는지 확인해주세요.');return;}
+var items=prev.items;var lockedMap={},anyOpen=false;
+Object.keys(items).forEach(function(qid){var it=items[qid];var full=!it.pending&&it.max>0&&it.awarded>=it.max;if(full){lockedMap[qid]=it;}else{anyOpen=true;}});
+if(!anyOpen){alert('🎉 모든 문항이 이미 만점입니다! 재시험이 필요 없어요.');return;}
+window.__WS_LOCKED=lockedMap;
+_setReveal(false);
+var gb=document.getElementById('gradeBox');if(gb)gb.classList.remove('show');
+var sb=document.getElementById('scoreBanner');if(sb)sb.className='score-banner';
+_clearBadges();
+Object.keys(items).forEach(function(qid){var host=_qHost(qid);if(!host)return;var type=host.getAttribute('data-qtype');var it=items[qid];_wsFillAnswer(host,type,it.student||'');_wsSetLocked(host,!!lockedMap[qid],it);});
+var root=document.getElementById('wsRoot');if(root)root.classList.add('retry-mode');
+var btn=document.getElementById('bSubmit');if(btn){btn.textContent='✅ 재시험 제출';btn.disabled=false;btn.classList.remove('active');}
+var rw=document.getElementById('bRetryWrong');if(rw)rw.classList.remove('show');
+window.__WS_START=new Date();
+_setRetryBanner('🎯 <b>재시험 모드</b> — 🔒 표시된 문항은 이전에 만점을 받아 잠겼습니다(다시 채점하지 않습니다). 나머지 🎯 표시된 문항만 다시 풀고 아래 <b>재시험 제출</b> 버튼을 누르세요.');}
+function submitTest(){var wsRoot=document.getElementById('wsRoot');if(wsRoot&&wsRoot.classList.contains('answer-mode')){_banner('<div style="color:#b23a48;font-weight:700;">⚠ 이미 제출된 테스트입니다.</div><div style="font-size:13px;margin-top:4px;color:#555;">정답이 공개된 상태에서는 다시 제출할 수 없습니다. 위 🔁 전체 초기화 버튼을 눌러 처음부터 다시 풀거나, 🎯 오답만 재시험 버튼을 이용하세요.</div>');return;}
+var nmEl=document.querySelector('[data-role=studentName]');if(nmEl&&!nmEl.value.trim()){alert('이름을 입력해주세요. (이름으로 이전 결과를 저장해두었다가 재시험 때 불러옵니다)');return;}
+var locked=window.__WS_LOCKED||{};
+_setReveal(true);var p=_payload();var cfg=window.WS_CONFIG||{};var objPct=p.objectiveMax?Math.round(p.objectiveEarned/p.objectiveMax*100):0;var subjN=p.questions.filter(function(q){return q.autoGraded===false;}).length;
+_wsClearDraft();
+_markObjective(p.questions);_markSubjectivePending(p.questions);
+if(!cfg.endpoint){
+var merged=_wsSaveMergedAttempt(locked,p.questions,null);
+var pct=merged.totalMax?Math.round(merged.totalEarned/merged.totalMax*100):0;
+_scoreBanner('현재까지 자동 채점: '+merged.totalEarned+' / '+merged.totalMax+'점 ('+pct+'%)','서술형 '+subjN+'문항은 문항 옆에 공개된 정답과 비교해 확인하세요. (구글시트 URL을 연결하면 Gemini가 서술형까지 자동채점하고 재시험도 정확히 판정합니다.)'+(merged.anyOpen?' · 🎯 만점 못 받은 문항이 있으면 위 버튼으로 재시험할 수 있습니다.':' · 🎉 모든 문항 만점입니다!'));
+_wsRefreshRetryButton();return;}
+_scoreBanner('⏳ 채점 중…','서술형 AI 채점 · 시트 기록 중입니다.');
+fetch(cfg.endpoint,{method:'POST',body:JSON.stringify(p)}).then(function(r){return r.json();}).then(function(res){
+if(res&&res.ok){_markSubjectiveResult(res.grades);
+var merged=_wsSaveMergedAttempt(locked,p.questions,res.grades);
+var pct=merged.totalMax?Math.round(merged.totalEarned/merged.totalMax*100):0;
+var pass=pct>=p.threshold;
+var warn=res.warning?('<div style="font-size:12px;margin-top:4px;">⚠ '+res.warning+'</div>'):'';
+_scoreBanner((pass?'✅ 통과':'❌ 미통과')+' — '+merged.totalEarned+' / '+merged.totalMax+'점 ('+pct+'%)','기준 '+p.threshold+'% · 결과가 구글시트에 기록되었습니다.'+warn+(merged.anyOpen?' · 🎯 아직 만점 못 받은 문항이 있어 재시험이 가능합니다.':' · 🎉 모든 문항 만점입니다!'),pass?'pass':'fail');
+_wsRefreshRetryButton();}
+else{_banner('<div style="color:#b23a48;font-weight:700;">채점 응답 오류'+(res&&res.error?(': '+res.error):'')+'</div><div style="font-size:13px;margin-top:4px;">객관식 자동: '+p.objectiveEarned+'/'+p.objectiveMax+'점. 서술형은 문항 옆 공개 정답으로 확인하세요.</div>');}
+}).catch(function(e){_banner('<div style="color:#b23a48;font-weight:700;">시트 응답을 읽지 못했습니다.</div><div style="font-size:13px;margin-top:4px;">(전송 자체는 되었을 수 있습니다.) 객관식 자동: '+p.objectiveEarned+'/'+p.objectiveMax+'점 ('+objPct+'%).</div>');});}
+function retryTest(){_setReveal(false);var box=document.getElementById('gradeBox');if(box)box.classList.remove('show');
+var sb=document.getElementById('scoreBanner');if(sb)sb.className='score-banner';
+_clearBadges();
+window.__WS_LOCKED={};_wsClearAttempt();_wsClearDraft();
+var root=document.getElementById('wsRoot');if(root)root.classList.remove('retry-mode');
+_setRetryBanner('');
+[].slice.call(document.querySelectorAll('[data-qid]')).forEach(function(h){h.classList.remove('q-locked','q-retry-target');h.removeAttribute('data-lock-label');h.removeAttribute('data-retry-label');[].slice.call(h.querySelectorAll('input,select,textarea')).forEach(function(el){el.disabled=false;});});
+[].slice.call(document.querySelectorAll('input.ws-input[data-role=answer], input[type=hidden][data-role=answer], input.ws-input[data-role=cmword], input.ws-input[data-role=cmcorrect], input.ws-input[data-role=gfixWrong], input.ws-input[data-role=gfixCorrect]')).forEach(function(i){i.value='';});
+[].slice.call(document.querySelectorAll('select.ws-select[data-role=match], select.ws-select[data-role=answer]')).forEach(function(s){s.value='';});
+[].slice.call(document.querySelectorAll('input[type=radio][data-role=choice], input[type=checkbox][data-role=mc], input[type=radio][data-role=cmchoice]')).forEach(function(r){r.checked=false;});
+[].slice.call(document.querySelectorAll('.arrange-tray')).forEach(function(tray){var ts=[].slice.call(tray.querySelectorAll('.tile'));for(var a=ts.length-1;a>0;a--){var b=Math.floor(Math.random()*(a+1));tray.insertBefore(ts[a],ts[b]);}_renumberTray(tray);});
+var btn=document.getElementById('bSubmit');if(btn)btn.textContent='✅ 테스트 제출';
+var rw=document.getElementById('bRetryWrong');if(rw)rw.classList.remove('show');
+window.__WS_START=new Date();}
+</script>
+</body>
+</html>
